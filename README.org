@@ -3,6 +3,7 @@ Installing Open edX Fullstack
 Step 1:Install Software Prerequisites
 	
 	1. VirtualBox 4.3.12 or higher
+
 	   -source:https://www.virtualbox.org/wiki/Downloads
     	2. Vagrant 1.6.5 or higher
 	   -source:http://www.vagrantup.com/downloads.html
@@ -21,11 +22,11 @@ Step 2: Install Open edX Fullstack
 		- vagrant plugin install vagrant-hostsupdater
 	5. Create the Fullstack virtual machine.
 		- vagrant up
-	+6. When prompted, enter the administrator password for your local computer.
+	6. When prompted, enter the administrator password for your local computer.
 
-**Step 3: Browser Login to Open edX Fullstack
+Step 3: Browser Login to Open edX Fullstack
 	
-	+1. In your browser, go to preview.localhost, which is an alias entry for 192.168.33.10 that was created in your /etc/hosts 		   file.
+	1. In your browser, go to preview.localhost, which is an alias entry for 192.168.33.10 that was created in your /etc/hosts 		   file.
 
 
 
