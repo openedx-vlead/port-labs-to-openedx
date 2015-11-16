@@ -2,31 +2,44 @@ Installing Open edX Fullstack
 
 Step 1:Install Software Prerequisites
 	
-	1. VirtualBox 4.3.12 or higher
+1. VirtualBox 4.3.12 or higher
 
 	   -source:https://www.virtualbox.org/wiki/Downloads
-    	2. Vagrant 1.6.5 or higher
+
+2. Vagrant 1.6.5 or higher
+
 	   -source:http://www.vagrantup.com/downloads.html
-   	3. A Network File System (NFS) client, if your operating system does not include one. 
+
+3. A Network File System (NFS) client, if your operating system does not include one. 
+
 		- Fullstack uses VirtualBox Guest Editions to share folders through NFS.
+
 		- setup NFS from this link https://help.ubuntu.com/community/SettingUpNFSHowTo
+
 Step 2: Install Open edX Fullstack
-	1.  Ensure the nfsd client is running.
-	    
-	2.  Create the fullstack directory and navigate to it in the command prompt.
+
+1.  Ensure the nfsd client is running.
+
+2.  Create the fullstack directory and navigate to it in the command prompt.
 		- mkdir fullstack
 		- cd fullstack
-	3.  Download the fullstack Vagrant file.
+	
+3.  Download the fullstack Vagrant file.
 		- curl -L https://raw.githubusercontent.com/edx/configuration/master/vagrant/release/fullstack/Vagrantfile > 			Vagrantfile
-	4. Install the Vagrant hostsupdater plugin.
-		- vagrant plugin install vagrant-hostsupdater
-	5. Create the Fullstack virtual machine.
+	
+4. Install the Vagrant hostsupdater plugin.
+	
+          	- vagrant plugin install vagrant-hostsupdater
+	
+5. Create the Fullstack virtual machine.
+
 		- vagrant up
-	6. When prompted, enter the administrator password for your local computer.
+
+       6. When prompted, enter the administrator password for your local computer.
 
 Step 3: Browser Login to Open edX Fullstack
 	
-	1. In your browser, go to preview.localhost, which is an alias entry for 192.168.33.10 that was created in your /etc/hosts 		   file.
+1. In your browser, go to preview.localhost, which is an alias entry for 192.168.33.10 that was created in your /etc/hosts 		   file.
 
 
 
