@@ -4,11 +4,12 @@
 	
 + VirtualBox 4.3.12 or higher
 
-	   -source:https://www.virtualbox.org/wiki/Downloads
+	   - source:https://www.virtualbox.org/wiki/Downloads
+	   
 
 + Vagrant 1.6.5 or higher
 
-	   -source:http://www.vagrantup.com/downloads.html
+	   - source:http://www.vagrantup.com/downloads.html
 
 + A Network File System (NFS) client, if your operating system does not include one. 
 
@@ -19,6 +20,8 @@
 ** Step 2: Install Open edX Fullstack
 
 +  Ensure the nfsd client is running.
+
+		- ps aux | grep nfsd
 
 +  Create the fullstack directory and navigate to it in the command prompt.
 #BEGIN_SRC 
@@ -41,7 +44,6 @@
 ** Step 3: Browser Login to Open edX Fullstack
 	
 + In your browser, go to preview.localhost, which is an alias entry for 192.168.33.10 that was created in your /etc/hosts 		   file.
-
 
 
 
