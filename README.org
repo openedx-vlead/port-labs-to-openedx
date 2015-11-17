@@ -24,10 +24,10 @@
 		- ps aux | grep nfsd
 
 +  Create the fullstack directory and navigate to it in the command prompt.
-#BEGIN_SRC 
+# BEGIN_SRC 
 		- mkdir fullstack
 		- cd fullstack
-#END_SRC
+# END_SRC
 +  Download the fullstack Vagrant file.
 		- curl -L https://raw.githubusercontent.com/edx/configuration/master/vagrant/release/fullstack/Vagrantfile > 			Vagrantfile
 	
