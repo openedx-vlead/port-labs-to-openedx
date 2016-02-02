@@ -27,6 +27,94 @@
 
 ** COMMENT Creating a course
 
+* Setting up Open edX platform on AWS
+** Launch instance on AWS
+*** Launch instance from Community AMI
+   - Choose AMI from "Community AMI"
+     + Chosen ami-ad161ee8
+     + Configure Instance details 
+       - Network details ( Use appropriate VPC)
+       - Enable "Auto-assign Public IP""
+     + Add Storage
+       - Choose Volume type as "Magnetic"
+       - Given 40 GB 
+     + Choose appropriate "Security Group"
+     + Boot From "Magnetic disk"
+     + Launch Instance
+   - Use the Public IP of that instance to see the web console of
+     Open edX platform 
+   - edX platform runs on tcp 80 and 18010 port numbers
+     + port 80 is to see the default edx web console
+     + If we want to see the edX studio web console, use 18010 port
+       number
+       #+BEGIN_EXAMPLE
+       public_ip:18010
+       #+END_EXAMPLE
+     + Use satff@example.com as user email-id and edx as password for
+       logging into edx studio and to make changes in courses
+*** Launch instance from AWS marketplace
+   - Choose an Amazon Machine Image (AMI) from AWS Marketplace
+     + Chosen AMI Name : Open edX powered by Bitnami (HVM).
+     + Linux/Unix, Ubuntu 14.04.3 | 64-bit Amazon Machine Image
+       (AMI) | Updated: 1/22/16
+     + Choose an Instance Type
+       - t2.medium 
+       - vCPUs: 2
+       - Memory(RAM): 4GB 
+     + Configure Instance details 
+       - Network details ( Use appropriate VPC)
+       - Enable "Auto-assign Public IP""
+     + Add Storage
+       - Choose Volume type as "Magnetic"
+       - Given 40 GB 
+     + Choose appropriate "Security Group"
+     + Boot From "Magnetic disk"
+     + Launch Instance
+   - Use the Public IP of that instance to see the web console of
+     Open edX platform 
+   - edX platform runs on tcp 80 and 18010 port numbers
+     + port 80 is to see the default edx web console
+     + If we want to see the edX studio web console, use 18010 port
+       number
+       #+BEGIN_EXAMPLE
+       public_ip:18010
+       #+END_EXAMPLE
+     + NOTE :: Still there are some issues in this VM. such as
+               configuring sendmail by giving smtp server and
+               database if it uses, etc. Still we need to look into
+               those things. For now we have running edX Platform to
+               host labs on edX platform. 
+            
+** Launch Ubuntu 12.04 64 bit on AWS and setup Open edX Platform
+   - Launch an Ubuntu 12.04 64 bit on AWS 
+     Minimum Requirements as follows for setting up Open edX platform
+     + Instance Type: t2.medium
+     + RAM : 4 GB
+     + Hard Disk : 50 GB
+   - SSH to launched instance using 
+     #+BEGIN_EXAMPLE
+     ssh -i "Open edX.pem" ubuntu@ec2-54-153-2-214.us-west-1.compute.amazonaws.com
+     #+END_EXAMPLE
+   - Update and upgrade instance
+     #+BEGIN_EXAMPLE
+     sudo apt-get update -y  
+     sudo apt-get upgrade -y
+     #+END_EXAMPLE
+   - Reboot the instance 
+     #+BEGIN_EXAMPLE
+     sudo reboot
+     #+END_EXAMPLE
+   - Automated Installation scripts
+     + Install Open edX release 
+     #+BEGIN_SRC 
+     export OPENEDX_RELEASE=named-release/cypress
+     wget https://raw.githubusercontent.com/edx/configuration/master/util/install/ansible-bootstrap.sh -O - | sudo bash     
+     wget https://raw.githubusercontent.com/edx/configuration/master/util/install/sandbox.sh -O - | bash     
+     #+END_SRC
+   - NOTE :: In second script, edx_ansible role is trying to check
+             out to release of edx_ansible but it is unable to do
+             that. I have tried many times running second script but
+             no result.
 
 * Planning
 ** Phases
