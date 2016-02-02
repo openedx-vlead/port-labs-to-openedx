@@ -1,0 +1,27 @@
+# OS generated files #
+######################
+*.DS_Store
+*.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.pyc
+*~
+*.sw[p|o]
+\#*\#
+.\#*\#
+venv/
+config.py
+outreach-portal.egg-info/
+dist/
+logs/
+build/
+elisp/
+org-templates/
+style/
+src/org-templates
+src/style
+sitemap*
+lint_output
