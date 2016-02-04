@@ -12,6 +12,7 @@
   + On how different features of the Open edX platform - persistence, single
     sign, analytics - are leveraged by Virtual Labs
 
+
 * Requirements
   1. Virtual Labs has a single sign on.  All the virtual labs are accessible
      using a single sign on.
@@ -68,6 +69,7 @@
     [[http://edx.readthedocs.org/projects/edx-installing-configuring-and-running/en/latest/fullstack/install_fullstack.html][Link to Open edX documentation]]
 
 ** COMMENT Creating a course
+
 
 * Setting up Open edX platform on AWS
 ** Launch instance on AWS ( Provision of Open edX setup)
@@ -338,6 +340,7 @@
      - Created AMI out of this instance.
        AMI name: Open edX configured with dogwood
        AMI id: ami-ce0f79ae
+
 * Work around the configuration files of Open edX setup.
 ** How to delete Open edX Studio user from database
    To delete edX Studio user from database we need to do following in
@@ -365,7 +368,6 @@
      #+BEGIN_EXAMPLE
      delete from auth_user where id=5;
      #+END_EXAMPLE
-
 
 ** TODO Configure edX platform so that it gives us proper verification link
    - Edit the file
@@ -404,6 +406,7 @@
      edxapp_worker:lms_high_4: started
 
      #+END_EXAMPLE
+
 
 * Planning
 ** Phases
