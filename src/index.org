@@ -497,7 +497,10 @@
    |---------------------------+------------------+------------------+------------------|
 
 
-
+* References for Open edX plaform 
+  - https://github.com/edx/configuration/wiki
+  - http://edx-developer-guide.readthedocs.org/en/latest/public_sandboxes.html
+  - https://openedx.atlassian.net/wiki/display/OPEN/Debugging+Issues+with+LMS+and+Studio
 * COMMENT Demo
   - analytics
   - central login
