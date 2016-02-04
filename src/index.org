@@ -29,38 +29,38 @@
 
   The first six labs are picked from the labs 
 
-  |------+--------------------------+------+------------------------+-----------|
-  | S.No | Lab Name                 | Lab  | Discipline             | Institute |
-  |      |                          | Url  |                        |           |
-  |------+--------------------------+------+------------------------+-----------|
-  |   1. | Computer Programming     | [[http://cse02-iiith.vlabs.ac.in/][Link]] | Computer Science       |           |
-  |      | Lab                      |      |                        |           |
-  |------+--------------------------+------+------------------------+-----------|
-  |   2. | Structural Analysis      | [[%20http://eerc04-iiith.virtual-labs.ac.in/index.php][Link]] | Civil engineering      |           |
-  |------+--------------------------+------+------------------------+-----------|
-  |   3. | Population Ecology II    | [[http://pevii-au.virtual-labs.ac.in/][Link]] | Biotechnology &        |           |
-  |      |                          |      | Biomedical Engineering |           |
-  |------+--------------------------+------+------------------------+-----------|
-  |   4. | Mine Automation          | [[http://iitkgp.vlab.co.in/?sub=40&brch=137][Link]] | Mechanical Engineering |           |
-  |      | and Virtual Reality      |      |                        |           |
-  |------+--------------------------+------+------------------------+-----------|
-  |   5. | Chemical Engineering     | [[http://ce-iitb.vlabs.ac.in/][Link]] | Chemical Engineering   |           |
-  |------+--------------------------+------+------------------------+-----------|
-  |   6. | Virtual Chemistry Lab    | [[http://vc-dei.vlabs.ac.in/][Link]] | Chemical Sciences      |           |
-  |------+--------------------------+------+------------------------+-----------|
-  |   7. | Population ecology       | [[http://pevii-au.virtual-labs.ac.in/][Link]] | Biotechnology &        |           |
-  |      | Virtual Lab II           |      | Biomedical Engineering |           |
-  |------+--------------------------+------+------------------------+-----------|
-  |   8. | Industrial Automation    | [[http://ial-coep.vlabs.ac.in/Introduction.html][Link]] | Electrical Engineering |           |
-  |      | Laboratory               |      |                        |           |
-  |------+--------------------------+------+------------------------+-----------|
-  |   9. | Process Control,         | [[http://ce-iitb.vlabs.ac.in/Introduction.html?domain=Chemical%20Engineering][Link]] | Chemical engineering   |           |
-  |      | Reaction Engineering and |      |                        |           |
-  |      | Unit Operations Lab      |      |                        |           |
-  |------+--------------------------+------+------------------------+-----------|
-  |  10. | Virtual Smart Structures | [[http://vssd-iitd.vlabs.ac.in/][Link]] | Civil Engineering      |           |
-  |      | and Dynamics Laboratory  |      |                        |           |
-  |------+--------------------------+------+------------------------+-----------|
+  |------+--------------------------+------+------------------------+-------------+-----------|
+  | S.No | Lab Name                 | Lab  | Discipline             | edX Sources | Institute |
+  |      |                          | Url  |                        |             |           |
+  |------+--------------------------+------+------------------------+-------------+-----------|
+  |   1. | Computer Programming     | [[http://cse02-iiith.vlabs.ac.in/][Link]] | Computer Science       | [[https://github.com/vlead/Open-edX-Computer-Programming][Link]]        |           |
+  |      | Lab                      |      |                        |             |           |
+  |------+--------------------------+------+------------------------+-------------+-----------|
+  |   2. | Structural Analysis      | [[%20http://eerc04-iiith.virtual-labs.ac.in/index.php][Link]] | Civil engineering      | [[https://github.com/vlead/Open-edX-Structural-Analysis][Link]]        |           |
+  |------+--------------------------+------+------------------------+-------------+-----------|
+  |   3. | Population Ecology II    | [[http://pevii-au.virtual-labs.ac.in/][Link]] | Biotechnology &        |             |           |
+  |      |                          |      | Biomedical Engineering |             |           |
+  |------+--------------------------+------+------------------------+-------------+-----------|
+  |   4. | Mine Automation          | [[http://iitkgp.vlab.co.in/?sub=40&brch=137][Link]] | Mechanical Engineering |             |           |
+  |      | and Virtual Reality      |      |                        |             |           |
+  |------+--------------------------+------+------------------------+-------------+-----------|
+  |   5. | Chemical Engineering     | [[http://ce-iitb.vlabs.ac.in/][Link]] | Chemical Engineering   |             |           |
+  |------+--------------------------+------+------------------------+-------------+-----------|
+  |   6. | Virtual Chemistry Lab    | [[http://vc-dei.vlabs.ac.in/][Link]] | Chemical Sciences      |             |           |
+  |------+--------------------------+------+------------------------+-------------+-----------|
+  |   7. | Population ecology       | [[http://pevii-au.virtual-labs.ac.in/][Link]] | Biotechnology &        |             |           |
+  |      | Virtual Lab II           |      | Biomedical Engineering |             |           |
+  |------+--------------------------+------+------------------------+-------------+-----------|
+  |   8. | Industrial Automation    | [[http://ial-coep.vlabs.ac.in/Introduction.html][Link]] | Electrical Engineering |             |           |
+  |      | Laboratory               |      |                        |             |           |
+  |------+--------------------------+------+------------------------+-------------+-----------|
+  |   9. | Process Control,         | [[http://ce-iitb.vlabs.ac.in/Introduction.html?domain=Chemical%20Engineering][Link]] | Chemical engineering   |             |           |
+  |      | Reaction Engineering and |      |                        |             |           |
+  |      | Unit Operations Lab      |      |                        |             |           |
+  |------+--------------------------+------+------------------------+-------------+-----------|
+  |  10. | Virtual Smart Structures | [[http://vssd-iitd.vlabs.ac.in/][Link]] | Civil Engineering      |             |           |
+  |      | and Dynamics Laboratory  |      |                        |             |           |
+  |------+--------------------------+------+------------------------+-------------+-----------|
 
 
 * COMMENT Setting up Open edX platform on Vagrant
