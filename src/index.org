@@ -341,6 +341,7 @@
        AMI name: Open edX configured with dogwood
        AMI id: ami-ce0f79ae
 
+
 * Work around the configuration files of Open edX setup.
 ** How to delete Open edX Studio user from database
    To delete edX Studio user from database we need to do following in
@@ -449,10 +450,12 @@
    | process                   |                  |                  |                  |
    |---------------------------+------------------+------------------+------------------|
 
+
 * References for Open edX plaform 
   - https://github.com/edx/configuration/wiki
   - http://edx-developer-guide.readthedocs.org/en/latest/public_sandboxes.html
   - https://openedx.atlassian.net/wiki/display/OPEN/Debugging+Issues+with+LMS+and+Studio
+
 
 * COMMENT Demo
   - analytics
