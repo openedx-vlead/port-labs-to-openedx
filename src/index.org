@@ -27,41 +27,41 @@
 
 * Labs chosen
 
-  The first six labs are picked from the labs 
+  The first six labs are picked from the labs there were listed to be
+  demonstrated at T4E conference at NIT, Warangal.
 
-  |------+--------------------------+------------------------+------+-----------|
-  | S.No | Lab Name                 | Discipline             | Lab  | Institute |
-  |      |                          |                        | Url  |           |
-  |------+--------------------------+------------------------+------+-----------|
-  |   1. | Computer Programming     | Computer Science       | [[http://cse02-iiith.vlabs.ac.in/][Link]] |           |
-  |      | Lab                      |                        |      |           |
-  |------+--------------------------+------------------------+------+-----------|
-  |   2. | Structural Analysis      | Civil engineering      | [[%20http://eerc04-iiith.virtual-labs.ac.in/index.php][Link]] |           |
-  |------+--------------------------+------------------------+------+-----------|
-  |   3. | Population Ecology II    | Biotechnology &        | [[http://pevii-au.virtual-labs.ac.in/][Link]] |           |
-  |      |                          | Biomedical Engineering |      |           |
-  |------+--------------------------+------------------------+------+-----------|
-  |   4. | Mine Automation          | Mechanical Engineering | [[http://iitkgp.vlab.co.in/?sub=40&brch=137][Link]] |           |
-  |      | and Virtual Reality      |                        |      |           |
-  |------+--------------------------+------------------------+------+-----------|
-  |   5. | Chemical Engineering     | Chemical Engineering   | [[http://ce-iitb.vlabs.ac.in/][Link]] |           |
-  |------+--------------------------+------------------------+------+-----------|
-  |   6. | Virtual Chemistry Lab    | Chemical Sciences      | [[http://vc-dei.vlabs.ac.in/][Link]] |           |
-  |------+--------------------------+------------------------+------+-----------|
-  |   7. | Industrial Electric      | Electrical             | [[http://ied-nitk.vlabs.ac.in/][Link]] |           |
-  |      | Drives and Application   | Engineering            |      |           |
-  |      | of PLC                   |                        |      |           |
-  |------+--------------------------+------------------------+------+-----------|
-  |   8. | Industrial Automation    | Electrical Engineering | [[http://ial-coep.vlabs.ac.in/Introduction.html][Link]] |           |
-  |      | Laboratory               |                        |      |           |
-  |------+--------------------------+------------------------+------+-----------|
-  |   9. | Hybrid Electronics       | Electronics &          | [[http://he-coep.vlabs.ac.in/][Link]] |           |
-  |      |                          | Communications         |      |           |
-  |------+--------------------------+------------------------+------+-----------|
-  |  10. | Virtual Smart Structures | Civil Engineering      | [[http://vssd-iitd.vlabs.ac.in/][Link]] |           |
-  |      | and Dynamics Laboratory  |                        |      |           |
-  |------+--------------------------+------------------------+------+-----------|
-
+  |------+--------------------------+------------------------+------+----------+-----------|
+  | S.No | Lab Name                 | Discipline             | Lab  | Oped edX | Institute |
+  |      |                          |                        | Url  | Sources  |           |
+  |------+--------------------------+------------------------+------+----------+-----------|
+  |   1. | Computer Programming     | Computer Science       | [[http://cse02-iiith.vlabs.ac.in/][Link]] | [[https://github.com/vlead/Open-edX-Computer-Programming][Link]]     |           |
+  |      | Lab                      |                        |      |          |           |
+  |------+--------------------------+------------------------+------+----------+-----------|
+  |   2. | Structural Analysis      | Civil engineering      | [[%20http://eerc04-iiith.virtual-labs.ac.in/index.php][Link]] | [[https://github.com/vlead/Open-edX-Structural-Analysis][Link]]     |           |
+  |------+--------------------------+------------------------+------+----------+-----------|
+  |   3. | Population Ecology II    | Biotechnology &        | [[http://pevii-au.virtual-labs.ac.in/][Link]] |          |           |
+  |      |                          | Biomedical Engineering |      |          |           |
+  |------+--------------------------+------------------------+------+----------+-----------|
+  |   4. | Mine Automation          | Mechanical Engineering | [[http://iitkgp.vlab.co.in/?sub=40&brch=137][Link]] |          |           |
+  |      | and Virtual Reality      |                        |      |          |           |
+  |------+--------------------------+------------------------+------+----------+-----------|
+  |   5. | Chemical Engineering     | Chemical Engineering   | [[http://ce-iitb.vlabs.ac.in/][Link]] |          |           |
+  |------+--------------------------+------------------------+------+----------+-----------|
+  |   6. | Virtual Chemistry Lab    | Chemical Sciences      | [[http://vc-dei.vlabs.ac.in/][Link]] |          |           |
+  |------+--------------------------+------------------------+------+----------+-----------|
+  |   7. | Industrial Electric      | Electrical             | [[http://ied-nitk.vlabs.ac.in/][Link]] |          |           |
+  |      | Drives and Application   | Engineering            |      |          |           |
+  |      | of PLC                   |                        |      |          |           |
+  |------+--------------------------+------------------------+------+----------+-----------|
+  |   8. | Industrial Automation    | Electrical Engineering | [[http://ial-coep.vlabs.ac.in/Introduction.html][Link]] |          |           |
+  |      | Laboratory               |                        |      |          |           |
+  |------+--------------------------+------------------------+------+----------+-----------|
+  |   9. | Hybrid Electronics       | Electronics &          | [[http://he-coep.vlabs.ac.in/][Link]] |          |           |
+  |      |                          | Communications         |      |          |           |
+  |------+--------------------------+------------------------+------+----------+-----------|
+  |  10. | Virtual Smart Structures | Civil Engineering      | [[http://vssd-iitd.vlabs.ac.in/][Link]] |          |           |
+  |      | and Dynamics Laboratory  |                        |      |          |           |
+  |------+--------------------------+------------------------+------+----------+-----------|
 
 * COMMENT Setting up Open edX platform on Vagrant
 *** COMMENT Setup the fullstack
@@ -359,7 +359,7 @@
    #+END_EXAMPLE
    - Delete from auth_userprofile  table
    #+BEGIN_EXAMPLE
-   delete from auth_userprofile where user_id=
+   delete from auth_userprofile where id=
    #+END_EXAMPLE
    - Delete from auth_registration table
      #+BEGIN_EXAMPLE
@@ -370,27 +370,35 @@
      delete from auth_user where id=5;
      #+END_EXAMPLE
 
-** TODO Configure edX platform so that it gives us proper verification link
+** DONE Configure edX platform so that it gives us proper verification link
    - Edit the file
-     =/edx/app/edx_ansible/edx_ansible/playbooks/roles/edxapp/defaults/main.yml=
-     and Modify the =EDXAPP_SITE_NAME=
-     #+BEGIN_EXAMPLE
-     EDXAPP_SITE_NAME = 'courses.vlabs.ac.in or <public IP>'
-     #+END_EXAMPLE
-   - Restart ngnix
-     #+BEGIN_EXAMPLE
-     /etc/init.d/ngnix restart
-     #+END_EXAMPLE
-   - Run the following commands to restart the edx services not just
-     ngnix
-     #+BEGIN_EXAMPLE
-     /edx/bin/supervisorctl -c /edx/etc/supervisord.conf restart edxapp: 
+     =/edx/edxapp/edxapp/edx-platform/cms/envs/common.py= and add IP
+     of url to =EMAIL_HOST= variable.
+     + Restart edx resources
+       #+BEGIN_EXAMPLE
+       /edx/bin/supervisorctl restart edxapp:       
+       /edx/bin/supervisorctl restart edxapp_worker:
+       #+END_EXAMPLE
+     + It did not work
+     + So reverted back to original file. That is, in
+       =/edx/edxapp/edxapp/edx-platform/cms/envs/common.py=, removed
+       IP and updated with localhost for =EMAIL_HOST= variable.
+   - Edit the file 
+     #+BEGIN_SRC 
+     vim /edx/app/edxapp/lms.env.json
+     vim /edx/app/edxapp/cms.env.json
+     #+END_SRC
+     and add the domain name to =SITE_NAME= variable in both the
+     files. 
+   - Restart the edx services 
+     #+BEGIN_SRC 
+     /edx/bin/supervisorctl restart edxapp:       
      edxapp:cms: stopped
      edxapp:lms: stopped
      edxapp:lms: started
      edxapp:cms: started
-
-     /edx/app/edxapp/edx-platform# /edx/bin/supervisorctl -c /edx/etc/supervisord.conf restart edxapp_worker:
+     
+     /edx/bin/supervisorctl restart edxapp_worker:
      edxapp_worker:cms_low_3: stopped
      edxapp_worker:lms_high_mem_2: stopped
      edxapp_worker:lms_default_3: stopped
@@ -405,10 +413,11 @@
      edxapp_worker:lms_low_1: started
      edxapp_worker:cms_default_4: started
      edxapp_worker:lms_high_4: started
-
-     #+END_EXAMPLE
-
-
+     #+END_SRC
+   - It worked  
+   - Reference link
+     https://groups.google.com/forum/#!topic/edx-code/YDwsjuFQuXc
+     
 * Planning
 ** Phases
   |-----------+--------------------------------------------------+------------|
