@@ -23,7 +23,8 @@
      searching of labs, like the courses on edx.org
   5. Style and theme of virtual labs on Open edX platform should convey a
      uniqueness relevant to Indian context.
-
+  6. Ability to manage the platform - perform backups, restore from a backup,
+     update to a newer version of Open edX.
 
 * Labs chosen
 
@@ -39,7 +40,7 @@
   |------+--------------------------+------------------------+------+----------+-----------|
   |   2. | Structural Analysis      | Civil engineering      | [[%20http://eerc04-iiith.virtual-labs.ac.in/index.php][Link]] | [[https://github.com/vlead/Open-edX-Structural-Analysis][Link]]     |           |
   |------+--------------------------+------------------------+------+----------+-----------|
-  |   3. | Population Ecology II    | Biotechnology &        | [[http://pevii-au.virtual-labs.ac.in/][Link]] |          |           |
+  |   3. | Population Ecology II    | Biotechnology &        | [[http://pevii-au.virtual-labs.ac.in/][Link]] | [[https://github.com/vlead/Open-edX-Population-Ecology-2][Link]]     |           |
   |      |                          | Biomedical Engineering |      |          |           |
   |------+--------------------------+------------------------+------+----------+-----------|
   |   4. | Mine Automation          | Mechanical Engineering | [[http://iitkgp.vlab.co.in/?sub=40&brch=137][Link]] |          |           |
@@ -62,6 +63,7 @@
   |  10. | Virtual Smart Structures | Civil Engineering      | [[http://vssd-iitd.vlabs.ac.in/][Link]] |          |           |
   |      | and Dynamics Laboratory  |                        |      |          |           |
   |------+--------------------------+------------------------+------+----------+-----------|
+
 
 * COMMENT Setting up Open edX platform on Vagrant
 *** COMMENT Setup the fullstack
@@ -417,8 +419,6 @@
    - It worked  
    - Reference link
      https://groups.google.com/forum/#!topic/edx-code/YDwsjuFQuXc
-     
-
 * Upgrade from dogwood to cypress
   - Export named-release/cypress
     #+BEGIN_EXAMPLE
@@ -567,6 +567,8 @@ FATAL: all hosts have already failed -- aborting
   - http://edx-developer-guide.readthedocs.org/en/latest/public_sandboxes.html
   - https://openedx.atlassian.net/wiki/display/OPEN/Debugging+Issues+with+LMS+and+Studio
 
+* Open Questions
+  1. How does a database used by a lab integrated into Open edX platform?
 
 * COMMENT Demo
   - analytics
