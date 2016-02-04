@@ -64,6 +64,394 @@
 
 ** COMMENT Creating a course
 
+* Setting up Open edX platform on AWS
+** Launch instance on AWS ( Provision of Open edX setup)
+   The following VMs are created in US-West ( N. California) region.
+*** Launch instance from Community AMI
+   - Choose AMI from "Community AMI"
+     + Chosen ami-ad161ee8
+     + Configure Instance details 
+       - Network details ( Use appropriate VPC)
+       - Enable "Auto-assign Public IP""
+     + Add Storage
+       - Choose Volume type as "Magnetic"
+       - Given 40 GB 
+     + Choose appropriate "Security Group"
+     + Boot From "Magnetic disk"
+     + Launch Instance
+   - Use the Public IP of that instance to see the web console of
+     Open edX platform 
+   - edX platform runs on tcp 80 and 18010 port numbers
+     + port 80 is to see the default edx web console
+     + If we want to see the edX studio web console, use 18010 port
+       number
+       #+BEGIN_EXAMPLE
+       public_ip:18010
+       #+END_EXAMPLE
+     + Use satff@example.com as user email-id and edx as password for
+       logging into edx studio and to make changes in courses
+   - VM details ( Current running VM for Open edX platform)
+     #+BEGIN_SRC 
+     I created another VM for Open edX using instance id ami-ad161ee8 from community AMI
+     Details of VM:
+     instnace id: ami-ad161ee8
+     Instance type: t2.medium
+     OS: Ubunutu 12.04
+     Public IP: 54.67.89.24
+     RAM : 4 GB
+     Disk : 50 GB      
+     #+END_SRC
+     
+*** Launch instance from AWS marketplace
+    - Choose an Amazon Machine Image (AMI) from AWS Marketplace
+      + Chosen AMI Name : Open edX powered by Bitnami (HVM).
+      + Linux/Unix, Ubuntu 14.04.3 | 64-bit Amazon Machine Image
+        (AMI) | Updated: 1/22/16
+      + Choose an Instance Type
+        - t2.medium 
+        - vCPUs: 2
+        - Memory(RAM): 4GB 
+      + Configure Instance details 
+        - Network details ( Use appropriate VPC)
+        - Enable "Auto-assign Public IP""
+      + Add Storage
+        - Choose Volume type as "Magnetic"
+        - Given 40 GB 
+      + Choose appropriate "Security Group"
+      + Boot From "Magnetic disk"
+      + Launch Instance
+    - Use the Public IP of that instance to see the web console of
+      Open edX platform
+    - edX platform runs on tcp 80 and 18010 port numbers
+      + port 80 is to see the default edx web console
+      + If we want to see the edX studio web console, use 18010 port
+        number
+        #+BEGIN_EXAMPLE
+        public_ip:18010
+        #+END_EXAMPLE
+      + NOTE :: Still there are some issues in this VM. such as
+                configuring sendmail by giving smtp server and
+                database if it uses, etc. Still we need to look into
+                those things. For now we have running edX Platform to
+                host labs on edX platform.
+     - Decision ::  This was running fine. But we wanted to know this
+                    was configured and we were not able to log-in into
+                    web console and Studio of Open edX platform. So we
+                    stopped the VM and started working on setting up
+                    Open edX platform using manual steps.
+*** Launch Ubuntu 12.04 64 bit instance on AWS and setup Open edX Platform
+**** Using Automation scripts (Not worked) 
+     - Launch an Ubuntu 12.04 64 bit on AWS Minimum Requirements as
+       follows for setting up Open edX platform
+       + Instance id :  ami-019b6745
+       + Instance Type: t2.medium
+       + RAM : 4 GB
+       + Hard Disk : 50 GB
+     - SSH to launched instance using 
+     - Update and upgrade instance
+       #+BEGIN_EXAMPLE
+       sudo apt-get update -y  
+       sudo apt-get upgrade -y
+       #+END_EXAMPLE
+       #+BEGIN_EXAMPLE
+       ssh -i "Open edX.pem" ubuntu@ec2-54-153-2-214.us-west-1.compute.amazonaws.com
+       #+END_EXAMPLE
+     - Reboot the instance 
+       #+BEGIN_EXAMPLE
+       sudo reboot
+       #+END_EXAMPLE
+     - Automated Installation scripts
+       + Install Open edX release 
+         #+BEGIN_EXAMPLE
+	 export OPENEDX_RELEASE=named-release/cypress
+	 wget https://raw.githubusercontent.com/edx/configuration/master/util/install/ansible-bootstrap.sh -O - | sudo bash     
+	 wget https://raw.githubusercontent.com/edx/configuration/master/util/install/sandbox.sh -O - | bash     
+	 #+END_EXAMPLE
+     - NOTE :: In second script, edx_ansible role is trying to check
+               out to release of edx_ansible but it is unable to do
+               that. I have tried many times running second script but
+               no result.
+
+     After working on this for almost 5 hours,due to some problems
+     with automation scripts I decided to go and follow the
+     manual steps to setup Open edX platform.
+     
+**** Using Manual steps to install Open edX (worked) 
+     - Launched VM ubuntu 12.04 64 bit on AWS with above VM details
+     - update and upgrade vm
+     - Perform the steps bellow 
+       #+BEGIN_SRC 
+       sudo apt-get install -y build-essential software-properties-common python-software-properties curl git-core libxml2-dev libxslt1-dev libfreetype6-dev python-pip python-apt python-dev libxmlsec1-dev swig libmysqlclient-dev
+       sudo pip install --upgrade pip
+       sudo pip install --upgrade virtualenv
+       #+END_SRC
+     - On the new server, clone the configuration repo
+       #+BEGIN_SRC 
+       cd /var/tmp
+       git clone https://github.com/edx/configuration
+       #+END_SRC
+     - Allow password based SSH authentication. For that edit the
+       common role inside of
+       =configuration/playbooks/roles/common_vars/defaults/main.yml= and
+       set *COMMON_SSH_PASSWORD_AUTH to "yes"*
+     - Install the ansible requirements 
+       #+BEGIN_SRC 
+       cd /var/tmp/configuration
+       sudo pip install -r requirements.txt
+       #+END_SRC
+     - Run the edx_sandbox.yml playbook in the configuration/playbooks directory
+       #+BEGIN_SRC 
+       cd /var/tmp/configuration/playbooks && sudo ansible-playbook -c local ./edx_sandbox.yml -i "localhost,"
+       #+END_SRC
+       + NOTE :: If you are unable to run above command due to
+                 paramiko package. Install it run the above command
+                 again  
+		 #+BEGIN_EXAMPLE
+		 sudo pip install paramiko==1.10
+		 #+END_EXAMPLE
+     - *In First run*, Failed at 
+       #+BEGIN_EXAMPLE
+       TASK: [oraclejdk | create symlink expected by elasticsearch] ****************** 
+       changed: [localhost]
+
+       TASK: [oraclejdk | update alternatives java] ********************************** 
+       changed: [localhost] => (item=java)
+       changed: [localhost] => (item=javac)
+       changed: [localhost] => (item=javaws)
+       
+       TASK: [oraclejdk | add JAVA_HOME for Oracle Java] ***************************** 
+       changed: [localhost]
+       
+       TASK: [elasticsearch | Install Elasticsearch repo key] ************************ 
+       failed: [localhost] => {"cmd": "apt-key adv --keyserver ha.pool.sks-keyservers.net --recv 46095ACC8548582C1A2699A9D27D666CD88E42B4", "failed": true, "rc": 2}
+       stderr: gpg: requesting key D88E42B4 from hkp server ha.pool.sks-keyservers.net
+       gpg: no valid OpenPGP data found.
+       gpg: Total number processed: 0
+       
+       stdout: Executing: gpg --ignore-time-conflict --no-options --no-default-keyring --secret-keyring /tmp/tmp.JxXSLtKFor --trustdb-name /etc/apt/trustdb.gpg --keyring /etc/apt/trusted.gpg --primary-keyring /etc/apt/trusted.gpg --keyserver ha.pool.sks-keyservers.net --recv 46095ACC8548582C1A2699A9D27D666CD88E42B4
+       gpgkeys: key 46095ACC8548582C1A2699A9D27D666CD88E42B4 not found on keyserver
+       
+       msg: gpg: requesting key D88E42B4 from hkp server ha.pool.sks-keyservers.net
+       gpg: no valid OpenPGP data found.
+       gpg: Total number processed: 0
+       
+       FATAL: all hosts have already failed -- aborting
+       
+       PLAY RECAP ******************************************************************** 
+       INFO:ansible.callback_plugins.datadog_tasks_timing:edxapp | gather {{ item }} static assets with paver ---------------------------- 458.12s
+       INFO:ansible.callback_plugins.datadog_tasks_timing:rbenv | install ruby {{ edxapp_ruby_version }} --------------------------------- 171.06s
+       INFO:ansible.callback_plugins.datadog_tasks_timing:insights | run collectstatic --------------------------------------------------- 162.28s
+       INFO:ansible.callback_plugins.datadog_tasks_timing:mongo | wait for mongo server to start ----------------------------------------- 141.34s
+       INFO:ansible.callback_plugins.datadog_tasks_timing:insights | install application requirements ------------------------------------- 80.22s
+       INFO:ansible.callback_plugins.datadog_tasks_timing:insights | run r.js optimizer --------------------------------------------------- 75.49s
+       INFO:ansible.callback_plugins.datadog_tasks_timing:mongo | install mongo server and recommends ------------------------------------- 58.40s
+       INFO:ansible.callback_plugins.datadog_tasks_timing:elasticsearch | Install Elasticsearch repo key ---------------------------------- 51.44s
+       INFO:ansible.callback_plugins.datadog_tasks_timing:mysql | install mysql 56 and dependencies --------------------------------------- 50.89s
+       INFO:ansible.callback_plugins.datadog_tasks_timing:edxapp | install python requirements -------------------------------------------- 41.26s
+       INFO:ansible.callback_plugins.datadog_tasks_timing:
+       Playbook edx_sandbox finished: Wed Feb  3 13:03:54 2016, 375 total tasks.  0:31:56 elapsed. 
+       
+           to retry, use: --limit @/home/ubuntu/edx_sandbox.retry
+
+       localhost                  : ok=430  changed=307  unreachable=0    failed=1 
+       #+END_EXAMPLE
+     - *In Second run*, 
+       This time, commented all roles in ./edx_sandbox.yml before the
+       elasticsearch role except edxapp because elasticsearch using
+       some variable which is in edxapp role
+       #+BEGIN_EXAMPLE
+       TASK: [elasticsearch | Install Elasticsearch repo key] ************************ 
+       changed: [localhost]
+
+       TASK: [elasticsearch | Add Elasticsearch Repo] ******************************** 
+       changed: [localhost]
+       
+       TASK: [elasticsearch | install elasticsearch] ********************************* 
+       failed: [localhost] => {"failed": true}
+       stderr: Failed to fetch http://packages.elasticsearch.org/elasticsearch/0.90/debian/pool/main/e/elasticsearch/elasticsearch-0.90.13.deb  503  Service Unavailable [IP: 107.22.185.174 80]
+       E: Unable to fetch some archives, maybe run apt-get update or try with --fix-missing?
+       
+       stdout: Reading package lists...
+       Building dependency tree...
+       Reading state information...
+       The following NEW packages will be installed:
+       elasticsearch
+       0 upgraded, 1 newly installed, 0 to remove and 10 not upgraded.
+       Need to get 17.4 MB of archives.
+       After this operation, 20.2 MB of additional disk space will be used.
+       Err http://packages.elasticsearch.org/elasticsearch/0.90/debian/ stable/main elasticsearch all 0.90.13
+       503  Service Unavailable [IP: 107.22.185.174 80]
+       
+       msg: '/usr/bin/apt-get -y -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" --force-yes  install 'elasticsearch=0.90.13'' failed: Failed to fetch http://packages.elasticsearch.org/elasticsearch/0.90/debian/pool/main/e/elasticsearch/elasticsearch-0.90.13.deb  503  Service Unavailable [IP: 107.22.185.174 80]
+       E: Unable to fetch some archives, maybe run apt-get update or try with --fix-missing?
+       
+       
+       FATAL: all hosts have already failed -- abortin
+       #+END_EXAMPLE
+     - *In third run*, re-ran the ./edx_sandbox.yml file without
+       modifying, did not throw previous error(Second run error) but
+       thrown another error at the following playbook/role/ location
+       #+BEGIN_EXAMPLE 
+       NOTIFIED: [xqueue | restart xqueue] ******************************************* 
+       changed: [localhost] => (item=xqueue)
+       changed: [localhost] => (item=xqueue_consumer)
+
+       NOTIFIED: [certs | restart certs] ********************************************* 
+       failed: [localhost] => {"failed": true}
+       msg: certs: ERROR (not running)
+       certs: ERROR (spawn error)
+       
+       
+       FATAL: all hosts have already failed -- aborting
+       
+       NOTIFIED: [certs | restart certs] ********************************************* 
+       FATAL: no hosts matched or all hosts have already failed -- aborting
+       
+       
+       FATAL: all hosts have already failed -- aborting
+       
+       NOTIFIED: [certs | restart certs] ********************************************* 
+       FATAL: no hosts matched or all hosts have already failed -- aborting
+       
+       
+       FATAL: all hosts have already failed -- aborting
+       #+END_EXAMPLE
+     - *In fourth run*, re ran the play book. This time it executed
+       successfully. But I tried opening web console of edX platform
+       it was not displaying edX home page. It was displaying only
+       nginix content. there is no application running on port 18010
+       to edX studio on the browser. To check what ports are enabled
+       in the network i used
+       #+BEGIN_SRC 
+       netstat -tunpl 
+       #+END_SRC
+     - *Fifth run*, un-commented all the roles in edx_sandbox.yml and
+       re ran the playbook. All playbooks and roles are executed
+       successfully.
+     For more information see at
+     https://github.com/edx/configuration/wiki/edX-Ubuntu-12.04-64-bit-Installation. 
+     - Created AMI out of this instance.
+       AMI name: Open edX configured with dogwood
+       AMI id: ami-ce0f79ae
+* Work around the configuration files of Open edX setup.
+** How to delete Open edX Studio user from database
+   To delete edX Studio user from database we need to do following in
+   mysql database called "edxapp"
+   #+BEGIN_SRC 
+   database name: edxapp
+   username: edxapp001 
+   password: password
+   #+END_SRC
+   We can find these database details in
+   =/edx/app/edxapp/cms.auth.json=
+   - Delete from user_api_userpreference table
+   #+BEGIN_EXAMPLE
+   mysql> delete  from user_api_userpreference where user_id=;   
+   #+END_EXAMPLE
+   - Delete from auth_userprofile  table
+   #+BEGIN_EXAMPLE
+   delete from auth_userprofile where user_id=
+   #+END_EXAMPLE
+   - Delete from auth_registration table
+     #+BEGIN_EXAMPLE
+     mysql> delete from auth_registration where user_id=;
+     #+END_EXAMPLE
+   - Then delete from auth_user table
+     #+BEGIN_EXAMPLE
+     delete from auth_user where id=5;
+     #+END_EXAMPLE
+
+
+** TODO Configure edX platform so that it gives us proper verification link
+   - Edit the file
+     =/edx/app/edx_ansible/edx_ansible/playbooks/roles/edxapp/defaults/main.yml=
+     and Modify the =EDXAPP_SITE_NAME=
+     #+BEGIN_EXAMPLE
+     EDXAPP_SITE_NAME = 'courses.vlabs.ac.in or <public IP>'
+     #+END_EXAMPLE
+   - Restart ngnix
+     #+BEGIN_EXAMPLE
+     /etc/init.d/ngnix restart
+     #+END_EXAMPLE
+   - Run the following commands to restart the edx services not just
+     ngnix
+     #+BEGIN_EXAMPLE
+     /edx/bin/supervisorctl -c /edx/etc/supervisord.conf restart edxapp: 
+     edxapp:cms: stopped
+     edxapp:lms: stopped
+     edxapp:lms: started
+     edxapp:cms: started
+
+     /edx/app/edxapp/edx-platform# /edx/bin/supervisorctl -c /edx/etc/supervisord.conf restart edxapp_worker:
+     edxapp_worker:cms_low_3: stopped
+     edxapp_worker:lms_high_mem_2: stopped
+     edxapp_worker:lms_default_3: stopped
+     edxapp_worker:cms_high_1: stopped
+     edxapp_worker:lms_low_1: stopped
+     edxapp_worker:cms_default_4: stopped
+     edxapp_worker:lms_high_4: stopped
+     edxapp_worker:cms_low_3: started
+     edxapp_worker:lms_high_mem_2: started
+     edxapp_worker:lms_default_3: started
+     edxapp_worker:cms_high_1: started
+     edxapp_worker:lms_low_1: started
+     edxapp_worker:cms_default_4: started
+     edxapp_worker:lms_high_4: started
+
+     #+END_EXAMPLE
+
+* Planning
+** Phases
+  |-----------+--------------------------------------------------+------------|
+  | Phases    | Description                                      | Start Date |
+  |-----------+--------------------------------------------------+------------|
+  | Phase I   | Porting of 10 labs to Open edX platform by VLEAD | 2/2/2016   |
+  |-----------+--------------------------------------------------+------------|
+  | Phase II  | Porting of labs by the IIIT integration team to  | 15/2/2016  |
+  |           | Open edX platfrom                                |            |
+  |-----------+--------------------------------------------------+------------|
+  | Phase III | Workshop                                         | 1/3/2016   |
+  |-----------+--------------------------------------------------+------------|
+
+** Phase I
+   Porting of 10 labs to Open edX platform by VLEAD.
+
+   |---------------------------+------------------+------------------+------------------|
+   | Deliverable               | Effort &         | Start Date       | End Date         |
+   |                           | Resources        |                  |                  |
+   |---------------------------+------------------+------------------+------------------|
+   | Open edX platfrom         | 2+ person days   | [2016-02-02 Tue] | [2016-02-03 Wed] |
+   | on AWS                    | Shiva & Thirumal |                  |                  |
+   |---------------------------+------------------+------------------+------------------|
+   | Identification            | 1 person day     | [2016-02-02 Tue] | [2016-02-02 Tue] |
+   | of 10 labs                | Thirumal         |                  |                  |
+   |---------------------------+------------------+------------------+------------------|
+   | Porting of 10 labs        | 1 person day/lab | [2016-02-03 Wed] | [2016-02-10 Wed] |
+   | to Open edX               | Dinesh           |                  |                  |
+   | platfrom                  | Shiva            |                  |                  |
+   |---------------------------+------------------+------------------+------------------|
+   | Configuring Analytics     | 2 person days    | [2016-02-05 Fri] | [2016-02-08 Mon] |
+   | of Open edX for           | Thirumal         |                  |                  |
+   | virtual labs usage        |                  |                  |                  |
+   |---------------------------+------------------+------------------+------------------|
+   | Automation, porting a lab | 5 person days    | [2016-02-09 Tue] | [2016-02-15 Mon] |
+   | from github               | Thirumal         |                  |                  |
+   |---------------------------+------------------+------------------+------------------|
+   | Documentation of this     |                  | [2016-02-02 Tue] | [2016-02-15 Mon] |
+   | process                   |                  |                  |                  |
+   |---------------------------+------------------+------------------+------------------|
+
+
+
+* COMMENT Demo
+  - analytics
+  - central login
+  - performance concerns
+  - security concerns
+  - hosting/deployment process
+  - authoring process,
+  - backend connection to running simulation for labs
+  - backup, restore and logging for incident response and troubleshooting
 
 * Planning
 
