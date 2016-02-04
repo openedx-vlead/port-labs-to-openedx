@@ -1,0 +1,39 @@
+#+TITLE: Setting up Analytics Server
+#+Author: VLEAD
+#+Date: [2016-01-27 Wed]
+#+PROPERTY: results output
+#+PROPERTY: exports code
+#+SETUPFILE: ../org-templates/level-0.org
+
+
+* Introduction
+
+  Analytics provide the user activity while using virtual labs on Open edX
+  platform.  This data allows an insight into the usage of virtual labs that
+  could be used for various purposes.  
+
+* Architecture of Open edX Analytics Gathering
+
+  [[http://edx.readthedocs.org/projects/edx-installing-configuring-and-running/en/latest/_images/Analytics_Pipeline.png][Architecture Diagram]]
+
+  Capturing of Analytics is three phased.  
+  1. LMS, read as Open edX platfrom from which the labs are run, captures the
+     events of a user.
+  2. Pipeline reads this data from the platform, collates and creates a store
+     in a format that could be read by an API.
+  3. edx Analytics Data API provides an HTTP interface to access the store
+     created by the Pipeline.
+
+  The platform also exposes a [[http://edx.readthedocs.org/projects/edx-platform-api/en/latest/course_structure/index.html][set of API]] to get all the courses that are being
+  run on a platform. 
+
+* Plan
+** TODO Pipeline is deployed by [2016-02-04 Thu].
+** TODO Use the Analytics Data API to access the store created 
+        by pipeline by [2016-02-08 Mon]
+
+* Progress
+  edx Analytics Data API is deployed on a container (16180) on 10.4.12.24
+  (base4) and the API tested out.  The lowest level of activity that can be
+  retrieved by this API is 'Get the View Count for a Subsection'. 
+

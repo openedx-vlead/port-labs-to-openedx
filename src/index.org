@@ -18,6 +18,11 @@
   2. A user upon re-logging to virtual labs is returned to the same state that
      the user was in before logging out of virtual labs.
   3. User action data is captured that enables building various analytics.
+  4. The home page of virtual labs on Open edX platform should facilitate
+     searching of labs, like the courses on edx.org
+  5. Style and theme of virtual labs on Open edX platform should convey a
+     uniqueness relevant to Indian context.
+
 
 * Labs chosen
 
