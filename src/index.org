@@ -23,7 +23,8 @@
      searching of labs, like the courses on edx.org
   5. Style and theme of virtual labs on Open edX platform should convey a
      uniqueness relevant to Indian context.
-
+  6. Ability to manage the platform - perform backups, restore from a backup,
+     update to a newer version of Open edX.
 
 * Labs chosen
 
@@ -62,6 +63,7 @@
   |  10. | Virtual Smart Structures | Civil Engineering      | [[http://vssd-iitd.vlabs.ac.in/][Link]] |          |           |
   |      | and Dynamics Laboratory  |                        |      |          |           |
   |------+--------------------------+------------------------+------+----------+-----------|
+
 
 * COMMENT Setting up Open edX platform on Vagrant
 *** COMMENT Setup the fullstack
@@ -418,6 +420,7 @@
    - Reference link
      https://groups.google.com/forum/#!topic/edx-code/YDwsjuFQuXc
      
+
 * Planning
 ** Phases
   |-----------+--------------------------------------------------+------------|
@@ -465,6 +468,8 @@
   - http://edx-developer-guide.readthedocs.org/en/latest/public_sandboxes.html
   - https://openedx.atlassian.net/wiki/display/OPEN/Debugging+Issues+with+LMS+and+Studio
 
+* Open Questions
+  1. How does a database used by a lab integrated into Open edX platform?
 
 * COMMENT Demo
   - analytics
