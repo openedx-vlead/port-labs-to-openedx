@@ -10,35 +10,60 @@
   This document captures the automation of Virtual Labs UI 1.0 to Open
   edX lab conversion.
 * Requirements
-  Directory generator for the Open edX Lab specification.
+  1. Map UI 1.0 format to Open edX
 
 * Design & Implementation  
 ** Directory Generator for Open edX lab spec
    We are representing the directory structure of Open edX lab with a
    list containing all the directories.
 #+BEGIN_SRC python :tangle src/index.py :eval no
-  LAB_DIRECTORY_STRUCTURE = [
-          {'about': 'overview.xml'},
-          'chapter',
-          'combinedopenended',
-          'course',
-          'discussion',
-          'drafts',
-          'html',
-          'info',
-          'peergrading',
-          'policies',
-          'problem',
-          'sequential',
-          'static',
-          'tabs',
-          'vertical',
-          'video',
-          'videoalpha',
-          'course.xml'
-  ]
+import os
 
+LAB_DIRECTORY_STRUCTURE = [
+    {'name': 'about', 'isDir': True, 'files': ['overview.html']},
+    {'name': 'chapter', 'isDir': True, 'files': []},
+    {'name': 'combinedopenended', 'isDir': True, 'files': []},
+    {'name': 'course', 'isDir': True, 'files': []},
+    {'name': 'discussion', 'isDir': True, 'files': []},
+    {'name': 'drafts', 'isDir': True, 'files': []},
+    {'name': 'html', 'isDir': True, 'files': []},
+    {'name': 'info', 'isDir': True, 'files': []},
+    {'name': 'peergrading', 'isDir': True, 'files': []},
+    {'name': 'policies', 'isDir': True, 'files': []},
+    {'name': 'problem', 'isDir': pTrue, 'files': []},
+    {'name': 'sequential', 'isDir': True, 'files': []},
+    {'name': 'static', 'isDir': True, 'files': []},
+    {'name': 'tabs', 'isDir': True, 'files': []},
+    {'name': 'vertical', 'isDir': True, 'files': []},
+    {'name': 'video', 'isDir': True, 'files': []},
+    {'name': 'videoalpha', 'isDir': True, 'files': []},
+    {'name': 'course.xml', 'isDir': False}
+]
 
+def directoryGenerator(labname, dirlist, path):
+    print "Generating..."
+    if os.path.exists(path):
+        os.chdir(path)
+    else:
+        os.makedirs(path)
+        os.chdir(path)
+
+    os.mkdir(labname)
+    os.chdir(labname)
+
+    for i in dirlist:
+        if i['isDir']:
+            os.mkdir(i['name'])
+            if i['files'] != []:
+                os.chdir(i['name'])
+                for f in i['files']:
+                    open(f, 'w').close()
+                os.chdir('..')
+        else:
+            open(i['name'], 'w').close()
+
+    os.chdir('..')
+    print "Completed Generating!"
 #+END_SRC 
 
 * Run the Test Cases
