@@ -7,14 +7,37 @@
 #+options: ^:nil
 
 * Introduction
-- This document captures the automation of Virtual Labs UI 1.0 to Open
+  This document captures the automation of Virtual Labs UI 1.0 to Open
   edX lab conversion.
 * Requirements
-- Directory generator for the Open edX Lab specification.
+  Directory generator for the Open edX Lab specification.
 
 * Design & Implementation  
 ** Directory Generator for Open edX lab spec
+   We are representing the directory structure of Open edX lab with a
+   list containing all the directories.
 #+BEGIN_SRC python :tangle src/index.py :eval no
+  LAB_DIRECTORY_STRUCTURE = [
+          {'about': 'overview.xml'},
+          'chapter',
+          'combinedopenended',
+          'course',
+          'discussion',
+          'drafts',
+          'html',
+          'info',
+          'peergrading',
+          'policies',
+          'problem',
+          'sequential',
+          'static',
+          'tabs',
+          'vertical',
+          'video',
+          'videoalpha',
+          'course.xml'
+  ]
+
 
 #+END_SRC 
 
