@@ -38,7 +38,7 @@
   |   1. | Computer Programming     | Computer Science       | [[http://cse02-iiith.vlabs.ac.in/][Link]] | [[https://github.com/vlead/Open-edX-Computer-Programming][Link]]     |           |
   |      | Lab                      |                        |      |          |           |
   |------+--------------------------+------------------------+------+----------+-----------|
-  |   2. | Structural Analysis      | Civil engineering      | [[%20http://eerc04-iiith.virtual-labs.ac.in/index.php][Link]] | [[https://github.com/vlead/Open-edX-Structural-Analysis][Link]]     |           |
+  |   2. | Structural Analysis      | Civil engineering      |      | [[https://github.com/vlead/Open-edX-Structural-Analysis][Link]]     |           |
   |------+--------------------------+------------------------+------+----------+-----------|
   |   3. | Population Ecology II    | Biotechnology &        | [[http://pevii-au.virtual-labs.ac.in/][Link]] | [[https://github.com/vlead/Open-edX-Population-Ecology-2][Link]]     |           |
   |      |                          | Biomedical Engineering |      |          |           |
