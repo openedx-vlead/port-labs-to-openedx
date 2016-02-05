@@ -1,0 +1,22 @@
+#+TITLE: Automation of Open edX
+#+AUTHOR: VLEAD
+#+DATE: [2016-02-05 Fri]
+#+PROPERTY: results output
+#+PROPERTY: exports code
+#+SETUPFILE: ../org-templates/level-0.org
+#+options: ^:nil
+
+* Introduction
+- This document captures the automation of Virtual Labs UI 1.0 to Open
+  edX lab conversion.
+* Requirements
+- Directory generator for the Open edX Lab specification.
+
+* Design & Implementation  
+** Directory Generator for Open edX lab spec
+#+BEGIN_SRC python :tangle src/index.py :eval no
+
+#+END_SRC 
+
+* Run the Test Cases
+
