@@ -696,12 +696,12 @@
    - This could not migrate database into new release of Open edX
      platform. This may be due to updating database from older schema
      to new schema.
-** TODO Take backup of cypress and restore it into newly created edX platform which has cypress release
+** Take backup of cypress and restore it into newly created edX platform which has cypress release
    - Take backup 
    - Save 
-   - Launch new VM with required configuration (Ubuntu 12.04)
-   - In Progress - Setup Open edX platform with cypress on that VM 
-  
+   - Launch new VM with required configuration details (Ubuntu 12.04)
+   - Setup Open edX platform with cypress on that VM 
+   
 
 * Planning
 ** Phases
