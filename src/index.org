@@ -1,4 +1,4 @@
-#+TITLE: Porting Virtual Labs to Open edX Platform
+1;2501;0c#+TITLE: Porting Virtual Labs to Open edX Platform
 #+Author: VLEAD
 #+Date: [2016-01-27 Wed]
 #+PROPERTY: results output
@@ -25,6 +25,7 @@
      uniqueness relevant to Indian context.
   6. Ability to manage the platform - perform backups, restore from a backup,
      update to a newer version of Open edX.
+
 
 * Labs chosen
 
@@ -71,6 +72,7 @@
     [[http://edx.readthedocs.org/projects/edx-installing-configuring-and-running/en/latest/fullstack/install_fullstack.html][Link to Open edX documentation]]
 
 ** COMMENT Creating a course
+
 
 * Setting up Open edX platform on AWS
 ** Launch instance on AWS
@@ -160,6 +162,7 @@
              out to release of edx_ansible but it is unable to do
              that. I have tried many times running second script but
              no result.
+
 
 * Setting up Open edX platform on AWS
 ** Launch instance on AWS ( Provision of Open edX setup)
@@ -431,6 +434,7 @@
        AMI name: Open edX configured with dogwood
        AMI id: ami-ce0f79ae
 
+
 * Work around the configuration files of Open edX setup.
 ** How to delete Open edX Studio user from database
    To delete edX Studio user from database we need to do following in
@@ -506,6 +510,7 @@
    - It worked  
    - Reference link
      https://groups.google.com/forum/#!topic/edx-code/YDwsjuFQuXc
+
 
 * Upgrade Open edX platform from older/past release to the newer release 
 ** Setup Open edX platform with named-release/birtch.2
@@ -662,6 +667,7 @@
      #+END_EXAMPLE
    - Run failed, Open edX platform goes down.
 
+
 * Taking backup and restore from this backup
 ** Take backup of existing database from Kifli release and restore it into cypress release
    - Took backup of existing databases which is running on klfli
@@ -690,12 +696,13 @@
    - This could not migrate database into new release of Open edX
      platform. This may be due to updating database from older schema
      to new schema.
-** Take backup of cypress and restore it into newly created edX platform which has cypress release
+** TODO Take backup of cypress and restore it into newly created edX platform which has cypress release
    - Take backup 
    - Save 
    - Launch new VM with required configuration (Ubuntu 12.04)
-   - Setup Open edX platform with cypress on that VM
+   - In Progress - Setup Open edX platform with cypress on that VM 
   
+
 * Planning
 ** Phases
   |-----------+--------------------------------------------------+------------|
@@ -742,13 +749,16 @@
 ** Backup and Restore 
    [[Taking backup and restore from this backup]]
    
+
 * References for Open edX platform 
   - https://github.com/edx/configuration/wiki
   - http://edx-developer-guide.readthedocs.org/en/latest/public_sandboxes.html
   - https://openedx.atlassian.net/wiki/display/OPEN/Debugging+Issues+with+LMS+and+Studio
 
+
 * Open Questions
   1. How does a database used by a lab integrated into Open edX platform?
+
 
 * COMMENT Demo
   - analytics
