@@ -662,6 +662,40 @@
      #+END_EXAMPLE
    - Run failed, Open edX platform goes down.
 
+* Taking backup and restore from this backup
+** Take backup of existing database from Kifli release and restore it into cypress release
+   - Took backup of existing databases which is running on klfli
+     release.  For this I ran following commands
+     #+BEGIN_SRC 
+     mongodump -o ./mongo-backup
+     mysqldump -u root -p --all-databases > ./backup.sql
+     #+END_SRC
+   - Copied backed up databases to newly created Open edX platform
+     which is running on cypress.
+   - Tried to restore the mogodatabase into cypress
+     #+BEGIN_SRC 
+     mongorestore -drop ./mongo-backup     
+     #+END_SRC
+     + restored without any issue
+   - Tried to restore mysql database into cypress 
+     #+BEGIN_SRC 
+     mysql -u root -p < ./backup.sql
+     #+END_SRC
+     + It thrown error with the bellow lines
+       #+BEGIN_EXAMPLE
+       sudo mysql -uedxapp001 -p < ./backup.sql
+       Enter password: 
+       ERROR 1215 (HY000) at line 2465: Cannot add foreign key constraint
+       #+END_EXAMPLE
+   - This could not migrate database into new release of Open edX
+     platform. This may be due to updating database from older schema
+     to new schema.
+** Take backup of cypress and restore it into newly created edX platform which has cypress release
+   - Take backup 
+   - Save 
+   - Launch new VM with required configuration (Ubuntu 12.04)
+   - Setup Open edX platform with cypress on that VM
+  
 * Planning
 ** Phases
   |-----------+--------------------------------------------------+------------|
@@ -705,6 +739,9 @@
 
 ** Migrate Open edX platform from older releases/versions to the newer releases
    [[Upgrade Open edX platform from older/past release to the newer release]]
+** Backup and Restore 
+   [[Taking backup and restore from this backup]]
+   
 * References for Open edX platform 
   - https://github.com/edx/configuration/wiki
   - http://edx-developer-guide.readthedocs.org/en/latest/public_sandboxes.html
