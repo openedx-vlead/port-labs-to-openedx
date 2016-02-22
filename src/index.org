@@ -1,4 +1,4 @@
-
+g
 #+TITLE: Porting Virtual Labs to Open edX Platform
 #+Author: VLEAD
 #+Date: [2016-01-27 Wed]
@@ -213,141 +213,45 @@
        cd /var/tmp/configuration
        sudo pip install -r requirements.txt
        #+END_SRC
+     - NOTE :: By default, next command (which would run play books to
+               setup platform)uses edx-platform master branch. Latest
+               release is dogwood(That is in master branch).
+	     
+               So, set environment variable for OPENEDX_RELEASE
+               variable for installing required Open edX platform
+               release.
+              
+               For example, 
+               #+BEGIN_EXAMPLE
+	       export $OPENEDX_RELEASE=named-release/birtch.2
+	       or 
+	       export $OPENEDX_RELEASE=named-release/cypress
+	       #+END_EXAMPLE
+     - NOTE :: You may be getting the problem with paramiko
+               package. Install it and run the below command.
+		 #+BEGIN_EXAMPLE
+		 sudo pip install paramiko==1.10
+		 #+END_EXAMPLE
+       
      - Run the edx_sandbox.yml playbook in the configuration/playbooks directory
        #+BEGIN_SRC 
        cd /var/tmp/configuration/playbooks && sudo ansible-playbook -c local ./edx_sandbox.yml -i "localhost,"
        #+END_SRC
-       + NOTE :: If you are unable to run above command due to
-                 paramiko package. Install it run the above command
-                 again  
-		 #+BEGIN_EXAMPLE
-		 sudo pip install paramiko==1.10
-		 #+END_EXAMPLE
-     - *In First run*, Failed at 
-       #+BEGIN_EXAMPLE
-       TASK: [oraclejdk | create symlink expected by elasticsearch] ****************** 
-       changed: [localhost]
+     - EdX platform runs on tcp 80 and 18010 port numbers
+       + Port 80 is to see the default edx web console
+       + If we want to see the edX studio web console, use 18010 port
+         number
+         #+BEGIN_EXAMPLE
+         public_ip:18010
+         #+END_EXAMPLE
 
-       TASK: [oraclejdk | update alternatives java] ********************************** 
-       changed: [localhost] => (item=java)
-       changed: [localhost] => (item=javac)
-       changed: [localhost] => (item=javaws)
-       
-       TASK: [oraclejdk | add JAVA_HOME for Oracle Java] ***************************** 
-       changed: [localhost]
-       
-       TASK: [elasticsearch | Install Elasticsearch repo key] ************************ 
-       failed: [localhost] => {"cmd": "apt-key adv --keyserver ha.pool.sks-keyservers.net --recv 46095ACC8548582C1A2699A9D27D666CD88E42B4", "failed": true, "rc": 2}
-       stderr: gpg: requesting key D88E42B4 from hkp server ha.pool.sks-keyservers.net
-       gpg: no valid OpenPGP data found.
-       gpg: Total number processed: 0
-       
-       stdout: Executing: gpg --ignore-time-conflict --no-options --no-default-keyring --secret-keyring /tmp/tmp.JxXSLtKFor --trustdb-name /etc/apt/trustdb.gpg --keyring /etc/apt/trusted.gpg --primary-keyring /etc/apt/trusted.gpg --keyserver ha.pool.sks-keyservers.net --recv 46095ACC8548582C1A2699A9D27D666CD88E42B4
-       gpgkeys: key 46095ACC8548582C1A2699A9D27D666CD88E42B4 not found on keyserver
-       
-       msg: gpg: requesting key D88E42B4 from hkp server ha.pool.sks-keyservers.net
-       gpg: no valid OpenPGP data found.
-       gpg: Total number processed: 0
-       
-       FATAL: all hosts have already failed -- aborting
-       
-       PLAY RECAP ******************************************************************** 
-       INFO:ansible.callback_plugins.datadog_tasks_timing:edxapp | gather {{ item }} static assets with paver ---------------------------- 458.12s
-       INFO:ansible.callback_plugins.datadog_tasks_timing:rbenv | install ruby {{ edxapp_ruby_version }} --------------------------------- 171.06s
-       INFO:ansible.callback_plugins.datadog_tasks_timing:insights | run collectstatic --------------------------------------------------- 162.28s
-       INFO:ansible.callback_plugins.datadog_tasks_timing:mongo | wait for mongo server to start ----------------------------------------- 141.34s
-       INFO:ansible.callback_plugins.datadog_tasks_timing:insights | install application requirements ------------------------------------- 80.22s
-       INFO:ansible.callback_plugins.datadog_tasks_timing:insights | run r.js optimizer --------------------------------------------------- 75.49s
-       INFO:ansible.callback_plugins.datadog_tasks_timing:mongo | install mongo server and recommends ------------------------------------- 58.40s
-       INFO:ansible.callback_plugins.datadog_tasks_timing:elasticsearch | Install Elasticsearch repo key ---------------------------------- 51.44s
-       INFO:ansible.callback_plugins.datadog_tasks_timing:mysql | install mysql 56 and dependencies --------------------------------------- 50.89s
-       INFO:ansible.callback_plugins.datadog_tasks_timing:edxapp | install python requirements -------------------------------------------- 41.26s
-       INFO:ansible.callback_plugins.datadog_tasks_timing:
-       Playbook edx_sandbox finished: Wed Feb  3 13:03:54 2016, 375 total tasks.  0:31:56 elapsed. 
-       
-           to retry, use: --limit @/home/ubuntu/edx_sandbox.retry
-
-       localhost                  : ok=430  changed=307  unreachable=0    failed=1 
-       #+END_EXAMPLE
-     - *In Second run*, 
-       This time, commented all roles in ./edx_sandbox.yml before the
-       elasticsearch role except edxapp because elasticsearch using
-       some variable which is in edxapp role
-       #+BEGIN_EXAMPLE
-       TASK: [elasticsearch | Install Elasticsearch repo key] ************************ 
-       changed: [localhost]
-
-       TASK: [elasticsearch | Add Elasticsearch Repo] ******************************** 
-       changed: [localhost]
-       
-       TASK: [elasticsearch | install elasticsearch] ********************************* 
-       failed: [localhost] => {"failed": true}
-       stderr: Failed to fetch http://packages.elasticsearch.org/elasticsearch/0.90/debian/pool/main/e/elasticsearch/elasticsearch-0.90.13.deb  503  Service Unavailable [IP: 107.22.185.174 80]
-       E: Unable to fetch some archives, maybe run apt-get update or try with --fix-missing?
-       
-       stdout: Reading package lists...
-       Building dependency tree...
-       Reading state information...
-       The following NEW packages will be installed:
-       elasticsearch
-       0 upgraded, 1 newly installed, 0 to remove and 10 not upgraded.
-       Need to get 17.4 MB of archives.
-       After this operation, 20.2 MB of additional disk space will be used.
-       Err http://packages.elasticsearch.org/elasticsearch/0.90/debian/ stable/main elasticsearch all 0.90.13
-       503  Service Unavailable [IP: 107.22.185.174 80]
-       
-       msg: '/usr/bin/apt-get -y -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" --force-yes  install 'elasticsearch=0.90.13'' failed: Failed to fetch http://packages.elasticsearch.org/elasticsearch/0.90/debian/pool/main/e/elasticsearch/elasticsearch-0.90.13.deb  503  Service Unavailable [IP: 107.22.185.174 80]
-       E: Unable to fetch some archives, maybe run apt-get update or try with --fix-missing?
-       
-       
-       FATAL: all hosts have already failed -- abortin
-       #+END_EXAMPLE
-     - *In third run*, re-ran the ./edx_sandbox.yml file without
-       modifying, did not throw previous error(Second run error) but
-       thrown another error at the following playbook/role/ location
-       #+BEGIN_EXAMPLE 
-       NOTIFIED: [xqueue | restart xqueue] ******************************************* 
-       changed: [localhost] => (item=xqueue)
-       changed: [localhost] => (item=xqueue_consumer)
-
-       NOTIFIED: [certs | restart certs] ********************************************* 
-       failed: [localhost] => {"failed": true}
-       msg: certs: ERROR (not running)
-       certs: ERROR (spawn error)
-       
-       
-       FATAL: all hosts have already failed -- aborting
-       
-       NOTIFIED: [certs | restart certs] ********************************************* 
-       FATAL: no hosts matched or all hosts have already failed -- aborting
-       
-       
-       FATAL: all hosts have already failed -- aborting
-       
-       NOTIFIED: [certs | restart certs] ********************************************* 
-       FATAL: no hosts matched or all hosts have already failed -- aborting
-       
-       
-       FATAL: all hosts have already failed -- aborting
-       #+END_EXAMPLE
-     - *In fourth run*, re ran the play book. This time it executed
-       successfully. But I tried opening web console of edX platform
-       it was not displaying edX home page. It was displaying only
-       nginix content. there is no application running on port 18010
-       to edX studio on the browser. To check what ports are enabled
-       in the network i used
-       #+BEGIN_SRC 
-       netstat -tunpl 
-       #+END_SRC
-     - *Fifth run*, un-commented all the roles in edx_sandbox.yml and
-       re ran the playbook. All playbooks and roles are executed
-       successfully.
-     For more information see at
-     https://github.com/edx/configuration/wiki/edX-Ubuntu-12.04-64-bit-Installation. 
+     - Resource
+       https://github.com/edx/configuration/wiki/edX-Ubuntu-12.04-64-bit-Installation. 
      - Created AMI out of this instance.
        AMI name: Open edX configured with dogwood
        AMI id: ami-ce0f79ae
 
+       
 * Take database backup and restore it from this backup
   This Section describes "how to take database backup? and how to restore
   it from this backup?"
@@ -555,6 +459,170 @@
      #+END_EXAMPLE
    - Run failed, Open edX platform goes down.
 
+     
+* Configure Open edX analytics for the courses 
+** Setting up edx-analytics-pipeline
+   1. Create a saperate VM with at least 2GB of RAM and 30GB of HDD
+      for setting up edX analytics
+   2. Update and upgrade the VM
+      #+BEGIN_EXAMPLE
+      sudo apt-get update
+      sudo apt-get upgrade
+      #+END_EXAMPLE
+   3. Create a separate virtual environment for the edx analytics setup.
+      #+BEGIN_EXAMPLE
+      # create an "ansible" virtualenv and activate it
+      virtualenv ansible
+      . ansible/bin/activate
+      #+END_EXAMPLE
+   4. Do the following steps
+      #+BEGIN_EXAMPLE
+      git clone https://github.com/edx/configuration.git
+
+      cd configuration/
+    
+      pip install -r requirements.txt
+    
+      cd playbooks/edx-east/
+    
+      sudo ansible-playbook -i localhost, -c local analytics_single.yml --extra-vars "INSIGHTS_LMS_BASE=mysite.org"
+      # (If your site uses https, change the scheme and set the oauth flag to true. Enforce_secure means "insist on https".)
+    
+    
+      # wait for a while :)
+      #+END_EXAMPLE
+   5. Run the following commands to see hadoop job. This job has
+      built-in "compute pi"
+      #+BEGIN_EXAMPLE
+      sudo su - hadoop
+  
+      cd /edx/app/hadoop
+ 
+      hadoop jar hadoop-2.3.0/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.3.0.jar pi 2 100
+      # it should compute something -- I got pi = 3.12. Close enough :)
+      #+END_EXAMPLE
+   6. Also make sure you can run hive
+      #+BEGIN_EXAMPLE
+      /edx/app/hadoop/hive/bin/hive
+      # it should work
+      ^D to get back to your regular user
+      #+END_EXAMPLE
+   7. Get some test logs into HDFS
+      #+BEGIN_EXAMPLE
+      # scp tracking.log onto the machine from the LMS. Then...
+      sudo mkdir /edx/var/log/tracking
+      sudo cp tracking.log /edx/var/log/tracking
+      sudo chown hadoop /edx/var/log/tracking/tracking.log
+      # wait a minute -- ansible creates a cron job to load files in that dir every minute
+    
+      # Check it  
+      hdfs dfs -ls /data
+    
+      Found 1 items
+      -rw-r--r--   1 hadoop supergroup     308814 2015-10-15 14:31 /data/tracking.log
+      #+END_EXAMPLE
+   8. Setup PIPELINE 
+      #+BEGIN_SRC 
+      ssh-keygen -t rsa -f ~/.ssh/id_rsa -P ''
+      echo >> ~/.ssh/authorized_keys # Make sure there's a newline at the end
+      cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+      # check: ssh localhost "echo It worked!" -- make sure it works.
+  
+      # Make a new virtualenv -- otherwise will have conflicts
+      virtualenv pipeline
+      . pipeline/bin/activate
+  
+  
+      git clone https://github.com/edx/edx-analytics-pipeline
+      cd edx-analytics-pipeline
+  
+      make bootstrap
+    
+      #+END_SRC
+   9. Check the pipeline install by running a simple job to count
+      events per day.
+      *NOTE* : You may have to change the user name in the following
+      command according to your system user accounts. 
+
+      For example, If you want to run the command from root user (ssh
+      access should be enabled for this access) then provide *--user
+      root*
+      #+BEGIN_SRC 
+      # Ensure you're in the pipeline virtualenv 
+      remote-task --host localhost --repo https://github.com/edx/edx-analytics-pipeline --user ubuntu --override-config $HOME/edx-analytics-pipeline/config/devstack.cfg --wheel-url http://edx-wheelhouse.s3-website-us-east-1.amazonaws.com/Ubuntu/precise --remote-name analyticstack --wait TotalEventsDailyTask --interval 2015 --output-root hdfs://localhost:9000/output/ --local-scheduler
+      #+END_SRC
+   10. Update the following file so that insights will be connected to
+       LMS edxapp database.
+       #+BEGIN_SRC 
+       sudo vim /edx/etc/edx-analytics-pipeline/input.json
+       # put in the right url and credentials for your LMS database
+       #+END_SRC
+       - Test it by running the following command. The output of the
+         below command shows the mysql queries. 
+	 #+BEGIN_SRC
+	 remote-task --host localhost --user ubuntu --remote-name analyticstack --skip-setup --wait ImportEnrollmentsIntoMysql --interval 2015 --local-scheduler
+	 #+END_SRC
+   11. Create OAUTH2 client_id and secret from Django administartion
+       page of LMS machine
+       - *How to create OAUTH2 client_id and secret key:*
+	 By default, edx-platform is not providing/creating default
+         user and password for signing in. So we need to create a
+         superuser so that we can access the django admin page using
+         those credentials. 
+	
+	 Create super user by issuing following commands on the LMS
+         machine.
+	 #+BEGIN_SRC 
+	 sudo -u www-data /edx/bin/python.edxapp ./manage.py lms --settings aws create_user -s -p edx -e user@example.com
+         sudo -u www-data /edx/bin/python.edxapp ./manage.py lms --settings aws changepassword user
+         sudo -u www-data /edx/bin/python.edxapp ./manage.py lms --settings aws shell
+
+         from django.contrib.auth.models import User
+         me = User.objects.get(username="user")
+         me.is_superuser = True
+         me.is_staff = True
+         me.save()
+	 #+END_SRC
+       - Do the following steps
+	 + Find the Oauth2 table/app in the admin page
+	 + Add client 
+	 + Find the Oauth2_provider table/app
+	 + Add this client to Trusted clients
+
+         *OR*
+
+       - OPTIONAL :: If you want to run the following command on the
+                     LMS machine from command line, replace the
+                     --client-id and client_secret with the proper
+                     values.
+         #+BEGIN_SRC 
+         sudo su edxapp
+         /edx/bin/python.edxapp /edx/bin/manage.edxapp lms --setting=aws create_oauth2_client http://<insights-ip>:18110 http://<insights-ip>:18110/complete/edx-oidc/ confidential --client_name insights --client_id YOUR_OAUTH2_KEY --client_secret secret --trusted
+         #+END_SRC
+** (In Progress) Setting up edx-analtics-data-api  
+   - Create a separate virtual environment for the analytics-api and
+     activate it.
+     #+BEGIN_SRC 
+     virtualenv analytics-api
+     . analytics-api/bin/activate
+     #+END_SRC
+   - Clone the analytics-api repo
+     #+BEGIN_SRC 
+     git clone https://github.com/edx/edx-analytics-data-api
+     #+END_SRC
+   - Follow the steps given at
+     https://github.com/edx/edx-analytics-data-api
+
+
+  - Resources
+    https://openedx.atlassian.net/wiki/display/OpenOPS/edX+Analytics+Installation
+    https://github.com/edx/edx-analytics-pipeline/wiki/How-Stanford-Online-runs-the-analytics-stack
+    https://github.com/edx/edx-analytics-pipeline/wiki
+    http://edx.readthedocs.org/projects/edx-installing-configuring-and-running/en/latest/analytics/install_analytics.html
+    http://ubuntuforums.org/showthread.php?t=1836919
+    https://github.com/open-craft/edx-analytics-devstack
+
+
 * Work around the configuration files of Open edX setup.
 ** How to delete Open edX Studio user from database
    To delete edX Studio user from database we need to do following in
@@ -631,6 +699,9 @@
    - Reference link
      https://groups.google.com/forum/#!topic/edx-code/YDwsjuFQuXc
 
+
+
+
 * Planning
 ** Phases
   |-----------+--------------------------------------------------+------------|
@@ -677,6 +748,8 @@
 ** Migrate Open edX platform from older releases/versions to the newer releases
    [[Upgrade Open edX platform from older/past release to the newer release]]
    
+** Configuring edX Analytics  
+
 
 * References for Open edX platform 
   - https://github.com/edx/configuration/wiki
@@ -686,6 +759,7 @@
     
 * Open Questions
   1. How does a database used by a lab get integrated into Open edX platform?
+
 * COMMENT Demo
   - analytics
   - central login
