@@ -1,4 +1,3 @@
-g
 #+TITLE: Porting Virtual Labs to Open edX Platform
 #+Author: VLEAD
 #+Date: [2016-01-27 Wed]
