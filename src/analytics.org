@@ -143,273 +143,65 @@
     manual steps to setup Open edX platform.
     
 *** Using Manual steps to install Open edX (worked) 
-     - Launched VM ubuntu 12.04 64 bit on AWS with above VM details
-     - update and upgrade vm
-     - Perform the steps bellow 
-       #+BEGIN_SRC 
-       sudo apt-get install -y build-essential software-properties-common python-software-properties curl git-core libxml2-dev libxslt1-dev libfreetype6-dev python-pip python-apt python-dev libxmlsec1-dev swig libmysqlclient-dev
-       sudo pip install --upgrade pip
-       sudo pip install --upgrade virtualenv
-       #+END_SRC
-     - On the new server, clone the configuration repo
-       #+BEGIN_SRC 
-       cd /var/tmp
-       git clone https://github.com/edx/configuration
-       #+END_SRC
-     - Allow password based SSH authentication. For that edit the
-       common role inside of
-       =configuration/playbooks/roles/common_vars/defaults/main.yml= and
-       set *COMMON_SSH_PASSWORD_AUTH to "yes"*
-     - Install the ansible requirements 
-       #+BEGIN_SRC 
-       cd /var/tmp/configuration
-       sudo pip install -r requirements.txt
-       #+END_SRC
-     - NOTE :: By default, next command (which would run play books to
-	       setup platform)uses edx-platform master branch. Latest
-	       release is dogwood(That is in master branch).
-	    
-	       So, set environment variable for OPENEDX_RELEASE
-	       variable for installing required Open edX platform
-	       release.
-	     
-	       For example, 
-	       #+BEGIN_EXAMPLE
-	       export $OPENEDX_RELEASE=named-release/birtch.2
-	       or 
-	       export $OPENEDX_RELEASE=named-release/cypress
-	       #+END_EXAMPLE
-     - NOTE :: You may be getting the problem with paramiko
-	       package. Install it and run the below command.
-		 #+BEGIN_EXAMPLE
-		 sudo pip install paramiko==1.10
-		 #+END_EXAMPLE
-      
-     - Run the edx_sandbox.yml playbook in the configuration/playbooks directory
-       #+BEGIN_SRC 
-       cd /var/tmp/configuration/playbooks && sudo ansible-playbook -c local ./edx_sandbox.yml -i "localhost,"
-       #+END_SRC
-     - EdX platform runs on tcp 80 and 18010 port numbers
-       + Port 80 is to see the default edx web console
-       + If we want to see the edX studio web console, use 18010 port
-	 number
-	 #+BEGIN_EXAMPLE
-	 public_ip:18010
-	 #+END_EXAMPLE
-
-     - Resource
-       https://github.com/edx/configuration/wiki/edX-Ubuntu-12.04-64-bit-Installation. 
-     - Created AMI out of this instance.
-       AMI name: Open edX configured with dogwood
-       AMI id: ami-ce0f79ae
-
-
-* Upgrade Open edX platform from older/past release to the newer release 
-** Setup Open edX platform with named-release/birtch.2
-   - Launched an Ubuntu 12.04 64 bit (ami-019b6745)  instance on AWS
-     + RAM : 4 GB 
-     + HDD : 50 GB
-   - Update and upgrade the machine
-   - Install 
-     #+BEGIN_EXAMPLE
-     sudo apt-get install -y build-essential software-properties-common python-software-properties curl git-core libxml2-dev libxslt1-dev libfreetype6-dev python-pip python-apt python-dev libxmlsec1-dev swig libmysqlclient-dev
-     sudo pip install --upgrade pip
-     sudo pip install --upgrade virtualenv
-     #+END_EXAMPLE
-   - Perform the steps
-     #+BEGIN_EXAMPLE
-     cd /var/tmp
-     git clone https://github.com/edx/configuration
-     #+END_EXAMPLE
-   - Allow password based SSH authentication, for that do the
-     following 
-     #+BEGIN_EXAMPLE
-     cd configuration/
-     vim configuration/playbooks/roles/common_vars/defaults/main.yml
-     #+END_EXAMPLE
-     and set =COMMON_SSH_PASSWORD_AUTH= to "yes"
-   - Issue the following command to install required packages.
-     #+BEGIN_EXAMPLE
-     sudo pip install -r requirements.txt
-     #+END_EXAMPLE
-   - Export 
-     #+BEGIN_EXAMPLE
-     export OPENEDX_RELEASE="named-release/birch.2"
-     #+END_EXAMPLE
-   - Install paramiko package
-     #+BEGIN_EXAMPLE
-     sudo pip install paramiko==1.10
-     #+END_EXAMPLE
-   - Run 
-     #+BEGIN_EXAMPLE
-     cd /var/tmp/configuration/playbooks && sudo ansible-playbook -c local ./edx_sandbox.yml -i "localhost,"     
-     #+END_EXAMPLE
-   - Open edX platform has been setup with the
-     "named-release/birtch.2"
-** Upgrade from birtch.2 release to cypress release  
-   - Export 
-     #+BEGIN_EXAMPLE
-     export OPENEDX_RELEASE="named-release/cypress"
-     #+END_EXAMPLE    
-   - Run 
-     #+BEGIN_EXAMPLE
-     cd /var/tmp/configuration/playbooks && sudo ansible-playbook -c local ./edx_sandbox.yml -i "localhost,"     
-     #+END_EXAMPLE
-   - Successfully upgraded/migrated to cypress
-** (Don't do this, Site will go down)Upgrade from dogwood to cypress
-    - Export named-release/cypress
-      #+BEGIN_EXAMPLE
-      export OPENEDX_RELEASE=named-release/cypress
-      #+END_EXAMPLE
-    - Run 
+    - Launched VM ubuntu 12.04 64 bit on AWS with above VM details
+    - update and upgrade vm
+    - Perform the steps bellow 
       #+BEGIN_SRC 
-      sh /var/tmp/configuration/util/install/sandbox.sh
+      sudo apt-get install -y build-essential software-properties-common python-software-properties curl git-core libxml2-dev libxslt1-dev libfreetype6-dev python-pip python-apt python-dev libxmlsec1-dev swig libmysqlclient-dev
+      sudo pip install --upgrade pip
+      sudo pip install --upgrade virtualenv
       #+END_SRC
-    - Output of above command ( script failed running )
-      #+BEGIN_EXAMPLE
-      TASK: [edxapp | create helper scripts for managing edxapp] ******************** 
-      ok: [localhost] => (item=['edxapp-migrate', 'lms'])
-      ok: [localhost] => (item=['edxapp-migrate', 'cms'])
-      ok: [localhost] => (item=['edxapp-runserver', 'lms'])
-      ok: [localhost] => (item=['edxapp-runserver', 'cms'])
-      ok: [localhost] => (item=['edxapp-syncdb', 'lms'])
-      ok: [localhost] => (item=['edxapp-syncdb', 'cms'])
-      ok: [localhost] => (item=['edxapp-update-assets', 'lms'])
-      ok: [localhost] => (item=['edxapp-update-assets', 'cms'])
-      ok: [localhost] => (item=['edxapp-shell', 'lms'])
-      ok: [localhost] => (item=['edxapp-shell', 'cms'])
-     
-      TASK: [edxapp | migrate] ****************************************************** 
-      failed: [localhost] => (item=lms) => {"changed": true, "cmd": ["/edx/bin/edxapp-migrate-lms"], "delta": "0:00:08.240761", "end": "2016-02-04 11:46:54.277822", "item": "lms", "rc": 1, "start": "2016-02-04 11:46:46.037061", "warnings": []}
-      stderr: warning: unable to access '/root/.config/git/attributes': Permission denied
-      2016-02-04 06:46:50,317 INFO 10142 [dd.dogapi] dog_stats_api.py:66 - Initializing dog api to use statsd: localhost, 8125
-      Traceback (most recent call last):
-      File "manage.py", line 116, in <module>
-      execute_from_command_line([sys.argv[0]] + django_args)
-      File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/core/management/__init__.py", line 443, in execute_from_command_line
-      utility.execute()
-      File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/core/management/__init__.py", line 382, in execute
-      self.fetch_command(subcommand).run_from_argv(self.argv)
-      File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/core/management/base.py", line 196, in run_from_argv
-      self.execute(*args, **options.__dict__)
-      File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/core/management/base.py", line 232, in execute
-      output = self.handle(*args, **options)
-      File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/south/management/commands/migrate.py", line 111, in handle
-      ignore_ghosts = ignore_ghosts,
-      File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/south/migration/__init__.py", line 200, in migrate_app
-      applied_all = check_migration_histories(applied_all, delete_ghosts, ignore_ghosts)
-      File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/south/migration/__init__.py", line 79, in check_migration_histories
-      for h in histories:
-      File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/db/models/query.py", line 118, in _result_iter
-      self._fill_cache()
-      File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/db/models/query.py", line 892, in _fill_cache
-      self._result_cache.append(self._iter.next())
-      File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/db/models/query.py", line 291, in iterator
-      for row in compiler.results_iter():
-      File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 763, in results_iter
-      for rows in self.execute_sql(MULTI):
-      File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 818, in execute_sql
-      cursor.execute(sql, params)
-      File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/db/backends/mysql/base.py", line 114, in execute
-      return self.cursor.execute(query, args)
-      File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/MySQLdb/cursors.py", line 205, in execute
-      self.errorhandler(self, exc, value)
-      File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/MySQLdb/connections.py", line 36, in defaulterrorhandler
-      raise errorclass, errorvalue
-      django.db.utils.DatabaseError: (1146, "Table 'edxapp.south_migrationhistory' doesn't exist")
-      failed: [localhost] => (item=cms) => {"changed": true, "cmd": ["/edx/bin/edxapp-migrate-cms"], "delta": "0:00:02.559445", "end": "2016-02-04 11:46:56.914430", "item": "cms", "rc": 1, "start": "2016-02-04 11:46:54.354985", "warnings": []}
-      stderr: 2016-02-04 06:46:56,285 INFO 10178 [dd.dogapi] dog_stats_api.py:66 - Initializing dog api to use statsd: localhost, 8125
-      Traceback (most recent call last):
-      File "manage.py", line 116, in <module>
-      execute_from_command_line([sys.argv[0]] + django_args)
-      File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/core/management/__init__.py", line 443, in execute_from_command_line
-      utility.execute()
-      File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/core/management/__init__.py", line 382, in execute
-      self.fetch_command(subcommand).run_from_argv(self.argv)
-      File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/core/management/base.py", line 196, in run_from_argv
-      self.execute(*args, **options.__dict__)
-      File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/core/management/base.py", line 232, in execute
-      output = self.handle(*args, **options)
-      File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/south/management/commands/migrate.py", line 111, in handle
-      ignore_ghosts = ignore_ghosts,
-      File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/south/migration/__init__.py", line 200, in migrate_app
-      applied_all = check_migration_histories(applied_all, delete_ghosts, ignore_ghosts)
-      File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/south/migration/__init__.py", line 79, in check_migration_histories
-      for h in histories:
-      File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/db/models/query.py", line 118, in _result_iter
-      self._fill_cache()
-      File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/db/models/query.py", line 892, in _fill_cache
-      self._result_cache.append(self._iter.next())
-      File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/db/models/query.py", line 291, in iterator
-      for row in compiler.results_iter():
-      File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 763, in results_iter
-      for rows in self.execute_sql(MULTI):
-      File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 818, in execute_sql
-      cursor.execute(sql, params)
-      File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/db/backends/mysql/base.py", line 114, in execute
-      return self.cursor.execute(query, args)
-      File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/MySQLdb/cursors.py", line 205, in execute
-      self.errorhandler(self, exc, value)
-      File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/MySQLdb/connections.py", line 36, in defaulterrorhandler
-      raise errorclass, errorvalue
-      django.db.utils.DatabaseError: (1146, "Table 'edxapp.south_migrationhistory' doesn't exist")
-     
-      FATAL: all hosts have already failed -- aborting
+    - On the new server, clone the configuration repo
+      #+BEGIN_SRC 
+      cd /var/tmp
+      git clone https://github.com/edx/configuration
+      #+END_SRC
+    - Allow password based SSH authentication. For that edit the
+      common role inside of
+      =configuration/playbooks/roles/common_vars/defaults/main.yml= and
+      set *COMMON_SSH_PASSWORD_AUTH to "yes"*
+    - Install the ansible requirements 
+      #+BEGIN_SRC 
+      cd /var/tmp/configuration
+      sudo pip install -r requirements.txt
+      #+END_SRC
+    - NOTE :: By default, next command (which would run play books to
+	      setup platform)uses edx-platform master branch. Latest
+	      release is dogwood(That is in master branch).
+	    
+	      So, set environment variable for OPENEDX_RELEASE
+	      variable for installing required Open edX platform
+	      release.
+	     
+	      For example, 
+	      #+BEGIN_EXAMPLE
+	      export $OPENEDX_RELEASE=named-release/birtch.2
+	      or 
+	      export $OPENEDX_RELEASE=named-release/cypress
+	      #+END_EXAMPLE
+    - NOTE :: You may be getting the problem with paramiko
+	      package. Install it and run the below command.
+		#+BEGIN_EXAMPLE
+		sudo pip install paramiko==1.10
+		#+END_EXAMPLE
+      
+    - Run the edx_sandbox.yml playbook in the configuration/playbooks directory
+      #+BEGIN_SRC 
+      cd /var/tmp/configuration/playbooks && sudo ansible-playbook -c local ./edx_sandbox.yml -i "localhost,"
+      #+END_SRC
+    - EdX platform runs on tcp 80 and 18010 port numbers
+      + Port 80 is to see the default edx web console
+      + If we want to see the edX studio web console, use 18010 port
+	number
+	#+BEGIN_EXAMPLE
+	public_ip:18010
+	#+END_EXAMPLE
 
-      #+END_EXAMPLE
-    - Run failed, Open edX platform goes down.
-
-* Take database backup and restore it from this backup
-  This Section describes "how to take database backup? and how to restore
-  it from this backup?"
-
-  The Open edX platform is having two databases, they are:
-  1. MySql and 
-  2. Mogodb
-** Take backup and restore it 
-   - Launch new Ubuntu 12.04 64 bit VM with basic hardware
-     requirements.
-   - Setup Open edX platform with cypress on that VM 
-   - Import some labs/courses from edX Studio which is already
-     running on production into new VM .   
-   - Take backup of existing databases on newly launched VM with the
-     following commands
-     #+BEGIN_SRC 
-     sudo mongodump -o ./mongo-backup
-     sudo mysqldump -u edxapp001 -p --all-databases > ./backup.sql
-     #+END_SRC
-   - Restore the databases.
-     #+BEGIN_SRC 
-     sudo mongorestore -drop ./mongo-backup     
-     sudo mysql -u edxapp001 -p < ./backup.sql
-     #+END_SRC
-   - Successfully restored database-dumps 
-   - Reference link
-     https://github.com/edx/configuration/wiki/Preparation-For-Production-Launch
-** Deleting a course from Open edX Studio
-   - Delete a particular course using the following command 
-     #+BEGIN_SRC
-     cd /edx/app/edxapp/edx_platform/
-     sudo -u www-data /edx/bin/python.edxapp ./manage.py cms --settings=aws delete_course course-v1:Organization+CourseNumber+CourseRun commit
-     #+END_SRC
-   - For example, if we want to delete course
-     course-v1:IIITH+pevii+2016_T11(course-v1:Organization+CourseNumber+CourseRun)
-     then issue following command in command line
-     #+BEGIN_EXAMPLE
-     sudo -u www-data /edx/bin/python.edxapp ./manage.py cms --settings=aws delete_course course-v1:IIITH+pevii+2016_T11
-     #+END_EXAMPLE
-     The above command will ask you whether to delete course or not ,
-     proceed accordingly.
-   - Reference link
-     + Delete course :: https://github.com/edx/configuration/wiki/edX-Managing-the-Full-Stack
-   - Restore the databases again with the backed up databases to see
-     whether we are able to restore the courses or not .
-     #+BEGIN_SRC 
-     cd ~
-     sudo mongorestore -drop ./mongo-backup     
-     sudo mysql -u edxapp001 -p < ./backup.sql
-     #+END_SRC
-
+    - Resource
+      https://github.com/edx/configuration/wiki/edX-Ubuntu-12.04-64-bit-Installation. 
+    - Created AMI out of this instance.
+      AMI name: Open edX configured with dogwood
+      AMI id: ami-ce0f79ae
 * Configure Open edX analytics for the courses 
 ** Setting up edx-analytics-pipeline
    1. Create a saperate VM with at least 2GB of RAM and 30GB of HDD
@@ -549,6 +341,20 @@
          sudo su edxapp
          /edx/bin/python.edxapp /edx/bin/manage.edxapp lms --setting=aws create_oauth2_client http://<insights-ip>:18110 http://<insights-ip>:18110/complete/edx-oidc/ confidential --client_name insights --client_id YOUR_OAUTH2_KEY --client_secret secret --trusted
          #+END_SRC
+     12. *Page Not Found* :: 
+	 - Log in as staff@example.com
+	 - Select any course
+         - Navigate to course analytics 
+         - Redirects to LMS machine to see the analytics.
+	 - Page not found  
+     13. Resourses
+         + https://openedx.atlassian.net/wiki/display/OpenOPS/edX+Analytics+Installation
+         + https://github.com/edx/edx-analytics-pipeline/wiki/How-Stanford-Online-runs-the-analytics-stack
+         + https://github.com/edx/edx-analytics-pipeline/wiki
+         + http://edx.readthedocs.org/projects/edx-installing-configuring-and-running/en/latest/analytics/install_analytics.html
+         + http://ubuntuforums.org/showthread.php?t=1836919
+         + https://github.com/open-craft/edx-analytics-devstack
+
 ** (In Progress) Setting up edx-analtics-data-api  
     - Create a separate virtual environment for the analytics-api and
       activate it.
@@ -562,16 +368,212 @@
       #+END_SRC
     - Follow the steps given at
       https://github.com/edx/edx-analytics-data-api
+      and see the analytics_api.
+* Take database backup and restore it from this backup
+  This Section describes "how to take database backup? and how to restore
+  it from this backup?"
 
+  The Open edX platform is having two databases, they are:
+  1. MySql and 
+  2. Mogodb
+** Take backup and restore it 
+   - Launch new Ubuntu 12.04 64 bit VM with basic hardware
+     requirements.
+   - Setup Open edX platform with cypress on that VM 
+   - Import some labs/courses from edX Studio which is already
+     running on production into new VM .   
+   - Take backup of existing databases on newly launched VM with the
+     following commands
+     #+BEGIN_SRC 
+     sudo mongodump -o ./mongo-backup
+     sudo mysqldump -u root -p --all-databases > ./backup.sql
+     #+END_SRC
+   - Restore the databases.
+     #+BEGIN_SRC 
+     sudo mongorestore -drop ./mongo-backup     
+     sudo mysql -u root -p < ./backup.sql
+     #+END_SRC
+   - Successfully restored database-dumps 
+   - Reference link
+     https://github.com/edx/configuration/wiki/Preparation-For-Production-Launch
+** Deleting a course from Open edX Studio
+   - Delete a particular course using the following command 
+     #+BEGIN_SRC
+     cd /edx/app/edxapp/edx_platform/
+     sudo -u www-data /edx/bin/python.edxapp ./manage.py cms --settings=aws delete_course course-v1:Organization+CourseNumber+CourseRun commit
+     #+END_SRC
+   - For example, if we want to delete course
+     course-v1:IIITH+pevii+2016_T11(course-v1:Organization+CourseNumber+CourseRun)
+     then issue following command in command line
+     #+BEGIN_EXAMPLE
+     sudo -u www-data /edx/bin/python.edxapp ./manage.py cms --settings=aws delete_course course-v1:IIITH+pevii+2016_T11
+     #+END_EXAMPLE
+     The above command will ask you whether to delete course or not ,
+     proceed accordingly.
+   - Reference link
+     + Delete course :: https://github.com/edx/configuration/wiki/edX-Managing-the-Full-Stack
+   - Restore the databases again with the backed up databases to see
+     whether we are able to restore the courses or not .
+     #+BEGIN_SRC 
+     cd ~
+     sudo mongorestore -drop ./mongo-backup     
+     sudo mysql -u edxapp001 -p < ./backup.sql
+     #+END_SRC
 
-    - Resources
-      + https://openedx.atlassian.net/wiki/display/OpenOPS/edX+Analytics+Installation
-      + https://github.com/edx/edx-analytics-pipeline/wiki/How-Stanford-Online-runs-the-analytics-stack
-      + https://github.com/edx/edx-analytics-pipeline/wiki
-      + http://edx.readthedocs.org/projects/edx-installing-configuring-and-running/en/latest/analytics/install_analytics.html
-      + http://ubuntuforums.org/showthread.php?t=1836919
-      + https://github.com/open-craft/edx-analytics-devstack
+* Upgrade Open edX platform from older/past release to the newer release 
+** Upgrade from birtch.2 release to cypress release  
+   - Export 
+     #+BEGIN_EXAMPLE
+     export OPENEDX_RELEASE="named-release/cypress"
+     #+END_EXAMPLE    
+   - Run 
+     #+BEGIN_EXAMPLE
+     cd /var/tmp/configuration/playbooks && sudo ansible-playbook -c local ./edx_sandbox.yml -i "localhost,"     
+     #+END_EXAMPLE
+   - Successfully upgraded/migrated to cypress
+*** Setup Open edX platform with named-release/birtch.2
+    - Launched an Ubuntu 12.04 64 bit (ami-019b6745)  instance on AWS
+      + RAM : 4 GB 
+      + HDD : 50 GB
+    - Update and upgrade the machine
+    - Install 
+      #+BEGIN_EXAMPLE
+      sudo apt-get install -y build-essential software-properties-common python-software-properties curl git-core libxml2-dev libxslt1-dev libfreetype6-dev python-pip python-apt python-dev libxmlsec1-dev swig libmysqlclient-dev
+      sudo pip install --upgrade pip
+      sudo pip install --upgrade virtualenv
+      #+END_EXAMPLE
+    - Perform the steps
+      #+BEGIN_EXAMPLE
+      cd /var/tmp
+      git clone https://github.com/edx/configuration
+      #+END_EXAMPLE
+    - Allow password based SSH authentication, for that do the
+      following 
+      #+BEGIN_EXAMPLE
+      cd configuration/
+      vim configuration/playbooks/roles/common_vars/defaults/main.yml
+      #+END_EXAMPLE
+      and set =COMMON_SSH_PASSWORD_AUTH= to "yes"
+    - Issue the following command to install required packages.
+      #+BEGIN_EXAMPLE
+      sudo pip install -r requirements.txt
+      #+END_EXAMPLE
+    - Export 
+      #+BEGIN_EXAMPLE
+      export OPENEDX_RELEASE="named-release/birch.2"
+      #+END_EXAMPLE
+    - Install paramiko package
+      #+BEGIN_EXAMPLE
+      sudo pip install paramiko==1.10
+      #+END_EXAMPLE
+    - Run 
+      #+BEGIN_EXAMPLE
+      cd /var/tmp/configuration/playbooks && sudo ansible-playbook -c local ./edx_sandbox.yml -i "localhost,"     
+      #+END_EXAMPLE
+    - Open edX platform has been setup with the
+      "named-release/birtch.2"
+** (Don't do this, Site will go down)Upgrade from dogwood to cypress
+   - Export named-release/cypress
+     #+BEGIN_EXAMPLE
+     export OPENEDX_RELEASE=named-release/cypress
+     #+END_EXAMPLE
+   - Run 
+     #+BEGIN_SRC 
+     sh /var/tmp/configuration/util/install/sandbox.sh
+     #+END_SRC
+   - Output of above command ( script failed running )
+     #+BEGIN_EXAMPLE
+     TASK: [edxapp | create helper scripts for managing edxapp] ******************** 
+     ok: [localhost] => (item=['edxapp-migrate', 'lms'])
+     ok: [localhost] => (item=['edxapp-migrate', 'cms'])
+     ok: [localhost] => (item=['edxapp-runserver', 'lms'])
+     ok: [localhost] => (item=['edxapp-runserver', 'cms'])
+     ok: [localhost] => (item=['edxapp-syncdb', 'lms'])
+     ok: [localhost] => (item=['edxapp-syncdb', 'cms'])
+     ok: [localhost] => (item=['edxapp-update-assets', 'lms'])
+     ok: [localhost] => (item=['edxapp-update-assets', 'cms'])
+     ok: [localhost] => (item=['edxapp-shell', 'lms'])
+     ok: [localhost] => (item=['edxapp-shell', 'cms'])
+     
+     TASK: [edxapp | migrate] ****************************************************** 
+     failed: [localhost] => (item=lms) => {"changed": true, "cmd": ["/edx/bin/edxapp-migrate-lms"], "delta": "0:00:08.240761", "end": "2016-02-04 11:46:54.277822", "item": "lms", "rc": 1, "start": "2016-02-04 11:46:46.037061", "warnings": []}
+     stderr: warning: unable to access '/root/.config/git/attributes': Permission denied
+     2016-02-04 06:46:50,317 INFO 10142 [dd.dogapi] dog_stats_api.py:66 - Initializing dog api to use statsd: localhost, 8125
+     Traceback (most recent call last):
+     File "manage.py", line 116, in <module>
+     execute_from_command_line([sys.argv[0]] + django_args)
+     File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/core/management/__init__.py", line 443, in execute_from_command_line
+     utility.execute()
+     File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/core/management/__init__.py", line 382, in execute
+     self.fetch_command(subcommand).run_from_argv(self.argv)
+     File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/core/management/base.py", line 196, in run_from_argv
+     self.execute(*args, **options.__dict__)
+     File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/core/management/base.py", line 232, in execute
+     output = self.handle(*args, **options)
+     File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/south/management/commands/migrate.py", line 111, in handle
+     ignore_ghosts = ignore_ghosts,
+     File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/south/migration/__init__.py", line 200, in migrate_app
+     applied_all = check_migration_histories(applied_all, delete_ghosts, ignore_ghosts)
+     File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/south/migration/__init__.py", line 79, in check_migration_histories
+     for h in histories:
+     File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/db/models/query.py", line 118, in _result_iter
+     self._fill_cache()
+     File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/db/models/query.py", line 892, in _fill_cache
+     self._result_cache.append(self._iter.next())
+     File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/db/models/query.py", line 291, in iterator
+     for row in compiler.results_iter():
+     File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 763, in results_iter
+     for rows in self.execute_sql(MULTI):
+     File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 818, in execute_sql
+     cursor.execute(sql, params)
+     File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/db/backends/mysql/base.py", line 114, in execute
+     return self.cursor.execute(query, args)
+     File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/MySQLdb/cursors.py", line 205, in execute
+     self.errorhandler(self, exc, value)
+     File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/MySQLdb/connections.py", line 36, in defaulterrorhandler
+     raise errorclass, errorvalue
+     django.db.utils.DatabaseError: (1146, "Table 'edxapp.south_migrationhistory' doesn't exist")
+     failed: [localhost] => (item=cms) => {"changed": true, "cmd": ["/edx/bin/edxapp-migrate-cms"], "delta": "0:00:02.559445", "end": "2016-02-04 11:46:56.914430", "item": "cms", "rc": 1, "start": "2016-02-04 11:46:54.354985", "warnings": []}
+     stderr: 2016-02-04 06:46:56,285 INFO 10178 [dd.dogapi] dog_stats_api.py:66 - Initializing dog api to use statsd: localhost, 8125
+     Traceback (most recent call last):
+     File "manage.py", line 116, in <module>
+     execute_from_command_line([sys.argv[0]] + django_args)
+     File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/core/management/__init__.py", line 443, in execute_from_command_line
+     utility.execute()
+     File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/core/management/__init__.py", line 382, in execute
+     self.fetch_command(subcommand).run_from_argv(self.argv)
+     File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/core/management/base.py", line 196, in run_from_argv
+     self.execute(*args, **options.__dict__)
+     File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/core/management/base.py", line 232, in execute
+     output = self.handle(*args, **options)
+     File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/south/management/commands/migrate.py", line 111, in handle
+     ignore_ghosts = ignore_ghosts,
+     File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/south/migration/__init__.py", line 200, in migrate_app
+     applied_all = check_migration_histories(applied_all, delete_ghosts, ignore_ghosts)
+     File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/south/migration/__init__.py", line 79, in check_migration_histories
+     for h in histories:
+     File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/db/models/query.py", line 118, in _result_iter
+     self._fill_cache()
+     File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/db/models/query.py", line 892, in _fill_cache
+     self._result_cache.append(self._iter.next())
+     File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/db/models/query.py", line 291, in iterator
+     for row in compiler.results_iter():
+     File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 763, in results_iter
+     for rows in self.execute_sql(MULTI):
+     File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 818, in execute_sql
+     cursor.execute(sql, params)
+     File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/db/backends/mysql/base.py", line 114, in execute
+     return self.cursor.execute(query, args)
+     File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/MySQLdb/cursors.py", line 205, in execute
+     self.errorhandler(self, exc, value)
+     File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/MySQLdb/connections.py", line 36, in defaulterrorhandler
+     raise errorclass, errorvalue
+     django.db.utils.DatabaseError: (1146, "Table 'edxapp.south_migrationhistory' doesn't exist")
+     
+     FATAL: all hosts have already failed -- aborting
 
+     #+END_EXAMPLE
+   - Run failed, Open edX platform goes down.
 * Work around the configuration files of Open edX setup.
 ** How to delete Open edX Studio user from database
    To delete edX Studio user from database we need to do following in
@@ -648,7 +650,6 @@
    - Reference link
      https://groups.google.com/forum/#!topic/edx-code/YDwsjuFQuXc
 
-
 * References for Open edX platform 
   - https://github.com/edx/configuration/wiki
   - http://edx-developer-guide.readthedocs.org/en/latest/public_sandboxes.html
@@ -667,10 +668,10 @@
 
 
 * Plan
-** TODO Deployment of Pipeline
+** Deployment of Pipeline
    Due Date :: [2016-02-04 Thu]
    
-** TODO Analytics Data API
+** (In Progress) Analytics Data API
    Analytics Data API provides a mechanism to access the store created by
    Pipeline via HTTP. 
    Due Date :: [2016-02-05 Fri]
