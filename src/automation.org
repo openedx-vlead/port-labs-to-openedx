@@ -71,7 +71,8 @@ def directoryGenerator(labname, dirlist, path):
 '''            
 labspec = {
     'course': {'org': 'IIIT-H',
-               'id': 'cse01'},
+               'id': 'cse01',
+               'display_name': 'Algorithms'},
     'overview': 'Basic Computer Science lab.',
     'experiments': [{'name': 'Data Structures',
                       'subsections': [{'name': 'Introduction'}]},
@@ -145,7 +146,7 @@ def labStructureGenerator(labpath):
         os.chdir('../course')
 
     experiments_data = """<course display_name="%s">%s
-</course>""" % (course_data['id'], experiments_metadata)
+</course>""" % (course_data['display_name'], experiments_metadata)
 
     experiments = open(course_data['id']+'.xml', 'w')
     experiments.write(experiments_data)
