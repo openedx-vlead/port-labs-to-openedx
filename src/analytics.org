@@ -283,6 +283,7 @@
       #+END_SRC
    9. Check the pipeline install by running a simple job to count
       events per day.
+
       *NOTE* : You may have to change the user name in the following
       command according to your system user accounts. 
 
