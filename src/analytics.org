@@ -355,7 +355,7 @@
        + http://edx.readthedocs.org/projects/edx-installing-configuring-and-running/en/latest/analytics/install_analytics.html
        + http://ubuntuforums.org/showthread.php?t=1836919
        + https://github.com/open-craft/edx-analytics-devstack
-
+       + https://openedx.atlassian.net/wiki/pages/viewpage.action?spaceKey=AN&title=Configuring+Insights+for+Open+ID+Connect+SSO+with+LMS
 ** (In Progress) Setting up edx-analtics-data-api  
     - Create a separate virtual environment for the analytics-api and
       activate it.
