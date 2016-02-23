@@ -342,19 +342,19 @@
          sudo su edxapp
          /edx/bin/python.edxapp /edx/bin/manage.edxapp lms --setting=aws create_oauth2_client http://<insights-ip>:18110 http://<insights-ip>:18110/complete/edx-oidc/ confidential --client_name insights --client_id YOUR_OAUTH2_KEY --client_secret secret --trusted
          #+END_SRC
-     12. *Page Not Found* :: 
-	 - Log in as staff@example.com
-	 - Select any course
-         - Navigate to course analytics 
-         - Redirects to LMS machine to see the analytics.
-	 - Page not found  
-     13. Resourses
-         + https://openedx.atlassian.net/wiki/display/OpenOPS/edX+Analytics+Installation
-         + https://github.com/edx/edx-analytics-pipeline/wiki/How-Stanford-Online-runs-the-analytics-stack
-         + https://github.com/edx/edx-analytics-pipeline/wiki
-         + http://edx.readthedocs.org/projects/edx-installing-configuring-and-running/en/latest/analytics/install_analytics.html
-         + http://ubuntuforums.org/showthread.php?t=1836919
-         + https://github.com/open-craft/edx-analytics-devstack
+   12. *Page Not Found* :: 
+       - Log in as staff@example.com
+       - Select any course
+       - Navigate to course analytics 
+       - Redirects to LMS machine to see the analytics.
+       - Page not found  
+   13. Resourses
+       + https://openedx.atlassian.net/wiki/display/OpenOPS/edX+Analytics+Installation
+       + https://github.com/edx/edx-analytics-pipeline/wiki/How-Stanford-Online-runs-the-analytics-stack
+       + https://github.com/edx/edx-analytics-pipeline/wiki
+       + http://edx.readthedocs.org/projects/edx-installing-configuring-and-running/en/latest/analytics/install_analytics.html
+       + http://ubuntuforums.org/showthread.php?t=1836919
+       + https://github.com/open-craft/edx-analytics-devstack
 
 ** (In Progress) Setting up edx-analtics-data-api  
     - Create a separate virtual environment for the analytics-api and
