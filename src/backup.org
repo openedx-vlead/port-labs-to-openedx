@@ -1,0 +1,42 @@
+ #+TITLE: Backup and Resstore
+#+Author: VLEAD
+#+Date: [2016-02-23 Tue]
+#+PROPERTY: results output
+#+PROPERTY: exports code
+#+SETUPFILE: ../org-templates/level-0.org
+
+
+* Introduction
+  Open edX platfom and analytics both are using databases. So we need
+  to take backup of databases and restore them.
+* Requirements 
+  - Required two machines to store databases in their respective
+    machines
+    + One for Open edX platform (LMS and CMS) 
+    + One for Analytics(Insights)
+* Take database backup and restore it from this backup
+  This Section describes "how to take database backup? and how to restore
+  it from this backup?"
+
+  The Open edX platform is having two databases, they are:
+  1. MySql and 
+  2. Mogodb
+** Take backup LMS machine and restore it 
+   - SSH to LMS machine 
+   - Take backup of existing databases with following commands
+     #+BEGIN_SRC 
+     sudo mongodump -o ./mongo-backup
+     sudo mysqldump -u root -p --all-databases > ./backup.sql
+     
+     # By default password for the root user would be empty
+     #+END_SRC
+   - Use the following commnad to restore the databases.
+     #+BEGIN_SRC 
+     sudo mongorestore -drop ./mongo-backup     
+     sudo mysql -u root -p < ./backup.sql
+     #+END_SRC
+   - Reference link
+     https://github.com/edx/configuration/wiki/Preparation-For-Production-Launch
+** TODO 
+   - Backup of insights (data bases)
+     How to backup and restore it 
