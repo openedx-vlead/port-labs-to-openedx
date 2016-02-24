@@ -1,10 +1,9 @@
- #+TITLE: Setting up Analytics Server
+#+TITLE: Setting up Open edX platform and Analytics Servers
 #+Author: Setup Open edX platform and Analytics
 #+Date: [2016-01-27 Wed]
 #+PROPERTY: results output
 #+PROPERTY: exports code
 #+SETUPFILE: ../org-templates/level-0.org
-
 
 * Introduction
   Analytics provide the user activity while using virtual labs on Open edX
@@ -12,8 +11,7 @@
   could be used for various purposes.  
 * Requirements
   - One VM for Open edX platform setup.
-  - One more VM for setting up anayltics.
-  
+  - One more VM for setting up analytics.
 * Architecture of Open edX Analytics Gathering
 
   [[http://edx.readthedocs.org/projects/edx-installing-configuring-and-running/en/latest/_images/Analytics_Pipeline.png][Architecture Diagram]]
@@ -141,15 +139,28 @@
      #+END_SRC
 ** Update Analytics Dashboard URL on LMS machine
    - Open the file =/edx/app/edxapp/lms.env.json= and update following
-     variable with Analytics/insights fqdn/public-ip with port number
+     variable with Analytics/insights fqdn/public-ip with the prpoer
+     port number on which insights app is running
      #+BEGIN_EXAMPLE
      "ANALYTICS_DASHBOARD_URL": "http://54.153.71.178:18110
      #+END_EXAMPLE
-   - Restart the edx services 
+   - Restart the edX services 
      #+BEGIN_SRC 
      /edx/bin/supervisorctl restart edxapp:       
      /edx/bin/supervisorctl restart edxapp_worker:
      #+END_SRC
+** Configure Mysql server so that it allows remote machines to execute queries
+   LMS database( Mysql) is not open for all remote hosts. It is open
+   to localhost only.
+   In order to make database open for all remote hosts, we need to do
+   the following steps.
+   - Open =/et/mysql/my.conf=
+   - Change =bind-address= from =127.0.0.1= to =0.0.0.0=
+   - Restart the mysql server
+     #+BEGIN_EXAMPLE
+     /etc/init.d/mysql restart
+     #+END_EXAMPLE
+    
 * Configure Open edX analytics for the courses 
 ** Setup edx-analytics-pipeline
    1. Create a saperate VM with at least 2GB of RAM and 30GB of HDD
@@ -292,7 +303,6 @@
        - Reference 
 	 https://openedx.atlassian.net/wiki/pages/viewpage.action?spaceKey=AN&title=Configuring+Insights+for+Open+ID+Connect+SSO+with+LMS
 
-
 ** Setup edx-analtics-data-api
    - Create a separate virtual environment for the analytics-api and
      activate it.
@@ -312,7 +322,7 @@
      database not with dummy(analytics) database.  Solution might be,
      We have to tell analytics-api to use *result store* database.
     
-     *result store* is a database in insights VM which stores all the
+     *result store* is a database on insights VM which stores all the
      course related data.
 
 ** Test LMS and Insights for analytics
@@ -360,15 +370,12 @@
    with automation scripts I decided to go and follow the
    manual steps to setup Open edX platform.
  
-
 * References
   - https://github.com/edx/configuration/wiki
   - http://edx-developer-guide.readthedocs.org/en/latest/public_sandboxes.html
   - https://openedx.atlassian.net/wiki/display/OPEN/Debugging+Issues+with+LMS+and+Studio
   - https://openedx.atlassian.net/wiki/display/OpenOPS/edX+Analytics+Installation
-  - https://github.com/edx/edx-analytics-pipeline/wiki/How-Stanford-Online-runs-the-analytics-stack
   - https://github.com/edx/edx-analytics-pipeline/wiki
   - http://edx.readthedocs.org/projects/edx-installing-configuring-and-running/en/latest/analytics/install_analytics.html
-  - http://ubuntuforums.org/showthread.php?t=1836919
   - https://github.com/open-craft/edx-analytics-devstack
       
