@@ -9,11 +9,11 @@
 * Introduction
   Open edX platfom and analytics both are using databases. So we need
   to take backup of databases and restore them.
+
 * Requirements 
-  - Required two machines to store databases in their respective
-    machines
-    + One for Open edX platform (LMS and CMS) 
-    + One for Analytics(Insights)
+  1. Take backup of LMS/CMS (Open edX platform) and  LMS/CMS is restored from this backup. 
+  2. Take backup of Open edX pipeline and pipeline is restored from this backup. 
+
 * Take database backup and restore it from this backup
   This Section describes "how to take database backup? and how to restore
   it from this backup?"
