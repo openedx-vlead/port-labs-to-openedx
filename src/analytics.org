@@ -151,7 +151,7 @@
      #+END_SRC
 ** Configure Mysql server so that it allows remote machines to execute queries
    LMS database( Mysql) is not open for all remote hosts. It is open
-   to localhost only.
+   for localhost only.
    In order to make database open for all remote hosts, we need to do
    the following steps.
    - Open =/et/mysql/my.conf=
@@ -209,10 +209,11 @@
       ^D to get back to your regular user
       #+END_EXAMPLE
    7. Get some test logs into HDFS
+      
       #+BEGIN_EXAMPLE
       # scp tracking.log onto the machine from the LMS. Then...
-      sudo mkdir /edx/var/log/tracking
-      sudo cp tracking.log /edx/var/log/tracking
+      sudo mkdir -p /edx/var/log/tracking # if directory not exists.
+      sudo scp root@<LMS-IP>:/edx/var/log/tracking/tracking.log /edx/var/log/tracking
       sudo chown hadoop /edx/var/log/tracking/tracking.log
       # wait a minute -- ansible creates a cron job to load files in that dir every minute
     
@@ -260,35 +261,36 @@
        # put in the right url and credentials for your LMS database
        #+END_SRC
        - Test it by running the following command. The output of the
-         below command shows the mysql queries. 
+	 below command shows the mysql queries. 
 	 #+BEGIN_SRC
 	 remote-task --host localhost --user ubuntu --remote-name analyticstack --skip-setup --wait ImportEnrollmentsIntoMysql --interval 2015 --local-scheduler
 	 #+END_SRC
+
    11. Create OAUTH2 client_id and secret from Django administartion
        page of LMS machine
        - *How to create OAUTH2 client_id and secret key:*
 	 By default, edx-platform is not providing/creating default
-         user and password for signing in. So we need to create a
-         superuser so that we can access the django admin page using
-         those credentials. 
+	 user and password for signing in. So we need to create a
+	 superuser so that we can access the django admin page using
+	 those credentials. 
 	
 	 Create super user by issuing following commands on the LMS
-         machine.
+	 machine.
 	 #+BEGIN_SRC 
 	 sudo -u www-data /edx/bin/python.edxapp ./manage.py lms --settings aws create_user -s -p edx -e user@example.com
-         sudo -u www-data /edx/bin/python.edxapp ./manage.py lms --settings aws changepassword user
-         sudo -u www-data /edx/bin/python.edxapp ./manage.py lms --settings aws shell
+	 sudo -u www-data /edx/bin/python.edxapp ./manage.py lms --settings aws changepassword user
+	 sudo -u www-data /edx/bin/python.edxapp ./manage.py lms --settings aws shell
 
-         from django.contrib.auth.models import User
-         me = User.objects.get(username="user")
-         me.is_superuser = True
-         me.is_staff = True
-         me.save()
+	 from django.contrib.auth.models import User
+	 me = User.objects.get(username="user")
+	 me.is_superuser = True
+	 me.is_staff = True
+	 me.save()
 	 #+END_SRC
 
        - Do the following steps
 	 + Log in to Django admin page
-         + Find the Oauth2 table/app in the admin page
+	 + Find the Oauth2 table/app in the admin page
 	 + Add client 
 	 + Find the Oauth2_provider table/app
 	 + Add created client to Trusted clients
@@ -301,9 +303,11 @@
        SOCIAL_AUTH_EDX_OIDC_SECRET: '<PREFILLED VALUE 2 FROM LMS>'
        SOCIAL_AUTH_EDX_OIDC_URL_ROOT: '<LMS URL>/oauth2'
        #+END_SRC
-       - Reference 
-	 https://openedx.atlassian.net/wiki/pages/viewpage.action?spaceKey=AN&title=Configuring+Insights+for+Open+ID+Connect+SSO+with+LMS
 
+   13. References
+       - https://openedx.atlassian.net/wiki/display/OpenOPS/edX+Analytics+Installation
+       - https://openedx.atlassian.net/wiki/pages/viewpage.action?spaceKey=AN&title=Configuring+Insights+for+Open+ID+Connect+SSO+with+LMS
+   
 ** Setup edx-analtics-data-api
    - Create a separate virtual environment for the analytics-api and
      activate it.
@@ -375,7 +379,6 @@
   - https://github.com/edx/configuration/wiki
   - http://edx-developer-guide.readthedocs.org/en/latest/public_sandboxes.html
   - https://openedx.atlassian.net/wiki/display/OPEN/Debugging+Issues+with+LMS+and+Studio
-  - https://openedx.atlassian.net/wiki/display/OpenOPS/edX+Analytics+Installation
   - https://github.com/edx/edx-analytics-pipeline/wiki
   - http://edx.readthedocs.org/projects/edx-installing-configuring-and-running/en/latest/analytics/install_analytics.html
   - https://github.com/open-craft/edx-analytics-devstack
