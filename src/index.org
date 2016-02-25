@@ -47,7 +47,7 @@
   |   3. | Population Ecology II    | Biotechnology &        | [[http://pevii-au.virtual-labs.ac.in/][Link]] | [[https://github.com/vlead/Open-edX-Population-Ecology-2][Link]]     |           |
   |      |                          | Biomedical Engineering |      |          |           |
   |------+--------------------------+------------------------+------+----------+-----------|
-  |   4. | Mine Automation          | Mechanical Engineering | [[http://iitkgp.vlab.co.in/?sub=40&brch=137][Link]] |          |           |
+  |   4. | Mine Automation          | Mechanical Engineering | [[http://iitkgp.vlab.co.in/?sub=40&brch=137][Link]] | [[https://github.com/vlead/open-edx-mine-automation][Link]]     |           |
   |      | and Virtual Reality      |                        |      |          |           |
   |------+--------------------------+------------------------+------+----------+-----------|
   |   5. | Chemical Engineering     | Chemical Engineering   | [[http://ce-iitb.vlabs.ac.in/][Link]] |          |           |
