@@ -1,0 +1,112 @@
+#+TITLE: Manage the Open edX platform (LMS and CMS)
+#+Author: VLEAD
+#+Date: [2016-02-23 Tue]
+#+PROPERTY: results output
+#+PROPERTY: exports code
+#+SETUPFILE: ../org-templates/level-0.org
+
+
+* Introduction
+  This document describes the managing Open edX paltform
+* Upgrade Open edX platform from older/past release to the newer release 
+*** Upgrade from birtch.2 release to cypress release  
+    - Export 
+      #+BEGIN_EXAMPLE
+      export OPENEDX_RELEASE="named-release/cypress"
+      #+END_EXAMPLE    
+    - Run 
+      #+BEGIN_EXAMPLE
+      cd /var/tmp/configuration/playbooks && sudo ansible-playbook -c local ./edx_sandbox.yml -i "localhost,"     
+      #+END_EXAMPLE
+    - Successfully upgraded/migrated to cypress
+*** Setup Open edX platform with named-release/birtch.2
+    - Launch an Ubuntu 12.04 64 bit (ami-019b6745)  instance on AWS
+      + RAM : 4 GB 
+      + HDD : 50 GB
+    - Update and upgrade the machine
+    - Install 
+      #+BEGIN_EXAMPLE
+      sudo apt-get install -y build-essential software-properties-common python-software-properties curl git-core libxml2-dev libxslt1-dev libfreetype6-dev python-pip python-apt python-dev libxmlsec1-dev swig libmysqlclient-dev
+      sudo pip install --upgrade pip
+      sudo pip install --upgrade virtualenv
+      #+END_EXAMPLE
+    - Perform the steps
+      #+BEGIN_EXAMPLE
+      cd /var/tmp
+      git clone https://github.com/edx/configuration
+      #+END_EXAMPLE
+    - Allow password based SSH authentication, for that do the
+      following 
+      #+BEGIN_EXAMPLE
+      cd configuration/
+      vim configuration/playbooks/roles/common_vars/defaults/main.yml
+      #+END_EXAMPLE
+      and set =COMMON_SSH_PASSWORD_AUTH= to "yes"
+    - Issue the following command to install required packages.
+      #+BEGIN_EXAMPLE
+      sudo pip install -r requirements.txt
+      #+END_EXAMPLE
+    - Export 
+      #+BEGIN_EXAMPLE
+      export OPENEDX_RELEASE="named-release/birch.2"
+      #+END_EXAMPLE
+    - Install paramiko package
+      #+BEGIN_EXAMPLE
+      sudo pip install paramiko==1.10
+      #+END_EXAMPLE
+    - Run 
+      #+BEGIN_EXAMPLE
+      cd /var/tmp/configuration/playbooks && sudo ansible-playbook -c local ./edx_sandbox.yml -i "localhost,"     
+      #+END_EXAMPLE
+    - Open edX platform has been setup with the
+      "named-release/birtch.2"
+*** Downgrading the Open edX platform (Don't do this, It does not work)
+**** Example
+     Suppose,you have the latest version(Dogwood) of the Open edX
+     platform setup, If you want to upgrade to the older version, you
+     can follow the below steps. But it will not work (We may get
+     Database sync/migration problem).
+* Work around the configuration files of Open edX setup.
+** How to delete Open edX Studio user from database
+   To delete edX Studio user from database we need to do following in
+   mysql database called "edxapp"
+   #+BEGIN_SRC 
+   database name: edxapp
+   username: edxapp001 
+   password: password
+   #+END_SRC
+   We can find these database details in
+   =/edx/app/edxapp/cms.auth.json=
+   - Delete from user_api_userpreference table
+   #+BEGIN_EXAMPLE
+   mysql> delete  from user_api_userpreference where user_id=;   
+   #+END_EXAMPLE
+   - Delete from auth_userprofile  table
+   #+BEGIN_EXAMPLE
+   delete from auth_userprofile where id=
+   #+END_EXAMPLE
+   - Delete from auth_registration table
+     #+BEGIN_EXAMPLE
+     mysql> delete from auth_registration where user_id=;
+     #+END_EXAMPLE
+   - Then delete from auth_user table
+     #+BEGIN_EXAMPLE
+     delete from auth_user where id=5;
+     #+END_EXAMPLE
+
+** Deleting a course from Open edX Studio
+   - Delete a particular course using the following command 
+     #+BEGIN_SRC
+     cd /edx/app/edxapp/edx_platform/
+     sudo -u www-data /edx/bin/python.edxapp ./manage.py cms --settings=aws delete_course course-v1:Organization+CourseNumber+CourseRun commit
+     #+END_SRC
+   - For example, if we want to delete course
+     course-v1:IIITH+pevii+2016_T11(course-v1:Organization+CourseNumber+CourseRun)
+     then issue following command in command line
+     #+BEGIN_EXAMPLE
+     sudo -u www-data /edx/bin/python.edxapp ./manage.py cms --settings=aws delete_course course-v1:IIITH+pevii+2016_T11
+     #+END_EXAMPLE
+     The above command will ask you whether to delete course or not ,
+     proceed accordingly.
+* References
+  - https://github.com/edx/configuration/wiki/edX-Managing-the-Full-Stack
