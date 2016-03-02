@@ -50,18 +50,18 @@
   |   4. | Mine Automation          | Mechanical Engineering | [[http://iitkgp.vlab.co.in/?sub=40&brch=137][Link]] | [[https://github.com/vlead/open-edx-mine-automation][Link]]     |           |
   |      | and Virtual Reality      |                        |      |          |           |
   |------+--------------------------+------------------------+------+----------+-----------|
-  |   5. | Chemical Engineering     | Chemical Engineering   | [[http://ce-iitb.vlabs.ac.in/][Link]] |          |           |
+  |   5. | Chemical Engineering     | Chemical Engineering   | [[http://ce-iitb.vlabs.ac.in/][Link]] | [[https://github.com/vlead/open-edx-chemical-engineering][Link]]     |           |
   |------+--------------------------+------------------------+------+----------+-----------|
   |   6. | Virtual Chemistry Lab    | Chemical Sciences      | [[http://vc-dei.vlabs.ac.in/][Link]] |          |           |
   |------+--------------------------+------------------------+------+----------+-----------|
-  |   7. | Industrial Electric      | Electrical             | [[http://ied-nitk.vlabs.ac.in/][Link]] |          |           |
+  |   7. | Industrial Electric      | Electrical             | [[http://ied-nitk.vlabs.ac.in/][Link]] | [[https://github.com/vlead/open-edx-industrial-electric-drives-lab][Link]]     |           |
   |      | Drives and Application   | Engineering            |      |          |           |
   |      | of PLC                   |                        |      |          |           |
   |------+--------------------------+------------------------+------+----------+-----------|
   |   8. | Industrial Automation    | Electrical Engineering | [[http://ial-coep.vlabs.ac.in/Introduction.html][Link]] |          |           |
   |      | Laboratory               |                        |      |          |           |
   |------+--------------------------+------------------------+------+----------+-----------|
-  |   9. | Hybrid Electronics       | Electronics &          | [[http://he-coep.vlabs.ac.in/][Link]] |          |           |
+  |   9. | Hybrid Electronics       | Electronics &          | [[http://he-coep.vlabs.ac.in/][Link]] | [[https://github.com/vlead/open-edx-hybrid-electronics-lab][Link]]     |           |
   |      |                          | Communications         |      |          |           |
   |------+--------------------------+------------------------+------+----------+-----------|
   |  10. | Virtual Smart Structures | Civil Engineering      | [[http://vssd-iitd.vlabs.ac.in/][Link]] |          |           |
