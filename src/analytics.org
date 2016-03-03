@@ -150,8 +150,21 @@
      /edx/bin/supervisorctl restart edxapp_worker:
      #+END_SRC
 ** Configure Mysql server so that it allows remote machines to execute queries
+   Allow Analytics machine to connect LMS machine's databases by
+   running the following example commands
+   - Log in as root user
+   #+BEGIN_EXAMPLE
+   mysql -uroot -p 
+   #+END_EXAMPLE
+   - Grant permissions from analytics machine with the following details
+     #+BEGIN_EXAMPLE
+     mysql> GRANT ALL PRIVILEGES ON edxapp.* TO 'edxapp001'@'<analytics-server-ip>' IDENTIFIED BY 'password';
+     #+END_EXAMPLE
+   
    LMS database( Mysql) is not open for all remote hosts. It is open
-   for localhost only.
+   for only localhost.
+   
+   
    In order to make database open for all remote hosts, we need to do
    the following steps.
    - Open =/et/mysql/my.conf=
@@ -162,6 +175,15 @@
      #+END_EXAMPLE
    - Reference 
      https://easyengine.io/tutorials/mysql/remote-access/     
+* Setting up Open edX platform on a VM (Base4)
+  - Minimum hardware requirements 
+    + RAM : 4GB 
+    + HDD : 50GB
+    + CPUs: 2 
+  - Create a VM using
+    http://wiki.vlabs.ac.in/index.php/Creating_new_VM link 
+  - After creating VM, follow the steps given at [[Using manual steps to
+    Setup Open edX platform]] to setup Open edX platform.
 * Configure Open edX analytics for the courses 
 ** Setup edx-analytics-pipeline
    1. Create a saperate VM with at least 2GB of RAM and 30GB of HDD

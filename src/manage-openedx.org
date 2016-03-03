@@ -76,7 +76,7 @@
    password: password
    #+END_SRC
    We can find these database details in
-   =/edx/app/edxapp/cms.auth.json=
+   =/edx/app/edxapp/cms.auth.json= and =/edx/app/edxapp/lms.auth.json=
    - Delete from user_api_userpreference table
    #+BEGIN_EXAMPLE
    mysql> delete  from user_api_userpreference where user_id=;   
