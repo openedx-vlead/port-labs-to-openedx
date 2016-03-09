@@ -70,8 +70,7 @@
 
 
 * Setup of Open edX platform and analytics and its management
-  - [[./analytics.org][Setup Open edX platform and Configure Open edX Analytic
-  for the courses]]
+  - [[./analytics.org][Setup Open edX platform and Configure Open edX Analytics]]
   - [[./backup.org][Procedure for taking database backup]]
   - [[./manage-openedx.org][Management of Open edX platform]]
 
