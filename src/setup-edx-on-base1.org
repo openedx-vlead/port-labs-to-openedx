@@ -55,3 +55,11 @@ gateway 10.4.12.236
 #+begin_example
 nameserver 10.4.12.160
 #+end_example
++ Restart the network manager to apply new changes
+#+begin_example
+/etc/init.d/networking restart
+#+end_example
++ Now check the internet connection 
+#+begin_example
+ping vlabs.ac.in (or) ping google.com
+#+end_example
