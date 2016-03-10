@@ -52,7 +52,7 @@
   |------+-------------------------------+------------------------+------+----------+--------------------|
   |   5. | Chemical Engineering          | Chemical Engineering   | [[http://ce-iitb.vlabs.ac.in/][Link]] | [[https://github.com/vlead/open-edx-chemical-engineering][Link]]     | IIT, Bombay        |
   |------+-------------------------------+------------------------+------+----------+--------------------|
-  |   6. | Sensors Modeling & Simulation | Electrical Engineering | [[http://sl-coep.vlabs.ac.in/][Link]] |          | COE, Pune          |
+  |   6. | Sensors Modeling & Simulation | Electrical Engineering | [[http://sl-coep.vlabs.ac.in/][Link]] | [[https://github.com/vlead/open-edx-sensors-modeling-simulation][Link]]     | COE, Pune          |
   |------+-------------------------------+------------------------+------+----------+--------------------|
   |   7. | Industrial Electric           | Electrical             | [[http://ied-nitk.vlabs.ac.in/][Link]] | [[https://github.com/vlead/open-edx-industrial-electric-drives-lab][Link]]     | NIT, Surathkal     |
   |      | Drives and Application        | Engineering            |      |          |                    |
