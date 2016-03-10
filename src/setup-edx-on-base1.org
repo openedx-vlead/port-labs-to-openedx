@@ -40,7 +40,7 @@ qemu-img create -f qcow2 test_vm.qcow2 60G
   =qcow2=. And apply
 + Click on begin installation to start the os installation process.
 + Once OS installation is done please log into the machine using user name and
-  password fo the machine that you provided.
+  password of the machine that you provided.
 + Configure eth0 interface to do so open file at =vim
   /etc/network/interfaces= and add the below details before that find the
   free available ip address in the range of 10.4.12.0/22 using =ping <ip>= command
@@ -63,3 +63,5 @@ nameserver 10.4.12.160
 #+begin_example
 ping vlabs.ac.in (or) ping google.com
 #+end_example
+* Setting Up edX platform
++ To setup edX platform [[https://github.com/vlead/port-labs-to-openedx/blob/develop/src/analytics.org][Go here]]
