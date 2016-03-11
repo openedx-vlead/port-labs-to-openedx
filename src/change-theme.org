@@ -4,3 +4,7 @@
 2) You must put theme files in /edx/app/edxapp/themes/<theme-name>/
 3) The themes/<theme-name>/static/sass directory should at least contain a file
    named _<theme-name>.scss
+
+* Useful Links
+1) [[http://open-edx-windows-7-installation-instructions.readthedocs.org/en/latest/11_Install_Custom_Theme.html][Link]]
+2) [[https://github.com/edx/edx-platform/wiki/Stanford-Theming][Link]]
