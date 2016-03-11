@@ -63,5 +63,8 @@ nameserver 10.4.12.160
 #+begin_example
 ping vlabs.ac.in (or) ping google.com
 #+end_example
+* Process for creating & restoring snapshots
+[[https://www.sbarjatiya.com/notes_wiki/index.php/Creating_KVM_VM_with_qcow2_disk_format_for_supporting_snapshots][Clickhere]]
+
 * Setting Up edX platform
 + To setup edX platform [[https://github.com/vlead/port-labs-to-openedx/blob/develop/src/analytics.org][Go here]]
