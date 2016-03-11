@@ -1,0 +1,6 @@
+* Procedure to change the theme of OpenEdx LMS
+1) You should first modify /edx/app/edxapp/lms.env.json, and set
+   FEATURES.USE_CUSTOM_THEME (True), THEME_NAME (the theme directory name)
+2) You must put theme files in /edx/app/edxapp/themes/<theme-name>/
+3) The themes/<theme-name>/static/sass directory should at least contain a file
+   named _<theme-name>.scss
