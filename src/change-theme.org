@@ -1,10 +1,37 @@
 * Procedure to change the theme of OpenEdx LMS
-1) You should first modify /edx/app/edxapp/lms.env.json, and set
-   FEATURES.USE_CUSTOM_THEME (True), THEME_NAME (the theme directory name)
-2) You must put theme files in /edx/app/edxapp/themes/<theme-name>/
-3) The themes/<theme-name>/static/sass directory should at least contain a file
-   named _<theme-name>.scss
+  1) Log into the Ubuntu instance, using the vagrant User ID (the ID and
+     password are each vagrant).
+
+  2) Modify the lms.env.json file that can be found in the /edx/app/edxapp
+     directory. You can do so with the character-based editor nano, using the
+     following command: sudo nano /edx/app/edxapp/lms.env.json
+
+  3) In the json file, change "USE_CUSTOM_THEME": false to
+     "USE_CUSTOM_THEME":true, Also change "THEME_NAME": "" to "THEME_NAME":
+     "default"
+
+  4) Save the file, using CTRL O. Close the file using CTRL X.
+
+  5) Become the edxapp user, by executing the following line: sudo su edxapp -s
+     /bin/bash
+
+  6) Execute the following lines: cd ~
+
+  7) source edxapp_env
+
+  8) Create a directory for the theme and then download the edX theme from
+     github into that directory: mkdir themes ; cd themes
+
+  9) git clone https://github.com/vlead/default.git default
+
+  10) Recompile the edX assets: 
+   
+  11)cd /edx/app/edxapp/edx-platform
+
+  12) paver update_assets lms --settings=aws
+
+   
+
 
 * Useful Links
-1) [[http://open-edx-windows-7-installation-instructions.readthedocs.org/en/latest/11_Install_Custom_Theme.html][Link]]
-2) [[https://github.com/edx/edx-platform/wiki/Stanford-Theming][Link]]
+1) [[https://github.com/edx/edx-platform/wiki/Stanford-Theming][Link]]
