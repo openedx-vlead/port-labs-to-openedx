@@ -9,12 +9,12 @@
   3) In the json file, change "USE_CUSTOM_THEME": false to
      "USE_CUSTOM_THEME":true, Also change "THEME_NAME": "" to "THEME_NAME":
      "default"
-
+     
   4) Save the file, using CTRL O. Close the file using CTRL X.
 
   5) Become the edxapp user, by executing the following line: sudo su edxapp -s
      /bin/bash
-
+     
   6) Execute the following lines: cd ~
 
   7) source edxapp_env

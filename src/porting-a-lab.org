@@ -1,0 +1,4 @@
+* Porting a lab to Open edX
+  1) First step is to prepare a labspec.json specifying the structure of a lab
+     from the source lab. 
+  2) An example labspec.json is provided in this repository.
