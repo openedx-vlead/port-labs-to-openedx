@@ -5,7 +5,7 @@
   2) Modify the lms.env.json file that can be found in the /edx/app/edxapp
      directory. You can do so with the character-based editor nano, using the
      following command: sudo nano /edx/app/edxapp/lms.env.json
-
+     
   3) In the json file, change "USE_CUSTOM_THEME": false to
      "USE_CUSTOM_THEME":true, Also change "THEME_NAME": "" to "THEME_NAME":
      "default"
@@ -22,11 +22,11 @@
   8) Create a directory for the theme and then download the edX theme from
      github into that directory: mkdir themes ; cd themes
 
-  9) git clone https://github.com/vlead/default.git default
+  9) git clone https://github.com/vlead/default.git 
 
   10) Recompile the edX assets: 
    
-  11)cd /edx/app/edxapp/edx-platform
+  11) cd /edx/app/edxapp/edx-platform
 
   12) paver update_assets lms --settings=aws
 
