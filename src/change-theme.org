@@ -8,7 +8,7 @@
       ls /edx/app/edxapp/themes
       mkdir /edx/app/edxapp/themes
       cd /edx/app/edxapp/themes
-      git clome https://github.com/vlead/default.git
+      git clone https://github.com/vlead/default.git
       #+END_EXAMPLE
 
    2. Modify /edx/app/edxapp/lms.env.json, and set 
