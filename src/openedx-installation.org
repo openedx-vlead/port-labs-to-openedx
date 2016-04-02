@@ -3,32 +3,15 @@
 #+Author: Yogesh Agrawal
 
 * Introduction
-  [[https://openedx.atlassian.net/wiki/display/OpenOPS/Native+Open+edX+Ubuntu+12.04+64+bit+Installation][Steps]] to install openedx lms and insights in aws vms, link:
+  This document describes the [[https://openedx.atlassian.net/wiki/display/OpenOPS/Native+Open+edX+Ubuntu+12.04+64+bit+Installation][steps]] to install openedx lms and
+  insights in aws vms.
   
-
 * Proposed hardware requirements by edx
-  - Ubuntu-12.04 amd64 (oracle jdk required)
+  - Ubuntu-12.04 amd64
   - minimum 4gb of memory
   - at least one 2.00 GHZ CPU
   - Minimum 25gb of free disk.
   - Recommended :: m3.medium server.
-
-* Instance information
-** edx lms
-  - region :: Sao paulo
-  - OS :: ubuntu-12.04 64-bit server https://aws.amazon.com/marketplace/pp/B007Z5YWX4?ref=cns_srchrow
-  - Instance type :: m3.large
-  - RAM :: 7.5 gb
-  - Disk :: 50 gb
-  - Public ip :: 54.233.130.215
-
-** edx analytics
-  - region :: Sao paulo
-  - OS :: ubuntu-12.04 64-bit server https://aws.amazon.com/marketplace/pp/B007Z5YWX4?ref=cns_srchrow
-  - Instance type :: m3.large
-  - RAM :: 7.5 gb
-  - Disk :: 50 gb
-  - Public ip :: 54.233.142.226
 
 * Edx lms platform installation steps
   1. Launch an instance for edx lms.
@@ -86,23 +69,23 @@
      #+END_EXAMPLE
    
 * Edx analytics installation steps
-  - Make mysql on lms machine to run as a server and accepts remote
-    connection instead of running in localhost. Steps:
-    http://stackoverflow.com/questions/14779104/how-to-allow-remote-connection-to-mysql
-    + Comment =bind-address= at =/etc/mysql/my.cnf= 
-    + Grant privileges to edxapp001 user. password learned from
-      =/edx/app/edxapp/cms.auth.json= file.
-      - user :: edxapp001
-      - passwd :: password
-      #+BEGIN_EXAMPLE
-      mysql -u root
-      GRANT ALL PRIVILEGES ON *.* TO 'edxapp001'@'%' IDENTIFIED BY 'password' WITH GRANT OPTION;
-      flush privileges;
-      \q
-      #+END_EXAMPLE
-      - Test ::
-        #+BEGIN_EXAMPLE
-        mysql> select Host,User from mysql.user;
+  1. On lms machine make mysql to run as a server and accepts remote
+     connection instead of running in localhost. Steps:
+     http://stackoverflow.com/questions/14779104/how-to-allow-remote-connection-to-mysql
+     + Comment =bind-address= at =/etc/mysql/my.cnf= 
+     + Grant privileges to edxapp001 user. password learned from
+       =/edx/app/edxapp/cms.auth.json= file.
+       - user :: edxapp001
+       - passwd :: password
+       #+BEGIN_EXAMPLE
+       mysql -u root
+       GRANT ALL PRIVILEGES ON *.* TO 'edxapp001'@'%' IDENTIFIED BY 'password' WITH GRANT OPTION;
+       flush privileges;
+       \q
+       #+END_EXAMPLE
+       - Test ::
+         #+BEGIN_EXAMPLE
+         mysql> select Host,User from mysql.user;
 +----------------+------------------+
 | Host           | User             |
 +----------------+------------------+
@@ -125,231 +108,231 @@
 +----------------+------------------+
 16 rows in set (0.00 sec)
         #+END_EXAMPLE
-    + Restart service.
+     + Restart service.
+       #+BEGIN_EXAMPLE
+       sudo /etc/init.d/mysql restart
+       #+END_EXAMPLE
+       - Status :: 
+         #+BEGIN_EXAMPLE
+         ubuntu@ip-172-31-21-9:~$ sudo /etc/init.d/mysql restart
+         * Stopping MySQL database server mysqld                                                                                                  [ OK ] 
+         * Starting MySQL database server mysqld                                                                                                  [ OK ] 
+         * Checking for tables which need an upgrade, are corrupt or were not closed cleanly.
+         #+END_EXAMPLE
+       - Test ::
+         #+BEGIN_EXAMPLE
+         ubuntu@ip-172-31-21-9:~$ sudo netstat -lntp | grep 3306
+         tcp6       0      0 :::3306                 :::*                    LISTEN      31444/mysqld 
+         #+END_EXAMPLE    
+  2. Create a new ubuntu 12.04 vm for analytics.
+  3. Update and upgrade
+     #+BEGIN_EXAMPLE
+     sudo apt-get update
+     sudo apt-get upgrade
+     #+END_EXAMPLE
+  4. Ensure lms and analytics vm can connect to each other. Set
+     security groups in both vm to accept connections from each other
+     ips. Do following tests on analytics machine.
+     #+BEGIN_EXAMPLE
+     curl lms.mysite.org
+     telnet mysql.mysite.org 3306
+     #+END_EXAMPLE
+     + Status :: This is not an error as telnet is a mysql
+                 client. mysql server is entitled to print anything
+                 that mysql client understands. refer:
+                 [[http://stackoverflow.com/questions/36246030/telnet-localhost-3306-returns-mysql-native-password-connection-closed-by-foreig?noredirect=1#comment60121887_36246030][stackoverflow-link]]
+       #+BEGIN_EXAMPLE
+       ubuntu@ip-172-31-19-247:~$ telnet 54.233.130.215 3306
+       Trying 54.233.130.215...
+       Connected to 54.233.130.215.
+       Escape character is '^]'.
+       a
+       5.6.14-1+debphp.org~precise+1Gx?r@'AP�z<Z1&h[pB96Bmysql_native_password
+       ^[
+       !#08S01Got packets out of orderConnection closed by foreign host.
+       #+END_EXAMPLE
+  5. Generate ssh key in lms machine and copy public key to analytics
+     machine authorized_keys.
+  6. scp =/edx/var/log/tracking/tracking.log= file from lms machine to
+     analytics machine home directory as =tracking.log=.
+  7. Install following:
+     #+BEGIN_EXAMPLE
+     sudo apt-get update
+     sudo apt-get install git
+     sudo apt-get install python-pip
+     sudo apt-get install python-dev
+     sudo apt-get install libmysqlclient-dev
+     sudo pip install virtualenv
+     #+END_EXAMPLE
+  8. Create virtualenv and activate it
+     #+BEGIN_EXAMPLE
+     virtualenv ansible
+     . ansible/bin/activate
+     #+END_EXAMPLE
+  9. Run ansible as follows:
+     #+BEGIN_EXAMPLE
+     git clone https://github.com/edx/configuration.git
+     cd configuration/
+     pip install -r requirements.txt
+     cd playbooks/edx-east/
+     ansible-playbook -i localhost, -c local analytics_single.yml --extra-vars "INSIGHTS_LMS_BASE=http://54.233.130.215 INSIGHTS_BASE_URL=http://54.233.142.226:8100"
+     #+END_EXAMPLE
+     - Error :: This fails as follows
+       #+BEGIN_EXAMPLE
+       Collecting MySQL-python==1.2.5 (from -r requirements.txt (line 21))
+       Downloading MySQL-python-1.2.5.zip (108kB)
+       100% |████████████████████████████████| 112kB 9.0MB/s 
+       Complete output from command python setup.py egg_info:
+       sh: 1: mysql_config: not found
+       Traceback (most recent call last):
+       File "<string>", line 1, in <module>
+       File "/tmp/pip-build-ppl3bW/MySQL-python/setup.py", line 17, in <module>
+         metadata, options = get_config()
+       File "/tmp/pip-build-ppl3bW/MySQL-python/setup_posix.py", line 43, in get_config
+         libs = mysql_config("libs_r")
+       File "/tmp/pip-build-ppl3bW/MySQL-python/setup_posix.py", line 25, in mysql_config
+         raise EnvironmentError("%s not found" % (mysql_config.path,))
+       EnvironmentError: mysql_config not found
+     
+       ----------------------------------------
+       Command "python setup.py egg_info" failed with error code 1 in /tmp/pip-build-ppl3bW/MySQL-python/
+       #+END_EXAMPLE
+     - Solution :: The error got resolved by installing following
+                   package. Then rerun installation of requirements.
+                   source:
+                   http://stackoverflow.com/questions/5178292/pip-install-mysql-python-fails-with-environmenterror-mysql-config-not-found
+       #+BEGIN_EXAMPLE
+       sudo apt-get install libmysqlclient-dev
+       pip install MySQL-python==1.2.5
+       pip install -r requirements.txt
+       #+END_EXAMPLE
+     - status :: ran ansible playbook at 16:52; end: 17:18
+  10. Check it
+      + Run test job
+        #+BEGIN_EXAMPLE
+        sudo su - hadoop
+        cd /edx/app/hadoop
+        hadoop jar hadoop-2.3.0/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.3.0.jar pi 2 100
+        #+END_EXAMPLE
+      + Run hive
+        #+BEGIN_EXAMPLE
+        /edx/app/hadoop/hive/bin/hive
+        ^D to get back to your regular user
+        #+END_EXAMPLE
+      + Test insights
+        #+BEGIN_EXAMPLE
+        # Insights gunicorn is on 8110
+        curl localhost:8110
+        # Insights nginx (the externally facing view) should be 18110
+        mybox.org:18110 
+        #+END_EXAMPLE
+  11. Get some test log files into HDFS
+      + Copy some log files
+        #+BEGIN_EXAMPLE
+        # scp /edx/var/log/tracking/tracking.log file from lms machine to analytics machine. Then...
+        cd $HOME
+        sudo mkdir -p /edx/var/log/tracking
+        sudo cp ~/tracking.log /edx/var/log/tracking
+        sudo chown hadoop /edx/var/log/tracking/tracking.log
+        sleep 70
+        # wait a minute -- ansible creates a cron job to load files in that dir every minute
+        # Check it
+        sudo su - hadoop
+        hdfs dfs -ls /data
+        Found 1 items
+        -rw-r--r--   1 hadoop supergroup     308814 2015-10-15 14:31 /data/tracking.log
+        # Exit from hadoop user
+        #+END_EXAMPLE
+  12. Set up pipeline
       #+BEGIN_EXAMPLE
+      cd $HOME
+      ssh-keygen -t rsa -f ~/.ssh/id_rsa -P ''
+      echo >> ~/.ssh/authorized_keys # Make sure there's a newline at the end
+      cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+      # check: ssh localhost "echo It worked" -- make sure it works.
+        
+      # Make a new virtualenv -- otherwise will have conflicts
+      virtualenv pipeline
+      . pipeline/bin/activate
+       
+      git clone https://github.com/edx/edx-analytics-pipeline
+      cd edx-analytics-pipeline
+      make bootstrap
+      #+END_EXAMPLE
+  13. config file for pipeline
+      #+BEGIN_EXAMPLE
+      sudo vim /edx/etc/edx-analytics-pipeline/input.json
+      # put in the right url and credentials for your LMS database
+      #+END_EXAMPLE
+  14. Grant =read_only= user privileges to login remotely to LMS
+      #+BEGIN_EXAMPLE
+      mysql -u root
+      GRANT ALL PRIVILEGES ON *.* TO 'read_only'@'%' IDENTIFIED BY 'password' WITH GRANT OPTION;
+      flush privileges;
+      \q
       sudo /etc/init.d/mysql restart
       #+END_EXAMPLE
-      - Status :: 
+  15. Check pipeline install, use =--skip-setup below=
+      #+BEGIN_EXAMPLE
+      # Ensure you're in the pipeline virtualenv 
+      remote-task --host localhost --repo https://github.com/edx/edx-analytics-pipeline --user ubuntu --override-config $HOME/edx-analytics-pipeline/config/devstack.cfg --wheel-url http://edx-wheelhouse.s3-website-us-east-1.amazonaws.com/Ubuntu/precise --remote-name analyticstack --wait TotalEventsDailyTask --interval 2015 --output-root hdfs://localhost:9000/output/ --local-scheduler
+      #+END_EXAMPLE
+  16. Finish rest of the pipeline config
+      + Test setup
         #+BEGIN_EXAMPLE
-        ubuntu@ip-172-31-21-9:~$ sudo /etc/init.d/mysql restart
-        * Stopping MySQL database server mysqld                                                                                                  [ OK ] 
-        * Starting MySQL database server mysqld                                                                                                  [ OK ] 
-        * Checking for tables which need an upgrade, are corrupt or were not closed cleanly.
+        remote-task --host localhost --user ubuntu --remote-name analyticstack --skip-setup --wait ImportEnrollmentsIntoMysql --interval 2015 --local-scheduler
         #+END_EXAMPLE
-      - Test ::
+      + If success
         #+BEGIN_EXAMPLE
-        ubuntu@ip-172-31-21-9:~$ sudo netstat -lntp | grep 3306
-        tcp6       0      0 :::3306                 :::*                    LISTEN      31444/mysqld 
-        #+END_EXAMPLE    
-  - Create a new ubuntu 12.04 vm for analytics.
-  - Update and upgrade
-    #+BEGIN_EXAMPLE
-    sudo apt-get update
-    sudo apt-get upgrade
-    #+END_EXAMPLE
-  - Ensure lms and analytics vm can connect to each other. Set
-    security groups in both vm to accept connections from each other
-    ips. Do following tests on analytics machine.
-    #+BEGIN_EXAMPLE
-    curl lms.mysite.org
-    telnet mysql.mysite.org 3306
-    #+END_EXAMPLE
-    + Status :: This is not an error as telnet is a mysql
-                client. mysql server is entitled to print anything
-                that mysql client understands. refer:
-                [[http://stackoverflow.com/questions/36246030/telnet-localhost-3306-returns-mysql-native-password-connection-closed-by-foreig?noredirect=1#comment60121887_36246030][stackoverflow-link]]
+        sudo mysql
+        SELECT * FROM reports.course_enrollment_daily;
+        # Should give enrollments over time. Note that this only counts
+        # enrollments in the event logs -- if you manually created users
+        # / enrollments in the DB, they won't be counted. 
+        #+END_EXAMPLE
+        - status ::
+          #+BEGIN_EXAMPLE
+          (pipeline)ubuntu@ip-172-31-19-247:~/edx-analytics-pipeline$ sudo mysql
+          Welcome to the MySQL monitor.  Commands end with ; or \g.
+          Your MySQL connection id is 62
+          Server version: 5.6.29 MySQL Community Server (GPL)
+          
+          Copyright (c) 2000, 2016, Oracle and/or its affiliates. All rights reserved.
+          
+          Oracle is a registered trademark of Oracle Corporation and/or its
+          affiliates. Other names may be trademarks of their respective
+          owners.
+          
+          Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+          
+          mysql> SELECT * FROM reports.course_enrollment_daily;
+          Empty set (0.00 sec)
+          
+          mysql> \q
+          Bye
+          #+END_EXAMPLE
+  17. Run following on *lms machine*
+      + INSIGHTS_BASE_URL :: 54.233.142.226
       #+BEGIN_EXAMPLE
-      ubuntu@ip-172-31-19-247:~$ telnet 54.233.130.215 3306
-      Trying 54.233.130.215...
-      Connected to 54.233.130.215.
-      Escape character is '^]'.
-      a
-      5.6.14-1+debphp.org~precise+1Gx?r@'AP�z<Z1&h[pB96Bmysql_native_password
-      ^[
-      !#08S01Got packets out of orderConnection closed by foreign host.
-      #+END_EXAMPLE
-  - Generate ssh key in lms machine and copy public key to analytics
-    machine authorized_keys.
-  - scp =/edx/var/log/tracking/tracking.log= file from lms machine to
-    analytics machine home directory as =tracking.log=.
-  - Install following:
-    #+BEGIN_EXAMPLE
-    sudo apt-get update
-    sudo apt-get install git
-    sudo apt-get install python-pip
-    sudo apt-get install python-dev
-    sudo apt-get install libmysqlclient-dev
-    sudo pip install virtualenv
-    #+END_EXAMPLE
-  - Create virtualenv and activate it
-    #+BEGIN_EXAMPLE
-    virtualenv ansible
-    . ansible/bin/activate
-    #+END_EXAMPLE
-  - Run ansible as follows:
-    #+BEGIN_EXAMPLE
-    git clone https://github.com/edx/configuration.git
-    cd configuration/
-    pip install -r requirements.txt
-    cd playbooks/edx-east/
-    ansible-playbook -i localhost, -c local analytics_single.yml --extra-vars "INSIGHTS_LMS_BASE=http://54.233.130.215 INSIGHTS_BASE_URL=http://54.233.142.226:8100"
-    #+END_EXAMPLE
-    - Error :: This fails as follows
-      #+BEGIN_EXAMPLE
-      Collecting MySQL-python==1.2.5 (from -r requirements.txt (line 21))
-      Downloading MySQL-python-1.2.5.zip (108kB)
-      100% |████████████████████████████████| 112kB 9.0MB/s 
-      Complete output from command python setup.py egg_info:
-      sh: 1: mysql_config: not found
-      Traceback (most recent call last):
-      File "<string>", line 1, in <module>
-      File "/tmp/pip-build-ppl3bW/MySQL-python/setup.py", line 17, in <module>
-        metadata, options = get_config()
-      File "/tmp/pip-build-ppl3bW/MySQL-python/setup_posix.py", line 43, in get_config
-        libs = mysql_config("libs_r")
-      File "/tmp/pip-build-ppl3bW/MySQL-python/setup_posix.py", line 25, in mysql_config
-        raise EnvironmentError("%s not found" % (mysql_config.path,))
-      EnvironmentError: mysql_config not found
-    
-      ----------------------------------------
-      Command "python setup.py egg_info" failed with error code 1 in /tmp/pip-build-ppl3bW/MySQL-python/
-      #+END_EXAMPLE
-    - Solution :: The error got resolved by installing following
-                  package. Then rerun installation of requirements.
-                  source:
-                  http://stackoverflow.com/questions/5178292/pip-install-mysql-python-fails-with-environmenterror-mysql-config-not-found
-      #+BEGIN_EXAMPLE
-      sudo apt-get install libmysqlclient-dev
-      pip install MySQL-python==1.2.5
-      pip install -r requirements.txt
-      #+END_EXAMPLE
-    - status :: ran ansible playbook at 16:52; end: 17:18
-  - Check it
-    + Run test job
-      #+BEGIN_EXAMPLE
-      sudo su - hadoop
-      cd /edx/app/hadoop
-      hadoop jar hadoop-2.3.0/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.3.0.jar pi 2 100
-      #+END_EXAMPLE
-    + Run hive
-      #+BEGIN_EXAMPLE
-      /edx/app/hadoop/hive/bin/hive
-      ^D to get back to your regular user
-      #+END_EXAMPLE
-    + Test insights
-      #+BEGIN_EXAMPLE
-      # Insights gunicorn is on 8110
-      curl localhost:8110
-      # Insights nginx (the externally facing view) should be 18110
-      mybox.org:18110 
-      #+END_EXAMPLE
-  - Get some test log files into HDFS
-    + Copy some log files
-      #+BEGIN_EXAMPLE
-      # scp /edx/var/log/tracking/tracking.log file from lms machine to analytics machine. Then...
-      cd $HOME
-      sudo mkdir -p /edx/var/log/tracking
-      sudo cp ~/tracking.log /edx/var/log/tracking
-      sudo chown hadoop /edx/var/log/tracking/tracking.log
-      sleep 70
-      # wait a minute -- ansible creates a cron job to load files in that dir every minute
-      # Check it
-      sudo su - hadoop
-      hdfs dfs -ls /data
-      Found 1 items
-      -rw-r--r--   1 hadoop supergroup     308814 2015-10-15 14:31 /data/tracking.log
-      # Exit from hadoop user
-      #+END_EXAMPLE
-  - Set up pipeline
-    #+BEGIN_EXAMPLE
-    cd $HOME
-    ssh-keygen -t rsa -f ~/.ssh/id_rsa -P ''
-    echo >> ~/.ssh/authorized_keys # Make sure there's a newline at the end
-    cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
-    # check: ssh localhost "echo It worked" -- make sure it works.
-      
-    # Make a new virtualenv -- otherwise will have conflicts
-    virtualenv pipeline
-    . pipeline/bin/activate
+      sudo su edxapp -s /bin/bash
+      /edx/bin/python.edxapp /edx/bin/manage.edxapp lms --setting=aws create_oauth2_client http://54.233.142.226:18110 http://54.233.142.226:18110/complete/edx-oidc/ confidential --client_name insights --client_id YOUR_OAUTH2_KEY --client_secret secret --trusted
      
-    git clone https://github.com/edx/edx-analytics-pipeline
-    cd edx-analytics-pipeline
-    make bootstrap
-    #+END_EXAMPLE
-  - config file for pipeline
-    #+BEGIN_EXAMPLE
-    sudo vim /edx/etc/edx-analytics-pipeline/input.json
-    # put in the right url and credentials for your LMS database
-    #+END_EXAMPLE
-  - Grant =read_only= user privileges to login remotely to LMS
-    #+BEGIN_EXAMPLE
-    mysql -u root
-    GRANT ALL PRIVILEGES ON *.* TO 'read_only'@'%' IDENTIFIED BY 'password' WITH GRANT OPTION;
-    flush privileges;
-    \q
-    sudo /etc/init.d/mysql restart
-    #+END_EXAMPLE
-  - Check pipeline install, use =--skip-setup below=
-    #+BEGIN_EXAMPLE
-    # Ensure you're in the pipeline virtualenv 
-    remote-task --host localhost --repo https://github.com/edx/edx-analytics-pipeline --user ubuntu --override-config $HOME/edx-analytics-pipeline/config/devstack.cfg --wheel-url http://edx-wheelhouse.s3-website-us-east-1.amazonaws.com/Ubuntu/precise --remote-name analyticstack --wait TotalEventsDailyTask --interval 2015 --output-root hdfs://localhost:9000/output/ --local-scheduler
-    #+END_EXAMPLE
-  - Finish rest of the pipeline config
-    + Test setup
-      #+BEGIN_EXAMPLE
-      remote-task --host localhost --user ubuntu --remote-name analyticstack --skip-setup --wait ImportEnrollmentsIntoMysql --interval 2015 --local-scheduler
+      # Replace "secret", "YOUR_OAUTH2_KEY", and the url of your Insights box. # TODO: make the ansible script override these
+      # INSIGHTS_BASE_URL
+      # INSIGHTS_OAUTH2_KEY
+      # INSIGHTS_OAUTH2_SECRET
+      # Also set other secrets to more secret values.
+    
+      # Ensure that JWT_ISSUER and OAUTH_OIDC_ISSUER on the LMS in /edx/app/edxapp/lms.env.json match the url root in
+      # /edx/etc/insights.yml (SOCIAL_AUTH_EDX_OIDC_URL_ROOT). This should be the case unless your environment is weird (ala edx sandboxes are really username.sandbox.edx.org but the setting is "int.sandbox.edx.org")
       #+END_EXAMPLE
-    + If success
-      #+BEGIN_EXAMPLE
-      sudo mysql
-      SELECT * FROM reports.course_enrollment_daily;
-      # Should give enrollments over time. Note that this only counts
-      # enrollments in the event logs -- if you manually created users
-      # / enrollments in the DB, they won't be counted. 
-      #+END_EXAMPLE
-      - status ::
+      - status :: Posted a question regarding this refer:
+                  https://groups.google.com/forum/#!topic/openedx-analytics/6ivhJjl-Bok
+                  Once I understand oauth I can continue further.
+                  Refer:
+                  https://openedx.atlassian.net/wiki/display/OpenOPS/Managing+OpenEdX+Tips+and+Tricks
+      - Execution result ::
         #+BEGIN_EXAMPLE
-        (pipeline)ubuntu@ip-172-31-19-247:~/edx-analytics-pipeline$ sudo mysql
-Welcome to the MySQL monitor.  Commands end with ; or \g.
-Your MySQL connection id is 62
-Server version: 5.6.29 MySQL Community Server (GPL)
-
-Copyright (c) 2000, 2016, Oracle and/or its affiliates. All rights reserved.
-
-Oracle is a registered trademark of Oracle Corporation and/or its
-affiliates. Other names may be trademarks of their respective
-owners.
-
-Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
-
-mysql> SELECT * FROM reports.course_enrollment_daily;
-Empty set (0.00 sec)
-
-mysql> \q
-Bye
-        #+END_EXAMPLE
-  - Run following on *lms machine*
-    + INSIGHTS_BASE_URL :: 54.233.142.226
-    #+BEGIN_EXAMPLE
-    sudo su edxapp -s /bin/bash
-    /edx/bin/python.edxapp /edx/bin/manage.edxapp lms --setting=aws create_oauth2_client http://54.233.142.226:18110 http://54.233.142.226:18110/complete/edx-oidc/ confidential --client_name insights --client_id YOUR_OAUTH2_KEY --client_secret secret --trusted
-   
-    # Replace "secret", "YOUR_OAUTH2_KEY", and the url of your Insights box. # TODO: make the ansible script override these
-    # INSIGHTS_BASE_URL
-    # INSIGHTS_OAUTH2_KEY
-    # INSIGHTS_OAUTH2_SECRET
-    # Also set other secrets to more secret values.
-  
-    # Ensure that JWT_ISSUER and OAUTH_OIDC_ISSUER on the LMS in /edx/app/edxapp/lms.env.json match the url root in
-    # /edx/etc/insights.yml (SOCIAL_AUTH_EDX_OIDC_URL_ROOT). This should be the case unless your environment is weird (ala edx sandboxes are really username.sandbox.edx.org but the setting is "int.sandbox.edx.org")
-    #+END_EXAMPLE
-    - status :: Posted a question regarding this refer:
-                https://groups.google.com/forum/#!topic/openedx-analytics/6ivhJjl-Bok
-                Once I understand oauth I can continue further.
-                Refer:
-                https://openedx.atlassian.net/wiki/display/OpenOPS/Managing+OpenEdX+Tips+and+Tricks
-    - Execution result ::
-      #+BEGIN_EXAMPLE
 edxapp@ip-172-31-21-9:/home/ubuntu$ /edx/bin/python.edxapp /edx/bin/manage.edxapp lms --setting=aws create_oauth2_client http://54.233.142.226:18110 http://54.233.142.226:18110/complete/edx-oidc/ confidential --client_name insights --client_id YOUR_OAUTH2_KEY --client_secret secret --trusted
 2016-03-28 05:09:08,918 INFO 17752 [dd.dogapi] dog_stats_api.py:66 - Initializing dog api to use statsd: localhost, 8125
 System check identified some issues:
@@ -368,77 +351,78 @@ wiki.ArticleRevision.ip_address: (fields.W900) IPAddressField has been deprecate
 }
 
       #+END_EXAMPLE
-  - Create admin user
-    #+BEGIN_EXAMPLE
-    sudo su edxapp -s /bin/bash
-    cd ~
-    source edxapp_env
-    edxapp@ip-172-31-21-9:~$ python /edx/app/edxapp/edx-platform/manage.py lms createsuperuser --settings aws
-2016-03-28 03:01:23,754 INFO 14968 [dd.dogapi] dog_stats_api.py:66 - Initializing dog api to use statsd: localhost, 8125
-System check identified some issues:
-
-WARNINGS:
-wiki.ArticleRevision.ip_address: (fields.W900) IPAddressField has been deprecated. Support for it (except in historical migrations) will be removed in Django 1.9.
-	HINT: Use GenericIPAddressField instead.
-Username (leave blank to use 'edxapp'): admin
-Email address: admin@example.com
-Password: 
-Password (again): 
-Superuser created successfully.
-    #+END_EXAMPLE
-  - Now login with admin credentials to studio from
-    http://54.233.130.215:18010
-  - Then go to http://54.233.130.215/admin/ to view admin console.
-  - Check it
-    #+BEGIN_EXAMPLE
-    Log into LMS as a staff user. Ensure you can log into Insights and see all courses you have staff access to.
-    #+END_EXAMPLE
-    - status :: First login to lms then open
-                http://<analytics-ip>:18110, then click on login. It
-                successfully logins to lms.
+  18. Create admin user
+      #+BEGIN_EXAMPLE
+      sudo su edxapp -s /bin/bash
+      cd ~
+      source edxapp_env
+      edxapp@ip-172-31-21-9:~$ python /edx/app/edxapp/edx-platform/manage.py lms createsuperuser --settings aws
+  2016-03-28 03:01:23,754 INFO 14968 [dd.dogapi] dog_stats_api.py:66 - Initializing dog api to use statsd: localhost, 8125
+  System check identified some issues:
+  
+  WARNINGS:
+  wiki.ArticleRevision.ip_address: (fields.W900) IPAddressField has been deprecated. Support for it (except in historical migrations) will be removed in Django 1.9.
+  	HINT: Use GenericIPAddressField instead.
+  Username (leave blank to use 'edxapp'): admin
+  Email address: admin@example.com
+  Password: 
+  Password (again): 
+  Superuser created successfully.
+      #+END_EXAMPLE
+  19. Now login with admin credentials to studio from
+      http://54.233.130.215:18010
+  20. Then go to http://54.233.130.215/admin/ to view admin console.
+  21. Check it
+      #+BEGIN_EXAMPLE
+      Log into LMS as a staff user. Ensure you can log into Insights and see all courses you have staff access to.
+      #+END_EXAMPLE
+      - status :: First login to lms then open
+                  http://<analytics-ip>:18110, then click on login. It
+                  successfully logins to lms.
 
 * Errors
 ** Page not found error :: Not solved.
-- See where are the logs getting generated.
-  #+BEGIN_EXAMPLE
-  find . -type f ! -path "./rabbitmq/*" -printf '%T@ %p\n' | sort -n | tail -n5 | cut -f2- -d" "
-  #+END_EXAMPLE
+1. See where are the logs getting generated.
+   #+BEGIN_EXAMPLE
+   find . -type f ! -path "./rabbitmq/*" -printf '%T@ %p\n' | sort -n | tail -n5 | cut -f2- -d" "
+   #+END_EXAMPLE
 
-- django oauth forum:
-  https://django-oauth-toolkit.readthedocs.org/en/latest/
+2. django oauth forum:
+   https://django-oauth-toolkit.readthedocs.org/en/latest/
 
+** Studio error :: Solved
+Error occurs while creating a new course in a vm launched from an
+ami. Log file: =/edx/var/log/lms/edx.log=. This error is discussed in
+forum:
+https://groups.google.com/forum/#!topic/openedx-ops/1SsdJ39IQRc/Execute
 
-** Studio error
--  Error occurs while creating a new course in a vm launched from an
-   ami. Log file: =/edx/var/log/lms/edx.log=. This error is discussed
-   in forum:
-   https://groups.google.com/forum/#!topic/openedx-ops/1SsdJ39IQRc/Execute
-   Execute following in lms machine to resolve this issue:
-   + Create a celery user:
-     #+BEGIN_EXAMPLE
-     sudo rabbitmqctl add_user celery celery
-     #+END_EXAMPLE
-   + Set permissions on celery user
-     #+BEGIN_EXAMPLE
-     sudo rabbitmqctl set_permissions celery ".*" ".*" ".*"
-     #+END_EXAMPLE
-   + Restart rabbitmq service
-     #+BEGIN_EXAMPLE
-     sudo service rabbitmq-server restart
-     #+END_EXAMPLE
+Execute following in lms machine to resolve this issue:
+ + Create a celery user:
+   #+BEGIN_EXAMPLE
+   sudo rabbitmqctl add_user celery celery
+   #+END_EXAMPLE
+ + Set permissions on celery user
+   #+BEGIN_EXAMPLE
+   sudo rabbitmqctl set_permissions celery ".*" ".*" ".*"
+   #+END_EXAMPLE
+ + Restart rabbitmq service
+   #+BEGIN_EXAMPLE
+   sudo service rabbitmq-server restart
+   #+END_EXAMPLE
 
 * Reference
 1. https://openedx.atlassian.net/wiki/display/OpenOPS/Managing+OpenEdX+Tips+and+Tricks
 2. https://openedx.atlassian.net/wiki/display/OpenOPS/Native+Open+edX+Ubuntu+12.04+64+bit+Installation
 3. https://openedx.atlassian.net/wiki/display/OpenOPS/edX+Analytics+Installation
 4. https://groups.google.com/forum/#!topic/openedx-ops/_x2tt9PoeSs
+5. https://groups.google.com/forum/#!topic/openedx-analytics/6ivhJjl-Bok
 
 * Learning
-- nginx serves content from following directory
-  #+BEGIN_EXAMPLE
-  /edx/app/edxapp/edx-platform/lms/
-  #+END_EXAMPLE
+1. nginx serves content from following directory
+   #+BEGIN_EXAMPLE
+   /edx/app/edxapp/edx-platform/lms/
+   #+END_EXAMPLE
 
-- django-oauth2-provider:
-  + directory: /edx/app/edxapp/venvs/edxapp/src/django-oauth2-provider
-  + 
+2. django-oauth2-provider:
+   + directory: /edx/app/edxapp/venvs/edxapp/src/django-oauth2-provider
+
