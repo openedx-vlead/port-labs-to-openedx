@@ -4,6 +4,12 @@
 
    1. Clone the theme [[https://github.com/vlead/default.git][repository]] to the /edx/app/edxapp/themes/ location, if
       =themes= directory is not present, create one. 
+      #+BEGIN_EXAMPLE
+      ls /edx/app/edxapp/themes
+      mkdir /edx/app/edxapp/themes
+      cd /edx/app/edxapp/themes
+      git clome https://github.com/vlead/default.git
+      #+END_EXAMPLE
 
    2. Modify /edx/app/edxapp/lms.env.json, and set 
       a. FEATURES.USE_CUSTOM_THEME to 'true'
