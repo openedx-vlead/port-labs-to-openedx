@@ -1,37 +1,24 @@
 * Procedure to change the theme of OpenEdx LMS
-  1) Log into the Ubuntu instance, using the vagrant User ID (the ID and
-     password are each vagrant).
+** The manual way
+   Source :: [[https://github.com/edx/edx-platform/wiki/Stanford-Theming#manual-method][Stanford Theme]]
 
-  2) Modify the lms.env.json file that can be found in the /edx/app/edxapp
-     directory. You can do so with the character-based editor nano, using the
-     following command: sudo nano /edx/app/edxapp/lms.env.json
-     
-  3) In the json file, change "USE_CUSTOM_THEME": false to
-     "USE_CUSTOM_THEME":true, Also change "THEME_NAME": "" to "THEME_NAME":
-     "default"
-     
-  4) Save the file, using CTRL O. Close the file using CTRL X.
+   1. Clone the theme [[https://github.com/vlead/default.git][repository]] to the /edx/app/edxapp/themes/ location, if
+      =themes= directory is not present, create one. 
 
-  5) Become the edxapp user, by executing the following line: sudo su edxapp -s
-     /bin/bash
-     
-  6) Execute the following lines: cd ~
+   2. Modify /edx/app/edxapp/lms.env.json, and set 
+      a. FEATURES.USE_CUSTOM_THEME to 'true'
+      #+BEGIN_EXAMPLE
+      "USE_CUSTOM_THEME": true
+      #+END_EXAMPLE
+      b.THEME_NAME to 'default' (the name of the cloned directory)
+      #+BEGIN_EXAMPLE
+      "THEME_NAME": "default",
+      #+END_EXAMPLE
+      c. PLATFORM_NAME to 'VLEAD'
+      #+BEGIN_EXAMPLE
+      "PLATFORM_NAME": "VLEAD",
+      #+END_EXAMPLE
 
-  7) source edxapp_env
-
-  8) Create a directory for the theme and then download the edX theme from
-     github into that directory: mkdir themes ; cd themes
-
-  9) git clone https://github.com/vlead/default.git 
-
-  10) Recompile the edX assets: 
-   
-  11) cd /edx/app/edxapp/edx-platform
-
-  12) paver update_assets lms --settings=aws
-
-   
-
-
-* Useful Links
-1) [[https://github.com/edx/edx-platform/wiki/Stanford-Theming][Link]]
+   3. Recompile the [[https://openedx.atlassian.net/wiki/display/OpenOPS/Managing+OpenEdX+Tips+and+Tricks][assets]]. 
+      Search for the section 'Compile assets manually" and execute the all the
+      steps except for the 'cms'.
