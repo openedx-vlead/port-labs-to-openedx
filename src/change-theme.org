@@ -27,5 +27,10 @@
 
    3. Recompile the [[https://openedx.atlassian.net/wiki/display/OpenOPS/Managing+OpenEdX+Tips+and+Tricks][assets]].  
 
-      Search for the section 'Compile assets manually" and execute all the
-      steps except for the 'cms'.
+      Open this [[https://openedx.atlassian.net/wiki/display/OpenOPS/Managing+OpenEdX+Tips+and+Tricks][link]] and search for the section 'Compile assets manually" and
+      execute all the steps except for the 'cms'.
+
+   4. Restart the services 
+      #+BEGIN_EXAMPLE
+      sudo /edx/bin/supervisorctl restart
+      #+END_EXAMPLE

@@ -3,8 +3,8 @@
 #+Author: Yogesh Agrawal
 
 * Introduction
-Steps to install openedx lms and insights in aws vms, link:
-https://openedx.atlassian.net/wiki/display/OpenOPS/Native+Open+edX+Ubuntu+12.04+64+bit+Installation
+  [[https://openedx.atlassian.net/wiki/display/OpenOPS/Native+Open+edX+Ubuntu+12.04+64+bit+Installation][Steps]] to install openedx lms and insights in aws vms, link:
+  
 
 * Proposed hardware requirements by edx
   - Ubuntu-12.04 amd64 (oracle jdk required)
