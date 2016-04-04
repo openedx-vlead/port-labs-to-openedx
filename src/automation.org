@@ -26,7 +26,7 @@
     compressed tar.gz lab directory to course you created in Open edX studio.
   - After that copy paste the content in each subsection under experiments in a
     lab into the relevant subsections in the Open edX course you created with
-    the Open edX studio. 
+    the Open edX studio ([[https://www.edx.org/course/creating-course-edx-studio-edx-studiox][Creating a course with Open edX Studio]]). 
 
 ** Creating labspec.json file
    - Inside the course object value replace the value of org, id, display_name,
