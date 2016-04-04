@@ -26,17 +26,6 @@
 +  Create the fullstack directory and navigate to it in the command prompt.
  
 		- mkdir fullstack
-		
-* Steps for importing a lab onto edX Platform
-- Make the necessary changes to lab in the edX studio. 
-- Export the lab in your local machine. A tar.gz file will be created.
-- Extract the tar file. We obtain a folder named course. If you already have previous folder of the same lab. Just overwrite     this new folder
-  with the older one.
-- Do git status. All the untracked or latest modifications will be shown.
-- Git add will add this latest file into the respective lab repo on GitHub. A cloned copy of the respective lab repo must be     present in the local
-  machine.
-- Do git commit and write an appropriate commit message.
-- Do git push for individual files.
 		- cd fullstack
 
 +  Download the fullstack Vagrant file.
@@ -56,5 +45,14 @@
 	
 + In your browser, go to preview.localhost, which is an alias entry for 192.168.33.10 that was created in your /etc/hosts 		   file.
 
-
+* Steps for importing a lab onto edX Platform
+- Make the necessary changes to lab in the edX studio. 
+- Export the lab in your local machine. A tar.gz file will be created.
+- Extract the tar file. We obtain a folder named course. If you already have previous folder of the same lab. Just overwrite     this new folder
+  with the older one.
+- Do git status. All the untracked or latest modifications will be shown.
+- Git add will add this latest file into the respective lab repo on GitHub. A cloned copy of the respective lab repo must be     present in the local
+  machine.
+- Do git commit and write an appropriate commit message.
+- Do git push for individual files.
 
