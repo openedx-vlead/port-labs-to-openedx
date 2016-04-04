@@ -16,7 +16,7 @@
 ** Directory Generator for Open edX lab spec
    We are representing the directory structure of Open edX lab with a
    list containing all the directories.
-#+BEGIN_SRC python :tangle src/index.py :eval no
+#+BEGIN_SRC python :tangle src/automation.py :eval no
 import os, sys, json
 
 
