@@ -17,7 +17,7 @@
    We are representing the directory structure of Open edX lab with a
    list containing all the directories.
 #+BEGIN_SRC python :tangle src/index.py :eval no
-import os, json
+import os, sys, json
 
 
 LAB_DIRECTORY_STRUCTURE = [
@@ -41,19 +41,14 @@ LAB_DIRECTORY_STRUCTURE = [
     {'name': 'course.xml', 'isDir': False}
 ]
 
-def directoryGenerator(labname, dirlist, path):
+def directoryGenerator(labpath):
     print "Generating..."
-    if not os.path.exists(path):
-        os.makedirs(path)
+    if not os.path.exists(labpath):
+        os.makedirs(labpath)
         
-    os.chdir(path)
-
-    if not os.path.exists(labname):
-        os.mkdir(labname)
-
-    os.chdir(labname)
+    os.chdir(labpath)
     
-    for i in dirlist:
+    for i in LAB_DIRECTORY_STRUCTURE:
         if i['isDir']:
             os.mkdir(i['name'])
             if i['files'] != []:
@@ -154,12 +149,21 @@ def labStructureGenerator(labpath):
     experiments.close()
     os.chdir('..')
 
-'''    
+def generateLab(labpath):
+    os.chdir(labpath)
+    if os.path.isfile('labspec.json'):
+        directoryGenerator(labpath)
+        labStructureGenerator(labpath)
+    else:
+        print "Place a labspec.json file in the lab folder and give the absolute path of the lab folder"
 
-directoryGenerator("cse01", LAB_DIRECTORY_STRUCTURE, '/home/dinnu93/Desktop/')
-labStructureGenerator('/home/dinnu93/Desktop/cse01')
+if __name__ == '__main__':
+    if len(sys.argv) != 2:
+        print "Usage : python <Automation-Script> <Absolute Path of lab>"
+    else:
+        generateLab(sys.argv[1])
 
-'''
+
 #+END_SRC 
 
 * Run the Test Cases
