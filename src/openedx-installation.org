@@ -391,24 +391,32 @@ wiki.ArticleRevision.ip_address: (fields.W900) IPAddressField has been deprecate
    https://django-oauth-toolkit.readthedocs.org/en/latest/
 
 ** Studio error :: Solved
-Error occurs while creating a new course in a vm launched from an
-ami. Log file: =/edx/var/log/lms/edx.log=. This error is discussed in
-forum:
-https://groups.google.com/forum/#!topic/openedx-ops/1SsdJ39IQRc/Execute
-
-Execute following in lms machine to resolve this issue:
- + Create a celery user:
-   #+BEGIN_EXAMPLE
-   sudo rabbitmqctl add_user celery celery
-   #+END_EXAMPLE
- + Set permissions on celery user
-   #+BEGIN_EXAMPLE
-   sudo rabbitmqctl set_permissions celery ".*" ".*" ".*"
-   #+END_EXAMPLE
- + Restart rabbitmq service
-   #+BEGIN_EXAMPLE
-   sudo service rabbitmq-server restart
-   #+END_EXAMPLE
+1. Error occurs while creating a new course in a vm launched from an
+   ami. Log file: =/edx/var/log/lms/edx.log=. This error is discussed
+   in forum:
+   https://groups.google.com/forum/#!topic/openedx-ops/1SsdJ39IQRc/Execute
+   
+   + See if users exist:
+     #+BEGIN_EXAMPLE
+     sudo rabbitmqctl list_users
+     #+END_EXAMPLE
+   + If you're seeing the celery user, than check it's permissions:
+     #+BEGIN_EXAMPLE
+     sudo rabbitmqctl list_permissions -p /celery
+     #+END_EXAMPLE
+  Execute following in lms machine to resolve this issue:
+  + Create a celery user:
+    #+BEGIN_EXAMPLE
+    sudo rabbitmqctl add_user celery celery
+    #+END_EXAMPLE
+  + Set permissions on celery user
+    #+BEGIN_EXAMPLE
+    sudo rabbitmqctl set_permissions celery ".*" ".*" ".*"
+    #+END_EXAMPLE
+  + Restart rabbitmq service
+    #+BEGIN_EXAMPLE
+    sudo service rabbitmq-server restart
+    #+END_EXAMPLE
 
 * Reference
 1. https://openedx.atlassian.net/wiki/display/OpenOPS/Managing+OpenEdX+Tips+and+Tricks
