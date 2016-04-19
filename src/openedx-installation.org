@@ -168,45 +168,49 @@
      virtualenv ansible
      . ansible/bin/activate
      #+END_EXAMPLE
-  9. Run ansible as follows:
+  9. Clone the repo and install the requirements.
      #+BEGIN_EXAMPLE
      git clone https://github.com/edx/configuration.git
      cd configuration/
      pip install -r requirements.txt
-     cd playbooks/edx-east/
-     ansible-playbook -i localhost, -c local analytics_single.yml --extra-vars "INSIGHTS_LMS_BASE=http://54.233.130.215 INSIGHTS_BASE_URL=http://54.233.142.226:8100"
      #+END_EXAMPLE
-     - Error :: This fails as follows
-       #+BEGIN_EXAMPLE
-       Collecting MySQL-python==1.2.5 (from -r requirements.txt (line 21))
-       Downloading MySQL-python-1.2.5.zip (108kB)
-       100% |████████████████████████████████| 112kB 9.0MB/s 
-       Complete output from command python setup.py egg_info:
-       sh: 1: mysql_config: not found
-       Traceback (most recent call last):
-       File "<string>", line 1, in <module>
-       File "/tmp/pip-build-ppl3bW/MySQL-python/setup.py", line 17, in <module>
-         metadata, options = get_config()
-       File "/tmp/pip-build-ppl3bW/MySQL-python/setup_posix.py", line 43, in get_config
-         libs = mysql_config("libs_r")
-       File "/tmp/pip-build-ppl3bW/MySQL-python/setup_posix.py", line 25, in mysql_config
-         raise EnvironmentError("%s not found" % (mysql_config.path,))
-       EnvironmentError: mysql_config not found
+  10. Run ansible playbook as follows. Replace =INSIGHTS_LMS_BASE= and
+      =INSIGHTS_BASE_URL= variable with lms machine ip.
+      #+BEGIN_EXAMPLE
+      cd playbooks/edx-east/
+      ansible-playbook -i localhost, -c local analytics_single.yml --extra-vars "INSIGHTS_LMS_BASE=http://54.233.130.215 INSIGHTS_BASE_URL=http://54.233.142.226:8100" 
+      #+END_EXAMPLE
+      - Error :: This fails as follows
+	#+BEGIN_EXAMPLE
+	Collecting MySQL-python==1.2.5 (from -r requirements.txt (line 21))
+	Downloading MySQL-python-1.2.5.zip (108kB)
+	100% |████████████████████████████████| 112kB 9.0MB/s 
+	Complete output from command python setup.py egg_info:
+	sh: 1: mysql_config: not found
+	Traceback (most recent call last):
+	File "<string>", line 1, in <module>
+	File "/tmp/pip-build-ppl3bW/MySQL-python/setup.py", line 17, in <module>
+          metadata, options = get_config()
+	File "/tmp/pip-build-ppl3bW/MySQL-python/setup_posix.py", line 43, in get_config
+          libs = mysql_config("libs_r")
+	File "/tmp/pip-build-ppl3bW/MySQL-python/setup_posix.py", line 25, in mysql_config
+          raise EnvironmentError("%s not found" % (mysql_config.path,))
+	EnvironmentError: mysql_config not found
      
-       ----------------------------------------
-       Command "python setup.py egg_info" failed with error code 1 in /tmp/pip-build-ppl3bW/MySQL-python/
-       #+END_EXAMPLE
-     - Solution :: The error got resolved by installing following
-                   package. Then rerun installation of requirements.
-                   source:
-                   http://stackoverflow.com/questions/5178292/pip-install-mysql-python-fails-with-environmenterror-mysql-config-not-found
-       #+BEGIN_EXAMPLE
-       sudo apt-get install libmysqlclient-dev
-       pip install MySQL-python==1.2.5
-       pip install -r requirements.txt
-       #+END_EXAMPLE
-     - status :: ran ansible playbook at 16:52; end: 17:18
-  10. Check it
+	----------------------------------------
+	Command "python setup.py egg_info" failed with error code 1 in /tmp/pip-build-ppl3bW/MySQL-python/
+	#+END_EXAMPLE
+      - Solution :: The error got resolved by installing following
+                    package. Then rerun installation of requirements.
+                    source:
+                    http://stackoverflow.com/questions/5178292/pip-install-mysql-python-fails-with-environmenterror-mysql-config-not-found
+	#+BEGIN_EXAMPLE
+	sudo apt-get install libmysqlclient-dev
+	pip install MySQL-python==1.2.5
+	pip install -r requirements.txt
+	#+END_EXAMPLE
+      - status :: ran ansible playbook at 16:52; end: 17:18
+  11. Check it
       + Run test job
         #+BEGIN_EXAMPLE
         sudo su - hadoop
@@ -225,7 +229,7 @@
         # Insights nginx (the externally facing view) should be 18110
         mybox.org:18110 
         #+END_EXAMPLE
-  11. Get some test log files into HDFS
+  12. Get some test log files into HDFS
       + Copy some log files
         #+BEGIN_EXAMPLE
         # scp /edx/var/log/tracking/tracking.log file from lms machine to analytics machine. Then...
@@ -242,7 +246,7 @@
         -rw-r--r--   1 hadoop supergroup     308814 2015-10-15 14:31 /data/tracking.log
         # Exit from hadoop user
         #+END_EXAMPLE
-  12. Set up pipeline
+  13. Set up pipeline
       #+BEGIN_EXAMPLE
       cd $HOME
       ssh-keygen -t rsa -f ~/.ssh/id_rsa -P ''
@@ -258,12 +262,12 @@
       cd edx-analytics-pipeline
       make bootstrap
       #+END_EXAMPLE
-  13. config file for pipeline
+  14. config file for pipeline
       #+BEGIN_EXAMPLE
       sudo vim /edx/etc/edx-analytics-pipeline/input.json
       # put in the right url and credentials for your LMS database
       #+END_EXAMPLE
-  14. Grant =read_only= user privileges to login remotely to LMS
+  15. Grant =read_only= user privileges to login remotely to LMS
       #+BEGIN_EXAMPLE
       mysql -u root
       GRANT ALL PRIVILEGES ON *.* TO 'read_only'@'%' IDENTIFIED BY 'password' WITH GRANT OPTION;
@@ -271,12 +275,12 @@
       \q
       sudo /etc/init.d/mysql restart
       #+END_EXAMPLE
-  15. Check pipeline install, use =--skip-setup below=
+  16. Check pipeline install, use =--skip-setup below=
       #+BEGIN_EXAMPLE
       # Ensure you're in the pipeline virtualenv 
       remote-task --host localhost --repo https://github.com/edx/edx-analytics-pipeline --user ubuntu --override-config $HOME/edx-analytics-pipeline/config/devstack.cfg --wheel-url http://edx-wheelhouse.s3-website-us-east-1.amazonaws.com/Ubuntu/precise --remote-name analyticstack --wait TotalEventsDailyTask --interval 2015 --output-root hdfs://localhost:9000/output/ --local-scheduler
       #+END_EXAMPLE
-  16. Finish rest of the pipeline config
+  17. Finish rest of the pipeline config
       + Test setup
         #+BEGIN_EXAMPLE
         remote-task --host localhost --user ubuntu --remote-name analyticstack --skip-setup --wait ImportEnrollmentsIntoMysql --interval 2015 --local-scheduler
@@ -310,7 +314,7 @@
           mysql> \q
           Bye
           #+END_EXAMPLE
-  17. Run following on *lms machine*
+  18. Run following on *lms machine*
       + INSIGHTS_BASE_URL :: 54.233.142.226
       #+BEGIN_EXAMPLE
       sudo su edxapp -s /bin/bash
@@ -350,7 +354,7 @@ wiki.ArticleRevision.ip_address: (fields.W900) IPAddressField has been deprecate
 }
 
       #+END_EXAMPLE
-  18. Create admin user
+  19. Create admin user
       #+BEGIN_EXAMPLE
       sudo su edxapp -s /bin/bash
       cd ~
@@ -368,10 +372,10 @@ wiki.ArticleRevision.ip_address: (fields.W900) IPAddressField has been deprecate
   Password (again): 
   Superuser created successfully.
       #+END_EXAMPLE
-  19. Now login with admin credentials to studio from
+  20. Now login with admin credentials to studio from
       http://54.233.130.215:18010
-  20. Then go to http://54.233.130.215/admin/ to view admin console.
-  21. Check it
+  21. Then go to http://54.233.130.215/admin/ to view admin console.
+  22. Check it
       #+BEGIN_EXAMPLE
       Log into LMS as a staff user. Ensure you can log into Insights and see all courses you have staff access to.
       #+END_EXAMPLE
