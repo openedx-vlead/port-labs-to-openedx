@@ -157,11 +157,11 @@
      analytics machine home directory as =tracking.log=.
   7. Install following:
      #+BEGIN_EXAMPLE
-     sudo apt-get install git
-     sudo apt-get install python-pip
-     sudo apt-get install python-dev
-     sudo apt-get install libmysqlclient-dev
-     sudo pip install virtualenv
+     sudo apt-get install git -y
+     sudo apt-get install python-pip -y
+     sudo apt-get install python-dev -y
+     sudo apt-get install libmysqlclient-dev -y
+     sudo pip install virtualenv -y
      #+END_EXAMPLE
   8. Create virtualenv and activate it
      #+BEGIN_EXAMPLE
