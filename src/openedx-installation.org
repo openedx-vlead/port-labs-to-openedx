@@ -150,6 +150,9 @@
                  [[http://stackoverflow.com/questions/36246030/telnet-localhost-3306-returns-mysql-native-password-connection-closed-by-foreig?noredirect=1#comment60121887_36246030][stackoverflow-link]]
   5. Generate ssh key in lms machine and copy public key to analytics
      machine authorized_keys.
+     #+BEGIN_EXAMPLE
+     ubuntu@ip-172-31-22-202:~$ ssh-keygen -t rsa
+     #+END_EXAMPLE
   6. scp =/edx/var/log/tracking/tracking.log= file from lms machine to
      analytics machine home directory as =tracking.log=.
   7. Install following:
