@@ -90,7 +90,7 @@ cd /edx/app/edxapp/
 #+end_src
 - Observe changes.
   
-** Changing the site log on studio
+** Changing the site logo on studio
 - Change the directory
 
 #+begin_src example
@@ -119,3 +119,32 @@ cd /edx/app/edxapp/
   and to change the facebook url update variable =EDXAPP_PLATFORM_FACEBOOK_ACCOUNT= value to
   'http://www.facebook.com/VlabsIITB/' and to change the twitter update the
   variable =EDXAPP_PLATFORM_TWITTER_ACCOUNT= to '@TheVirtualLabs'
+
+
+** Adding/attaching external websites with edX
+Read document at https://github.com/edx/edx-platform/wiki/Alternate-site-for-marketing-links for enabling external sites in edX platform
+We used steps given at https://github.com/edx/edx-platform/wiki/Alternate-site-for-marketing-links#to-run-without-an-alternate-marketing-site
+
+#+begin_src command
+1. Login into edX VM as user =ubuntu=
+2. sudo su -
+3. cd /edx/app/edxapp/
+4. open lms.env.json file and set "ENABLE_MKTG_SITE": true
+5. opem cms.env.json file and set  "ENABLE_MKTG_SITE": true
+6. We can add more sections to it.
+
+#+begin_src command
+"MKTG_URL_LINK_MAP": {
+        "TOS": "tos",
+        "ROOT": "root",
+        "HONOR": "honor"
+        },
+
+#+end_src
+7. Open the default page IP/tos which will open a default terms and condtions page
+8. locate the file containing the text displayed by link. Using grep command we identified as tos.html
+9. locate tos.html
+10. vim themes/default/templates/static_templates/theme-tos.html
+11. Edit this file to customize your terms and conditions.
+#+end_src
+
