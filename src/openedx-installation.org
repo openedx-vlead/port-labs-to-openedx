@@ -277,7 +277,7 @@
       \q
       sudo /etc/init.d/mysql restart
       #+END_EXAMPLE
-  16. Check pipeline install, use =--skip-setup below=
+  16. Check pipeline install.
       #+BEGIN_EXAMPLE
       # Ensure you're in the pipeline virtualenv 
       remote-task --host localhost --repo https://github.com/edx/edx-analytics-pipeline --user ubuntu --override-config $HOME/edx-analytics-pipeline/config/devstack.cfg --wheel-url http://edx-wheelhouse.s3-website-us-east-1.amazonaws.com/Ubuntu/precise --remote-name analyticstack --wait TotalEventsDailyTask --interval 2015 --output-root hdfs://localhost:9000/output/ --local-scheduler
