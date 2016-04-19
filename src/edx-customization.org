@@ -119,3 +119,108 @@ cd /edx/app/edxapp/
   and to change the facebook url update variable =EDXAPP_PLATFORM_FACEBOOK_ACCOUNT= value to
   'http://www.facebook.com/VlabsIITB/' and to change the twitter update the
   variable =EDXAPP_PLATFORM_TWITTER_ACCOUNT= to '@TheVirtualLabs'
+** Adding/attaching external websites with edX
+Read document at https://github.com/edx/edx-platform/wiki/Alternate-site-for-marketing-links for enabling external sites in edX platform
+We used steps given at https://github.com/edx/edx-platform/wiki/Alternate-site-for-marketing-links#to-run-without-an-alternate-marketing-site
+
+#+begin_src command
+1. Login into edX VM as user =ubuntu=
+2. sudo su -
+3. cd /edx/app/edxapp/
+4. open lms.env.json file and set "ENABLE_MKTG_SITE": true
+5. opem cms.env.json file and set  "ENABLE_MKTG_SITE": true
+6. We can add more sections to it.
+
+#+begin_src command
+"MKTG_URL_LINK_MAP": {
+        "TOS": "tos",
+        "ROOT": "root",
+        "HONOR": "honor"
+        },
+
+#+end_src
+7. Open the default page IP/tos which will open a default terms and condtions page
+8. locate the file containing the text displayed by link. Using grep command we identified as tos.html
+9. locate tos.html
+10. vim themes/default/templates/static_templates/theme-tos.html
+11. Edit this file to customize your terms and conditions.
+#+end_src
+** Changing all email address with example.com domai
++ Replace all the email address with example.com 
++ Create new email id's with @vlabs.ac.in. Email id's identified are below -
+  Purpose                                       current email         | to be replaced with        |   Existence   |
+-----------------------------------------------------------------------------------------------------
+BUGS_EMAIL                                    bugs@example.com        edx-bugs@vlabs.ac.in          to be created
+BULK_EMAIL_DEFAULT_FROM_EMAIL                 no-reply@example.com    no-reply@vlabs.ac.in          exists
+CONTACT_EMAIL                                 info@example.com        engg@vlabs.ac.in              exists
+DEFAULT_FEEDBACK_EMAIL                        feedback@example.com    edx-feedback@vlabs.ac.in      to be created
+LTI_USER_EMAIL_DOMAIN                         lti.example.com         not needed for now             -               
+PAYMENT_SUPPORT_EMAIL                         billing@example.com     not needed for now             -                
+PRESS_EMAIL                                   press@example.com       not needed for now             -                     
+SERVER_EMAIL                                  devops@example.com      not needed for now             -                    
+TECH_SUPPORT_EMAIL                            technical@example.com   engg@vlabs.ac.in              exists
+UNIVERSITY_EMAIL                              university@example.com  not needed for now             -  
+** Sign in to Studio page
+   Steps for this has to be added.
+** Terms and conditions page of Studio signup
+*** Error 
+On edX platform when someone, a user click on =Register= button to register with edX platform.
+If an individual fills the form, check the checkbox for accepting terms and conditions and click submit, user get registered successfully.
+But if user clicks on =Terms and condtions and honor code= it opens a new page with "500 server error".
+
+*** Efforts
+**** Identify the file from where =Registration page= is getting served from.
+#+begin_src command
+1. Login to edX VM
+2. sudo su -
+3. cd /edx/app/edxapp/
+4. locate register.html
+#+end_src
+
+Read the source of reister.html.
+
+**** Searched a specific string on registration page 
+Search for string =I agree to the VLEAD Terms of Service and Honor Code. *= 
+#+begin_src command
+1. Login into edX VM as user =ubuntu=
+2. sudo su -
+3. cd /edx/app/edxapp/
+4. grep -iRn "I agree to the VLEAD Terms of Service and Honor Code. *" *
+
+#+end_src 
+
+Got a list of files from where this string was getting served from.  Changes
+made are not getting reflected 
+
+** Changing the place holders in registration page on LMS and CMS
+#+begin_src command
+1. Login to edX VM.
+2. sudo su -
+3. cd /edx/app/edxapp/
+4. grep -iRn "JaneDoe" 
+5. Many files containing this string will get listed.
+6. Identify appropriate file to edit or else make a change in all the files
+7. Restart edX services - /edx/bin/supervisorctl restart all
+8. Observe changes.
+#+end_src
+
+** Removing extra labels on edX from studio and other pages
+This link http://edx-courses.vlabs.ac.in:18010/signup contains some
+text "EdX, Open edX, Studio, and the edX and Open edX logos are
+registered trademarks or trademarks of edX Inc."  Follow the steps to
+remove this extra text from web page
+#+begin_src command
+1. Login to edX VM.
+2. sudo su -
+3. cd /edx/app/edxapp/
+4. grep -iRn <string mentioned in the problem" 
+5. Many files containing this string will get listed.
+6. Identify appropriate file to edit or else make a change in all the files
+7. Restart edX services - /edx/bin/supervisorctl restart all
+8. Observe changes.
+#+end_src
+
+
+
+** Adding an image on Reistration page
+This is fixed. Document to be uploaded.
