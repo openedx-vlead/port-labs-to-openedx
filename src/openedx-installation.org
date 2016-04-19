@@ -135,23 +135,19 @@
      security groups in both vm to accept connections from each other
      ips. Do following tests on analytics machine.
      #+BEGIN_EXAMPLE
-     curl lms.mysite.org
-     telnet mysql.mysite.org 3306
+     ubuntu@ip-172-31-19-247:~$ telnet 54.233.130.215 3306
+     Trying 54.233.130.215...
+     Connected to 54.233.130.215.
+     Escape character is '^]'.
+     a
+     5.6.14-1+debphp.org~precise+1Gx?r@'AP�z<Z1&h[pB96Bmysql_native_password
+     ^[
+     !#08S01Got packets out of orderConnection closed by foreign host.
      #+END_EXAMPLE
      + Status :: This is not an error as telnet is a mysql
                  client. mysql server is entitled to print anything
                  that mysql client understands. refer:
                  [[http://stackoverflow.com/questions/36246030/telnet-localhost-3306-returns-mysql-native-password-connection-closed-by-foreig?noredirect=1#comment60121887_36246030][stackoverflow-link]]
-       #+BEGIN_EXAMPLE
-       ubuntu@ip-172-31-19-247:~$ telnet 54.233.130.215 3306
-       Trying 54.233.130.215...
-       Connected to 54.233.130.215.
-       Escape character is '^]'.
-       a
-       5.6.14-1+debphp.org~precise+1Gx?r@'AP�z<Z1&h[pB96Bmysql_native_password
-       ^[
-       !#08S01Got packets out of orderConnection closed by foreign host.
-       #+END_EXAMPLE
   5. Generate ssh key in lms machine and copy public key to analytics
      machine authorized_keys.
   6. scp =/edx/var/log/tracking/tracking.log= file from lms machine to
