@@ -154,7 +154,6 @@
      analytics machine home directory as =tracking.log=.
   7. Install following:
      #+BEGIN_EXAMPLE
-     sudo apt-get update
      sudo apt-get install git
      sudo apt-get install python-pip
      sudo apt-get install python-dev
