@@ -232,6 +232,7 @@
   12. Get some test log files into HDFS
       + Copy some log files
         #+BEGIN_EXAMPLE
+        # Exit from hadoop user
         # scp /edx/var/log/tracking/tracking.log file from lms machine to analytics machine. Then...
         cd $HOME
         sudo mkdir -p /edx/var/log/tracking
