@@ -1,0 +1,70 @@
+* Base1 Machine Details
++ Operating System : CentOS 6.7 (64 bit) virtualized with OpenVZ and KVM.
++ For more info about H/W and OS details please [[http://wiki.vlabs.ac.in/index.php/Base1][Click here]]
+* Process for creating new VM on base1
++ ssh into base1 machine using below command.
+#+begin_example
+ssh -X root@<base1_ip>
+#+end_example
+*Note :-* Here -X will allow us to open application in GUI mode.
++ Change directory into vms folder
+#+begin_example 
+cd /mnt/das1/vms
+#+end_example
++ Create a folder with VM name
+#+begin_example
+mkdir test_vm
+#+end_example
++ Change PWD to newly created VM folder and use 'qemu-img' command to create
+   disk image for VM. For example, to create a 60GB disk image use: 
+#+begin_example
+qemu-img create -f qcow2 test_vm.qcow2 60G
+#+end_example
++ Run below command to view the virtual machines in GUI mode.
+#+begin_example
+[root@base1 vms]# virt-manager
+#+end_example
++ Click on =create new virtual machine= icon
++ Name your VM name and click on forward button.
++ Choose an ISO image from local disk for base1 use path as 
+   =/mnt/das1/operating_systems= and select OS name and its version number.
++ Choose at least 4GB of RAM and 2 CPUs.
++ Choose radio button (Select managed or other existing storage) and browse for
+  hard disk image for VM from location where it was created using qemu-img
+  command. In our case it will be in =/mnt/das1/vms/test_vm/testvm.qcow2=
++ Check Customize configuration before install Use correct bridge for
+  networking. You can use 'ifconfig' command on base machine to see which
+  bridge in base machine is in 10.4.12.0/22 range and use it while creating new
+  VM. Use =breth1= bridge in base1.
++ Then click on =Disk 1= choose advance options and select storage format as
+  =qcow2=. And apply
++ Click on begin installation to start the os installation process.
++ Once OS installation is done please log into the machine using user name and
+  password of the machine that you provided.
++ Configure eth0 interface to do so open file at =vim
+  /etc/network/interfaces= and add the below details before that find the
+  free available ip address in the range of 10.4.12.0/22 using =ping <ip>= command
+#+begin_example
+auto eth0
+iface eth0 inet static
+address <ip-address>
+netmask 255.255.252.0
+gateway 10.4.12.236
+#+end_example
++ Add gateway to resolve domain names edit =vim /etc/resolve.conf=
+#+begin_example
+nameserver 10.4.12.160
+#+end_example
++ Restart the network manager to apply new changes
+#+begin_example
+/etc/init.d/networking restart
+#+end_example
++ Now check the internet connection 
+#+begin_example
+ping vlabs.ac.in (or) ping google.com
+#+end_example
+* Process for creating & restoring snapshots
+[[https://www.sbarjatiya.com/notes_wiki/index.php/Creating_KVM_VM_with_qcow2_disk_format_for_supporting_snapshots][Clickhere]]
+
+* Setting Up edX platform
++ To setup edX platform [[https://github.com/vlead/port-labs-to-openedx/blob/develop/src/analytics.org][Go here]]

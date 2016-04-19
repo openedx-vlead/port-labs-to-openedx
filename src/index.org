@@ -12,21 +12,80 @@
   + On how different features of the Open edX platform - persistence, single
     sign, analytics - are leveraged by Virtual Labs
 
+* Benefits
+  
+  The features of Open edX platform that can be harnessed by Virtual Labs are:
+
+  1. Provides a Single Sing on - allows creation of a profile
+  2. Persistence - allows the user to get to a state in virtual labs from
+     where the user has left.
+  3. Authoring - provides a studio to create content
+  4. Analytics - provides usage of virtual labs
+  5. Quizz/Discussion boards - allows the author to create quizzes 
+  6. Versioning - provides a mechanism to version the authored content
+  7. Automated Lab content deployment - No special process to deploy the
+     content
+
 * Requirements
   1. Virtual Labs has a single sign on.  All the virtual labs are accessible
      using a single sign on.
   2. A user upon re-logging to virtual labs is returned to the same state that
      the user was in before logging out of virtual labs.
   3. User action data is captured that enables building various analytics.
+  4. The home page of virtual labs on Open edX platform facilitate searching of
+     labs, like the courses on edx.org
+  5. Style and theme of virtual labs on Open edX platform conveys a uniqueness
+     relevant to Indian context.
+  6. Feedback to be incorporated for virtual labs on Open edX.
+  7. Ability to manage the platform - perform backups, restore from a backup,
+     update to a newer version of Open edX.
+  8. Virtual Labs on Open edX should adhere to [[https://open.edx.org/trademark-guidelines][trademark guidelines]] stipulated
+     by Open edX platform. 
+     
+
+* Labs chosen
+
+  The first six labs are picked from the labs there were listed to be
+  demonstrated at T4E conference at NIT, Warangal.
+
+  |------+-------------------------------+------------------------+------+----------+--------------------|
+  | S.No | Lab Name                      | Discipline             | Lab  | Oped edX | Institute          |
+  |      |                               |                        | Url  | Sources  |                    |
+  |------+-------------------------------+------------------------+------+----------+--------------------|
+  |   1. | Computer Programming          | Computer Science       | [[http://cse02-iiith.vlabs.ac.in/][Link]] | [[https://github.com/vlead/Open-edX-Computer-Programming][Link]]     | IIIT, Hyderabad    |
+  |      | Lab                           |                        |      |          |                    |
+  |------+-------------------------------+------------------------+------+----------+--------------------|
+  |   2. | Structural Analysis           | Civil engineering      | [[http://eerc04-iiith.virtual-labs.ac.in/index.php][Link]] | [[https://github.com/vlead/Open-edX-Structural-Analysis][Link]]     | IIIT, Hyderabad    |
+  |------+-------------------------------+------------------------+------+----------+--------------------|
+  |   3. | Population Ecology II         | Biotechnology &        | [[http://pevii-au.virtual-labs.ac.in/][Link]] | [[https://github.com/vlead/Open-edX-Population-Ecology-2][Link]]     | Amrita, Coimbatore |
+  |      |                               | Biomedical Engineering |      |          |                    |
+  |------+-------------------------------+------------------------+------+----------+--------------------|
+  |   4. | Mine Automation               | Mechanical Engineering | [[http://iitkgp.vlab.co.in/?sub=40&brch=137][Link]] | [[https://github.com/vlead/open-edx-mine-automation][Link]]     | IIT, Kharagpur     |
+  |      | and Virtual Reality           |                        |      |          |                    |
+  |------+-------------------------------+------------------------+------+----------+--------------------|
+  |   5. | Chemical Engineering          | Chemical Engineering   | [[http://ce-iitb.vlabs.ac.in/][Link]] | [[https://github.com/vlead/open-edx-chemical-engineering][Link]]     | IIT, Bombay        |
+  |------+-------------------------------+------------------------+------+----------+--------------------|
+  |   6. | Sensors Modeling & Simulation | Electrical Engineering | [[http://sl-coep.vlabs.ac.in/][Link]] | [[https://github.com/vlead/open-edx-sensors-modeling-simulation][Link]]     | COE, Pune          |
+  |------+-------------------------------+------------------------+------+----------+--------------------|
+  |   7. | Industrial Electric           | Electrical             | [[http://ied-nitk.vlabs.ac.in/][Link]] | [[https://github.com/vlead/open-edx-industrial-electric-drives-lab][Link]]     | NIT, Surathkal     |
+  |      | Drives and Application        | Engineering            |      |          |                    |
+  |      | of PLC                        |                        |      |          |                    |
+  |------+-------------------------------+------------------------+------+----------+--------------------|
+  |   8. | Industrial Automation         | Electrical Engineering | [[http://ial-coep.vlabs.ac.in/Introduction.html][Link]] | [[https://github.com/vlead/open-edx-industrial-automation-lab][Link]]     | COE, Pune          |
+  |      | Laboratory                    |                        |      |          |                    |
+  |------+-------------------------------+------------------------+------+----------+--------------------|
+  |   9. | Hybrid Electronics            | Electronics &          | [[http://he-coep.vlabs.ac.in/][Link]] | [[https://github.com/vlead/open-edx-hybrid-electronics-lab][Link]]     | COE, Pune          |
+  |      |                               | Communications         |      |          |                    |
+  |------+-------------------------------+------------------------+------+----------+--------------------|
+  |  10. | Data Structures               | Computer Science       | [[http://cse01-iiith.vlabs.ac.in/][Link]] | [[https://github.com/vlead/open-edx-data-structures][Link]]     | IIIT, Hyderabad    |
+  |      |                               |                        |      |          |                    |
+  |------+-------------------------------+------------------------+------+----------+--------------------|
 
 
-* COMMENT Setting up Open edX platform on Vagrant
-*** COMMENT Setup the fullstack
-    fullstack of Open edX is setup using vagrant on developers' machines.
-    [[http://edx.readthedocs.org/projects/edx-installing-configuring-and-running/en/latest/fullstack/install_fullstack.html][Link to Open edX documentation]]
-
-** COMMENT Creating a course
-
+* Setup of Open edX platform and analytics and its management
+  - [[./analytics.org][Setup Open edX platform and Configure Open edX Analytics]]
+  - [[./backup.org][Procedure for taking database backup]]
+  - [[./manage-openedx.org][Management of Open edX platform]]
 
 * Planning
 ** Phases
@@ -44,32 +103,33 @@
 ** Phase I
    Porting of 10 labs to Open edX platform by VLEAD.
 
-   |---------------------------+------------------+------------------+------------------|
-   | Deliverable               | Effort &         | Start Date       | End Date         |
-   |                           | Resources        |                  |                  |
-   |---------------------------+------------------+------------------+------------------|
-   | Open edX platfrom         | 2+ person days   | [2016-02-02 Tue] | [2016-02-03 Wed] |
-   | on AWS                    | Shiva & Thirumal |                  |                  |
-   |---------------------------+------------------+------------------+------------------|
-   | Identification            | 1 person day     | [2016-02-02 Tue] | [2016-02-02 Tue] |
-   | of 10 labs                | Thirumal         |                  |                  |
-   |---------------------------+------------------+------------------+------------------|
-   | Porting of 10 labs        | 1 person day/lab | [2016-02-03 Wed] | [2016-02-10 Wed] |
-   | to Open edX               | Dinesh           |                  |                  |
-   | platfrom                  | Shiva            |                  |                  |
-   |---------------------------+------------------+------------------+------------------|
-   | Configuring Analytics     | 2 person days    | [2016-02-05 Fri] | [2016-02-08 Mon] |
-   | of Open edX for           | Thirumal         |                  |                  |
-   | virtual labs usage        |                  |                  |                  |
-   |---------------------------+------------------+------------------+------------------|
-   | Automation, porting a lab | 5 person days    | [2016-02-09 Tue] | [2016-02-15 Mon] |
-   | from github               | Thirumal         |                  |                  |
-   |---------------------------+------------------+------------------+------------------|
-   | Documentation of this     |                  | [2016-02-02 Tue] | [2016-02-15 Mon] |
-   | process                   |                  |                  |                  |
-   |---------------------------+------------------+------------------+------------------|
+   |---------------------------+------------------+------------------+------------------+--------|
+   | Deliverable               | Effort &         | Start Date       | End Date         |        |
+   |                           | Resources        |                  |                  | Status |
+   |---------------------------+------------------+------------------+------------------+--------|
+   | Open edX platfrom         | 2+ person days   | [2016-02-02 Tue] | [2016-02-03 Wed] | Done   |
+   | on AWS                    | Shiva & Thirumal |                  |                  |        |
+   |---------------------------+------------------+------------------+------------------+--------|
+   | Identification            | 1 person day     | [2016-02-02 Tue] | [2016-02-02 Tue] | Done   |
+   | of 10 labs                | Thirumal         |                  |                  |        |
+   |---------------------------+------------------+------------------+------------------+--------|
+   | Porting of 10 labs        | 1 person day/lab | [2016-02-03 Wed] | [2016-02-10 Wed] | Done   |
+   | to Open edX               | Dinesh           |                  |                  |        |
+   | platfrom                  | Shiva            |                  |                  |        |
+   |---------------------------+------------------+------------------+------------------+--------|
+   | Configuring Analytics     | 2 person days    | [2016-02-05 Fri] | [2016-02-08 Mon] |        |
+   | of Open edX for           | Thirumal         |                  |                  |        |
+   | virtual labs usage        |                  |                  |                  |        |
+   |---------------------------+------------------+------------------+------------------+--------|
+   | Automation, porting a lab | 5 person days    | [2016-02-09 Tue] | [2016-02-15 Mon] |        |
+   | from github               | Thirumal         |                  |                  |        |
+   |---------------------------+------------------+------------------+------------------+--------|
+   | Documentation of this     |                  | [2016-02-02 Tue] | [2016-02-15 Mon] |        |
+   | process                   |                  |                  |                  |        |
+   |---------------------------+------------------+------------------+------------------+--------|
 
-
+* Open Questions
+  1. How does a database used by a lab get integrated into Open edX platform?
 
 * COMMENT Demo
   - analytics
@@ -80,3 +140,4 @@
   - authoring process,
   - backend connection to running simulation for labs
   - backup, restore and logging for incident response and troubleshooting
+

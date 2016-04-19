@@ -1,0 +1,406 @@
+#+TITLE: Setting up Open edX platform and Analytics Servers
+#+Author: Setup Open edX platform and Analytics
+#+Date: [2016-01-27 Wed]
+#+PROPERTY: results output
+#+PROPERTY: exports code
+#+SETUPFILE: ../org-templates/level-0.org
+
+* Introduction
+  Analytics provide the user activity while using virtual labs on Open edX
+  platform.  This data allows an insight into the usage of virtual labs that
+  could be used for various purposes.  
+* Requirements
+  - One VM for Open edX platform setup.
+  - One more VM for setting up analytics.
+* Architecture of Open edX Analytics Gathering
+
+  [[http://edx.readthedocs.org/projects/edx-installing-configuring-and-running/en/latest/_images/Analytics_Pipeline.png][Architecture Diagram]]
+
+  Capturing of Analytics is three phased.  
+  1. LMS, read as Open edX platfrom from which the labs are run, captures the
+     events of a user.
+  2. Pipeline reads this data from the platform, collates and creates a store
+     in a format that could be read by an API.
+  3. edx Analytics Data API provides an HTTP interface to access the store
+     created by the Pipeline.
+  4. Finally insights application will serve the analytics of courses
+     which are hosted on LMS.
+  The platform also exposes a [[http://edx.readthedocs.org/projects/edx-platform-api/en/latest/course_structure/index.html][set of API]] to get all the courses that are being
+  run on a platform. 
+
+* Setting up Open edX platform on AWS
+** Launch instance on AWS ( Provision of Open edX setup)
+   The following VMs are created in US-West ( N. California) region.
+   By default some AMIs on AWS comes with Open edX platform setup.
+ 
+   Use any of the following instances from AWS for Open edX platform
+   setup.
+   - From Community AMI ::
+     + Chose ami-ad161ee8 with at least 4GB of RAM and 50GB HDD      
+   - From AWS Marketplace ::
+     + Chose AMI : Open edX powered by Bitnami (HVM).
+
+   - Use the Public IP of the instance to see the web console of
+     Open edX platform 
+     + port 80 is to see the default edx web console
+     + If we want to see the edX studio web console, use 18010 port
+       number
+       #+BEGIN_EXAMPLE
+       public_ip:18010    # Studio
+       http://,public-ip> # courses dashboard
+       #+END_EXAMPLE
+   - Use satff@example.com as user email-id and edx as password for
+     logging into edx studio and to make changes in courses
+*** Using manual steps to Setup Open edX platform
+    - Launch a VM ubuntu 12.04 64 bit on AWS with above VM details
+    - Update and upgrade VM
+      #+BEGIN_SRC 
+      sudo apt-get update -y
+      sudo apt-get upgrade -y
+      #+END_SRC
+    - Perform the steps bellow 
+      #+BEGIN_SRC 
+      sudo apt-get install -y build-essential software-properties-common python-software-properties curl git-core libxml2-dev libxslt1-dev libfreetype6-dev python-pip python-apt python-dev libxmlsec1-dev swig libmysqlclient-dev
+      sudo pip install --upgrade pip
+      #+END_SRC
+    - On the new server, clone the configuration repo
+      #+BEGIN_SRC 
+      cd /var/tmp
+      git clone https://github.com/edx/configuration
+      #+END_SRC
+    - Allow password based SSH authentication. For that edit the
+      common role inside of
+      =configuration/playbooks/roles/common_vars/defaults/main.yml= and
+      set *COMMON_SSH_PASSWORD_AUTH to "yes"*
+    - Install the ansible requirements 
+      #+BEGIN_SRC 
+      cd /var/tmp/configuration
+      sudo pip install -r requirements.txt
+      #+END_SRC
+    - NOTE :: By default, next command (which would run play books to
+	      setup platform)uses edx-platform master branch. Latest
+	      release is dogwood.
+	    
+	      So, set environment variable for OPENEDX_RELEASE
+	      variable for installing required Open edX platform
+	      release.
+	     
+	      For example, 
+	      #+BEGIN_EXAMPLE
+	      export OPENEDX_RELEASE=named-release/birtch.2
+	      or 
+	      export OPENEDX_RELEASE=named-release/cypress
+	      #+END_EXAMPLE
+    - NOTE :: You may be getting the problem with paramiko
+	      package. Install it and run the below command.
+		#+BEGIN_EXAMPLE
+		sudo pip install paramiko==1.10
+		#+END_EXAMPLE
+      
+    - Run the edx_sandbox.yml playbook in the configuration/playbooks directory
+      #+BEGIN_SRC 
+      cd /var/tmp/configuration/playbooks && sudo ansible-playbook -c local ./edx_sandbox.yml -i "localhost,"
+      #+END_SRC
+    - Reference
+      https://github.com/edx/configuration/wiki/edX-Ubuntu-12.04-64-bit-Installation. 
+
+** Configure edX platform so that it gives us proper verification link
+   - Modify the files 
+     #+BEGIN_SRC 
+     vim /edx/app/edxapp/lms.env.json
+     vim /edx/app/edxapp/cms.env.json
+     #+END_SRC
+     and add the FQDN of LMS machine to =SITE_NAME= variable in both the
+     files. 
+   - Restart the edx services 
+     #+BEGIN_SRC 
+     /edx/bin/supervisorctl restart edxapp:       
+     edxapp:cms: stopped
+     edxapp:lms: stopped
+     edxapp:lms: started
+     edxapp:cms: started
+     
+     /edx/bin/supervisorctl restart edxapp_worker:
+     edxapp_worker:cms_low_3: stopped
+     edxapp_worker:lms_high_mem_2: stopped
+     edxapp_worker:lms_default_3: stopped
+     edxapp_worker:cms_high_1: stopped
+     edxapp_worker:lms_low_1: stopped
+     edxapp_worker:cms_default_4: stopped
+     edxapp_worker:lms_high_4: stopped
+     edxapp_worker:cms_low_3: started
+     edxapp_worker:lms_high_mem_2: started
+     edxapp_worker:lms_default_3: started
+     edxapp_worker:cms_high_1: started
+     edxapp_worker:lms_low_1: started
+     edxapp_worker:cms_default_4: started
+     edxapp_worker:lms_high_4: started
+     #+END_SRC
+** Update Analytics Dashboard URL on LMS machine
+   - Open the file =/edx/app/edxapp/lms.env.json= and update following
+     variable with Analytics/insights fqdn/public-ip with the prpoer
+     port number on which insights app is running
+     #+BEGIN_EXAMPLE
+     "ANALYTICS_DASHBOARD_URL": "http://54.153.71.178:18110
+     #+END_EXAMPLE
+   - Restart the edX services 
+     #+BEGIN_SRC 
+     /edx/bin/supervisorctl restart edxapp:       
+     /edx/bin/supervisorctl restart edxapp_worker:
+     #+END_SRC
+** Configure Mysql server so that it allows remote machines to execute queries
+   Allow Analytics machine to connect LMS machine's databases by
+   running the following example commands
+   - Log in as root user
+   #+BEGIN_EXAMPLE
+   mysql -uroot -p 
+   #+END_EXAMPLE
+   - Grant permissions from analytics machine with the following details
+     #+BEGIN_EXAMPLE
+     mysql> GRANT ALL PRIVILEGES ON edxapp.* TO 'edxapp001'@'<analytics-server-ip>' IDENTIFIED BY 'password';
+     #+END_EXAMPLE
+   
+   LMS database( Mysql) is not open for all remote hosts. It is open
+   for only localhost.
+   
+   
+   In order to make database open for all remote hosts, we need to do
+   the following steps.
+   - Open =/et/mysql/my.conf=
+   - Change =bind-address= from =127.0.0.1= to =0.0.0.0=
+   - Restart the mysql server
+     #+BEGIN_EXAMPLE
+     /etc/init.d/mysql restart
+     #+END_EXAMPLE
+   - Reference 
+     https://easyengine.io/tutorials/mysql/remote-access/     
+* Setting up Open edX platform on a VM (Base4)
+  - Minimum hardware requirements 
+    + RAM : 4GB 
+    + HDD : 50GB
+    + CPUs: 2 
+  - Create a VM using
+    http://wiki.vlabs.ac.in/index.php/Creating_new_VM link 
+  - After creating VM, follow the steps given at [[Using manual steps to
+    Setup Open edX platform]] to setup Open edX platform.
+* Configure Open edX analytics for the courses 
+** Setup edx-analytics-pipeline
+   1. Create a saperate VM with at least 2GB of RAM and 30GB of HDD
+      for setting up edX analytics
+   2. Update and upgrade the VM
+      #+BEGIN_EXAMPLE
+      sudo apt-get update -y
+      sudo apt-get upgrade -y
+      #+END_EXAMPLE
+   3. Create a separate virtual environment for the edx analytics setup.
+      #+BEGIN_EXAMPLE
+      # create an "ansible" virtualenv and activate it
+      virtualenv ansible
+      . ansible/bin/activate
+      #+END_EXAMPLE
+   4. Do the following steps
+      #+BEGIN_EXAMPLE
+      git clone https://github.com/edx/configuration.git
+
+      cd configuration/
+    
+      pip install -r requirements.txt
+    
+      cd playbooks/edx-east/
+      sudo ansible-playbook -i localhost, -c local analytics_single.yml --extra-vars "INSIGHTS_LMS_BASE=<LMS_HOSTNAME> INSIGHTS_BASE_URL=<INSIGHTS_HOSTNAME>
+      # (If your site uses https, change the scheme and set the oauth flag to true. Enforce_secure means "insist on https".)
+    
+    
+      # wait for a while :)
+      #+END_EXAMPLE
+   5. Run the following commands to see hadoop job. This job has
+      built-in "compute pi"
+      #+BEGIN_EXAMPLE
+      sudo su - hadoop
+  
+      cd /edx/app/hadoop
+ 
+      hadoop jar hadoop-2.3.0/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.3.0.jar pi 2 100
+      # it should compute something -- I got pi = 3.12. Close enough :)
+      #+END_EXAMPLE
+   6. Also make sure you can run hive
+      #+BEGIN_EXAMPLE
+      /edx/app/hadoop/hive/bin/hive
+      # it should work
+      ^D to get back to your regular user
+      #+END_EXAMPLE
+   7. Get some test logs into HDFS
+      
+      #+BEGIN_EXAMPLE
+      # scp tracking.log onto the machine from the LMS. Then...
+      sudo mkdir -p /edx/var/log/tracking # if directory not exists.
+      sudo scp root@<LMS-IP>:/edx/var/log/tracking/tracking.log /edx/var/log/tracking
+      sudo chown hadoop /edx/var/log/tracking/tracking.log
+      # wait a minute -- ansible creates a cron job to load files in that dir every minute
+    
+      # Check it  
+      hdfs dfs -ls /data
+    
+      Found 1 items
+      -rw-r--r--   1 hadoop supergroup     308814 2015-10-15 14:31 /data/tracking.log
+      #+END_EXAMPLE
+   8. Setup PIPELINE 
+      #+BEGIN_SRC 
+      ssh-keygen -t rsa -f ~/.ssh/id_rsa -P ''
+      echo >> ~/.ssh/authorized_keys # Make sure there's a newline at the end
+      cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+      # check: ssh localhost "echo It worked!" -- make sure it works.
+  
+      # Make a new virtualenv -- otherwise will have conflicts
+      virtualenv pipeline
+      . pipeline/bin/activate
+  
+  
+      git clone https://github.com/edx/edx-analytics-pipeline
+      cd edx-analytics-pipeline
+  
+      make bootstrap
+    
+      #+END_SRC
+   9. Check the pipeline install by running a simple job to count
+      events per day.
+
+      *NOTE* : You may have to change the user name in the following
+      command according to your system user accounts. 
+
+      For example, If you want to run the command from root user (ssh
+      access should be enabled for this access) then provide *--user
+      root*
+      #+BEGIN_SRC 
+      # Ensure you're in the pipeline virtualenv 
+      remote-task --host localhost --repo https://github.com/edx/edx-analytics-pipeline --user ubuntu --override-config $HOME/edx-analytics-pipeline/config/devstack.cfg --wheel-url http://edx-wheelhouse.s3-website-us-east-1.amazonaws.com/Ubuntu/precise --remote-name analyticstack --wait TotalEventsDailyTask --interval 2015 --output-root hdfs://localhost:9000/output/ --local-scheduler
+      #+END_SRC
+   10. Update the following file so that insights will be connected to
+       LMS edxapp database.
+       #+BEGIN_SRC 
+       sudo vim /edx/etc/edx-analytics-pipeline/input.json
+       # put in the right url and credentials for your LMS database
+       #+END_SRC
+       - Test it by running the following command. The output of the
+	 below command shows the mysql queries. 
+	 #+BEGIN_SRC
+	 remote-task --host localhost --user ubuntu --remote-name analyticstack --skip-setup --wait ImportEnrollmentsIntoMysql --interval 2015 --local-scheduler
+	 #+END_SRC
+
+   11. Create OAUTH2 client_id and secret from Django administartion
+       page of LMS machine
+       - *How to create OAUTH2 client_id and secret key:*
+	 By default, edx-platform is not providing/creating default
+	 user and password for signing in. So we need to create a
+	 superuser so that we can access the django admin page using
+	 those credentials. 
+	
+	 Create super user by issuing following commands on the LMS
+	 machine.
+	 #+BEGIN_SRC 
+	 sudo -u www-data /edx/bin/python.edxapp ./manage.py lms --settings aws create_user -s -p edx -e user@example.com
+	 sudo -u www-data /edx/bin/python.edxapp ./manage.py lms --settings aws changepassword user
+	 sudo -u www-data /edx/bin/python.edxapp ./manage.py lms --settings aws shell
+
+	 from django.contrib.auth.models import User
+	 me = User.objects.get(username="user")
+	 me.is_superuser = True
+	 me.is_staff = True
+	 me.save()
+	 #+END_SRC
+
+       - Do the following steps
+	 + Log in to Django admin page
+	 + Find the Oauth2 table/app in the admin page
+	 + Add client 
+	 + Find the Oauth2_provider table/app
+	 + Add created client to Trusted clients
+   12. On insights VM, you will now need to update three settings: Open
+       the file =/edx/etc/insights.yml= and update the following
+       variables with appropriate values (that are generated
+       automatically on django admin page).
+       #+BEGIN_SRC 
+       SOCIAL_AUTH_EDX_OIDC_KEY: '<PREFILLED VALUE 1 from LMS>'
+       SOCIAL_AUTH_EDX_OIDC_SECRET: '<PREFILLED VALUE 2 FROM LMS>'
+       SOCIAL_AUTH_EDX_OIDC_URL_ROOT: '<LMS URL>/oauth2'
+       #+END_SRC
+
+   13. References
+       - https://openedx.atlassian.net/wiki/display/OpenOPS/edX+Analytics+Installation
+       - https://openedx.atlassian.net/wiki/pages/viewpage.action?spaceKey=AN&title=Configuring+Insights+for+Open+ID+Connect+SSO+with+LMS
+   
+** Setup edx-analtics-data-api
+   - Create a separate virtual environment for the analytics-api and
+     activate it.
+     #+BEGIN_SRC 
+     virtualenv analytics-api
+     . analytics-api/bin/activate
+     #+END_SRC
+   - Clone the analytics-api repo
+     #+BEGIN_SRC 
+     git clone https://github.com/edx/edx-analytics-data-api
+     #+END_SRC
+   - Follow the steps given at
+     https://github.com/edx/edx-analytics-data-api
+     and see the analytics_api.
+   - (I am stuck here) I was able to see the analytics-api with analytics database but
+     analytics-api should get the analytics of courses from existing
+     database not with dummy(analytics) database.  Solution might be,
+     We have to tell analytics-api to use *result store* database.
+    
+     *result store* is a database on insights VM which stores all the
+     course related data.
+
+** Test LMS and Insights for analytics
+    - *Page Not Found* :: 
+      + Log into LMS as a staff@example.com 
+      + Select any course
+      + Navigate to course analytics button/link (Click on instructor
+        button)
+      + Redirects to LMS machine to see the analytics.
+      + Page not found  
+
+* (OPTIONAL)Setting up Open edX platform Using Automation scripts (For me it was not working) 
+  - Launch an Ubuntu 12.04 64 bit on AWS Minimum Requirements as
+    follows for setting up Open edX platform
+  - Instance id :  ami-019b6745
+    + Instance Type: t2.medium
+    + RAM : 4 GB
+    + Hard Disk : 50 GB
+  - SSH to launched instance using 
+  - Update and upgrade instance
+    #+BEGIN_EXAMPLE
+    sudo apt-get update -y  
+    sudo apt-get upgrade -y
+    #+END_EXAMPLE
+    #+BEGIN_EXAMPLE
+    ssh -i "Open edX.pem" ubuntu@ec2-54-153-2-214.us-west-1.compute.amazonaws.com
+    #+END_EXAMPLE
+  - Reboot the instance 
+    #+BEGIN_EXAMPLE
+    sudo reboot
+    #+END_EXAMPLE
+  - Automated Installation scripts
+    + Install Open edX release 
+      #+BEGIN_EXAMPLE
+      export OPENEDX_RELEASE=named-release/cypress
+      wget https://raw.githubusercontent.com/edx/configuration/master/util/install/ansible-bootstrap.sh -O - | sudo bash     
+      wget https://raw.githubusercontent.com/edx/configuration/master/util/install/sandbox.sh -O - | bash     
+      #+END_EXAMPLE
+  - NOTE :: In second script, edx_ansible role is trying to check
+	    out to release of edx_ansible but it is unable to do
+	    that. I have tried many times running second script but
+	    no result.
+
+   After working on this for almost 5 hours,due to some problems
+   with automation scripts I decided to go and follow the
+   manual steps to setup Open edX platform.
+ 
+* References
+  - https://github.com/edx/configuration/wiki
+  - http://edx-developer-guide.readthedocs.org/en/latest/public_sandboxes.html
+  - https://openedx.atlassian.net/wiki/display/OPEN/Debugging+Issues+with+LMS+and+Studio
+  - https://github.com/edx/edx-analytics-pipeline/wiki
+  - http://edx.readthedocs.org/projects/edx-installing-configuring-and-running/en/latest/analytics/install_analytics.html
+  - https://github.com/open-craft/edx-analytics-devstack
+      
