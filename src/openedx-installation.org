@@ -1,6 +1,7 @@
 #+Title: Openedx Installation
 #+Date: <2016-03-25 Fri>
 #+Author: Yogesh Agrawal
+#+Email: yogeshiiith@gmail.com; yogesh@vlabs.ac.in
 
 * Introduction
   This document describes the [[https://openedx.atlassian.net/wiki/display/OpenOPS/Native+Open+edX+Ubuntu+12.04+64+bit+Installation][steps]] to install openedx lms and
@@ -10,8 +11,8 @@
   - Ubuntu-12.04 amd64
   - minimum 4gb of memory
   - at least one 2.00 GHZ CPU
-  - Minimum 25gb of free disk.
-  - Recommended :: m3.medium server.
+  - Minimum 25gb of free disk; we allotted 50gb disk space
+  - Recommended is m3.medium server, but we used m3.large
 
 * Edx lms platform installation steps
   1. Launch an instance for edx lms.
