@@ -161,7 +161,7 @@
      sudo apt-get install python-pip -y
      sudo apt-get install python-dev -y
      sudo apt-get install libmysqlclient-dev -y
-     sudo pip install virtualenv -y
+     sudo pip install virtualenv
      #+END_EXAMPLE
   8. Create virtualenv and activate it
      #+BEGIN_EXAMPLE
