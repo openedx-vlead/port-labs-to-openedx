@@ -1,0 +1,121 @@
+#+Title: Customizing edx-platform look and feel
+#+Date: April 18, 2016
+#+Author: Systems' team
+
+** Changing the body of activation mail sent to a user on registration
+- Log into the edX VM.
+- Enter into history mode
+
+#+begin_src example
+sudo su -
+#+end_src example
+
+- Change directory to
+#+begin_src example
+cd /edx/app/edxapp/
+#+end_src
+
+-  Edit the file 
+
+#+begin_src example
+/edx/app/edxapp/edx-platform/lms/templates/emails/activation_email.txt
+#+end_src
+
+- Make changes in the text as per the requirement.
+- Restart edX services 
+
+#+begin_src example
+/edx/bin/supervisorctl restart all
+#+end_src
+
+- Observe changes.
+
+** Changing footer contents on studio landing page
+- Change directory to
+
+#+begin_src example
+cd /edx/app/edxapp/
+#+end_src
+- Edit the file
+
+#+begin_src example
+ /edx/app/edxapp/edx-platform/cms/templates/widgets/footer.html
+#+end_src
+- Make changes in the text as per the requirement.
+- Restart edX services
+
+#+begin_src example
+/edx/bin/supervisorctl restart all
+#+end_src
+-Observe changes.
+ 
+** Changing account activation notification to a registered user
+- Change directory to
+
+#+begin_src example
+cd /edx/app/edxapp/
+#+end_src
+- Edit the file
+
+#+begin_src example
+/edx/app/edxapp/edx-platform/lms/templates/registration/activate_account_notice.html
+#+end_src
+- Make changes in the text as per the requirement.
+- Restart edX services
+
+#+begin_src example 
+/edx/bin/supervisorctl restart all
+#+end_src
+- Observe changes.
+ 
+** Changing platform name in edX LMS and CMS
+- Change directory to
+
+#+begin_src example
+cd /edx/app/edxapp/
+#+end_src
+- Edit the file 
+#+begin_src example
+/edx/app/edxapp/lms.env.json
+#+end_src
+- Replace  the variable value as "PLATFORM_NAME": "Virtual-Labs" and save file.
+- Edit file 
+#+begin_src example
+/edx/app/edxapp/cms.env.json
+#+end_src
+- Replace the variable values as "PLATFORM_NAME": "Virtual-Labs" and save file.
+- Restart edX services
+#+begin_src example 
+/edx/bin/supervisorctl restart all
+#+end_src
+- Observe changes.
+  
+** Changing the site log on studio
+- Change the directory
+
+#+begin_src example
+cd /edx/app/edxapp/
+#+end_src
+- Change the png file accordingly
+#+begin_src example
+/edx/var/edxapp/staticfiles/d00604d/images/studio-logo.7eec09d43a49.png
+#+end_src
+
+- Restart edX services
+
+#+begin_src example
+/edx/bin/supervisorctl restart all
+#+end_src
+- Observe changes.
+
+** Changing site name
+- Open the file =cms.env.json= file using =vim /edx/app/edxapp/cms.env.json=
+  and change the variable name =SITE_NAME= to SITE_NAME="edx-courses.vlabs.ac.in"
+- Change the same variable value at =vim /edx/app/edxapp/lms.env.json=
+
+** Changing url for social networks (facebook.com, twitter.com)
+- Open file =vim
+  /edx/app/edxapp/edx-platform/lms/static/templates/student_account/register.underscore=
+  and to change the facebook url update variable =EDXAPP_PLATFORM_FACEBOOK_ACCOUNT= value to
+  'http://www.facebook.com/VlabsIITB/' and to change the twitter update the
+  variable =EDXAPP_PLATFORM_TWITTER_ACCOUNT= to '@TheVirtualLabs'
