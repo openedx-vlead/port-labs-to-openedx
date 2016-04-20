@@ -25,3 +25,4 @@ src/org-templates
 src/style
 sitemap*
 lint_output
+*.html
