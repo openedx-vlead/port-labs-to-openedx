@@ -183,38 +183,6 @@
       cd playbooks/edx-east/
       ansible-playbook -i localhost, -c local analytics_single.yml --extra-vars "INSIGHTS_LMS_BASE=http://54.233.130.215" 
       #+END_EXAMPLE
-      - Error :: This fails as follows
-	#+BEGIN_EXAMPLE
-	Collecting MySQL-python==1.2.5 (from -r requirements.txt (line 21))
-	Downloading MySQL-python-1.2.5.zip (108kB)
-	100% |████████████████████████████████| 112kB 9.0MB/s 
-	Complete output from command python setup.py egg_info:
-	sh: 1: mysql_config: not found
-	Traceback (most recent call last):
-	File "<string>", line 1, in <module>
-	File "/tmp/pip-build-ppl3bW/MySQL-python/setup.py", line 17, in <module>
-          metadata, options = get_config()
-	File "/tmp/pip-build-ppl3bW/MySQL-python/setup_posix.py", line 43, in get_config
-          libs = mysql_config("libs_r")
-	File "/tmp/pip-build-ppl3bW/MySQL-python/setup_posix.py", line 25, in mysql_config
-          raise EnvironmentError("%s not found" % (mysql_config.path,))
-	EnvironmentError: mysql_config not found
-     
-	----------------------------------------
-	Command "python setup.py egg_info" failed with error code 1 in /tmp/pip-build-ppl3bW/MySQL-python/
-	#+END_EXAMPLE
-
-      - Solution :: The error got resolved by installing following
-                    package. Then rerun installation of requirements.
-                    source:
-                    http://stackoverflow.com/questions/5178292/pip-install-mysql-python-fails-with-environmenterror-mysql-config-not-found
-	#+BEGIN_EXAMPLE
-	sudo apt-get install libmysqlclient-dev
-	pip install MySQL-python==1.2.5
-	pip install -r requirements.txt
-	#+END_EXAMPLE
-
-      - status :: ran ansible playbook at 16:52; end: 17:18
   11. Check it
       + Run test job
         #+BEGIN_EXAMPLE
