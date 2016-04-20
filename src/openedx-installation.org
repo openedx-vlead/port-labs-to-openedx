@@ -229,7 +229,8 @@
       # check: ssh localhost "echo It worked" -- make sure it works.
         
       # Make a new virtualenv -- otherwise will have conflicts
-      # Exit from existing virtual env with deactivate command
+      # Exit from existing virtual env
+      deactivate
       virtualenv pipeline
       . pipeline/bin/activate
        
