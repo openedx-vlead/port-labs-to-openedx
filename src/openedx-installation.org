@@ -200,6 +200,7 @@
 	----------------------------------------
 	Command "python setup.py egg_info" failed with error code 1 in /tmp/pip-build-ppl3bW/MySQL-python/
 	#+END_EXAMPLE
+
       - Solution :: The error got resolved by installing following
                     package. Then rerun installation of requirements.
                     source:
@@ -209,6 +210,7 @@
 	pip install MySQL-python==1.2.5
 	pip install -r requirements.txt
 	#+END_EXAMPLE
+
       - status :: ran ansible playbook at 16:52; end: 17:18
   11. Check it
       + Run test job
@@ -316,8 +318,8 @@
           mysql> \q
           Bye
           #+END_EXAMPLE
-  18. Run following on *lms machine*
-      + INSIGHTS_BASE_URL :: 54.233.142.226
+  18. Run following on *lms machine*, set =INSIGHTS_BASE_URL= variable
+      properly e.g. =54.233.142.226=
       #+BEGIN_EXAMPLE
       sudo su edxapp -s /bin/bash
       /edx/bin/python.edxapp /edx/bin/manage.edxapp lms --setting=aws create_oauth2_client http://54.233.142.226:18110 http://54.233.142.226:18110/complete/edx-oidc/ confidential --client_name insights --client_id YOUR_OAUTH2_KEY --client_secret secret --trusted
