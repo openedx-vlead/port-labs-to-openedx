@@ -236,7 +236,12 @@
        
       git clone https://github.com/edx/edx-analytics-pipeline
       cd edx-analytics-pipeline
+      git checkout 4f1ade8  (named-release/dogwood)
       make bootstrap
+      #+END_EXAMPLE
+      - Error ::
+      #+BEGIN_EXAMPLE
+      Cannot uninstall requirement edx.analytics.tasks, not installed
       #+END_EXAMPLE
   14. config file for pipeline
       #+BEGIN_EXAMPLE
