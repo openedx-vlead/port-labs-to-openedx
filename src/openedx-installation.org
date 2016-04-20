@@ -168,17 +168,20 @@
      virtualenv ansible
      . ansible/bin/activate
      #+END_EXAMPLE
-  9. Clone the repo and install the requirements.
+  9. Clone the repo, checkout out dogwood version
+     https://github.com/edx/configuration/releases/tag/named-release%2Fdogwood
+     and then install the requirements.
      #+BEGIN_EXAMPLE
      git clone https://github.com/edx/configuration.git
      cd configuration/
+     git checkout b677cea
      pip install -r requirements.txt
      #+END_EXAMPLE
   10. Run ansible playbook as follows. Replace =INSIGHTS_LMS_BASE= and
       =INSIGHTS_BASE_URL= variable with lms machine ip.
       #+BEGIN_EXAMPLE
       cd playbooks/edx-east/
-      ansible-playbook -i localhost, -c local analytics_single.yml --extra-vars "INSIGHTS_LMS_BASE=http://54.233.130.215 INSIGHTS_BASE_URL=http://54.233.142.226:8100" 
+      ansible-playbook -i localhost, -c local analytics_single.yml --extra-vars "INSIGHTS_LMS_BASE=http://54.233.130.215" 
       #+END_EXAMPLE
       - Error :: This fails as follows
 	#+BEGIN_EXAMPLE
