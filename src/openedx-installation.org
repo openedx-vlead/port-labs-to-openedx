@@ -243,12 +243,17 @@
       #+BEGIN_EXAMPLE
       Cannot uninstall requirement edx.analytics.tasks, not installed
       #+END_EXAMPLE
-  14. config file for pipeline
+  14. Check the pipeline install by running a simple job to count
+      events per day.
+      #+BEGIN_EXAMPLE
+      remote-task --host localhost --repo https://github.com/edx/edx-analytics-pipeline --user ubuntu --override-config $HOME/edx-analytics-pipeline/config/devstack.cfg --wheel-url http://edx-wheelhouse.s3-website-us-east-1.amazonaws.com/Ubuntu/precise --remote-name analyticstack --wait TotalEventsDailyTask --interval 2015 --output-root hdfs://localhost:9000/output/ --local-scheduler
+      #+END_EXAMPLE 
+  15. config file for pipeline
       #+BEGIN_EXAMPLE
       sudo vim /edx/etc/edx-analytics-pipeline/input.json
       # put in the right url and credentials for your LMS database
       #+END_EXAMPLE
-  15. Grant =read_only= user privileges to login remotely to LMS
+  16. Grant =read_only= user privileges to login remotely to LMS
       #+BEGIN_EXAMPLE
       mysql -u root
       GRANT ALL PRIVILEGES ON *.* TO 'read_only'@'%' IDENTIFIED BY 'password' WITH GRANT OPTION;
@@ -256,12 +261,12 @@
       \q
       sudo /etc/init.d/mysql restart
       #+END_EXAMPLE
-  16. Check pipeline install.
+  17. Check pipeline install.
       #+BEGIN_EXAMPLE
       # Ensure you're in the pipeline virtualenv 
       remote-task --host localhost --repo https://github.com/edx/edx-analytics-pipeline --user ubuntu --override-config $HOME/edx-analytics-pipeline/config/devstack.cfg --wheel-url http://edx-wheelhouse.s3-website-us-east-1.amazonaws.com/Ubuntu/precise --remote-name analyticstack --wait TotalEventsDailyTask --interval 2015 --output-root hdfs://localhost:9000/output/ --local-scheduler
       #+END_EXAMPLE
-  17. Finish rest of the pipeline config
+  18. Finish rest of the pipeline config
       + Test setup
         #+BEGIN_EXAMPLE
         remote-task --host localhost --user ubuntu --remote-name analyticstack --skip-setup --wait ImportEnrollmentsIntoMysql --interval 2015 --local-scheduler
@@ -295,7 +300,7 @@
           mysql> \q
           Bye
           #+END_EXAMPLE
-  18. Run following on *lms machine*, set =INSIGHTS_BASE_URL= variable
+  19. Run following on *lms machine*, set =INSIGHTS_BASE_URL= variable
       properly e.g. =54.233.142.226=
       #+BEGIN_EXAMPLE
       sudo su edxapp -s /bin/bash
@@ -335,7 +340,7 @@ wiki.ArticleRevision.ip_address: (fields.W900) IPAddressField has been deprecate
 }
 
       #+END_EXAMPLE
-  19. Create admin user
+  20. Create admin user
       #+BEGIN_EXAMPLE
       sudo su edxapp -s /bin/bash
       cd ~
@@ -353,10 +358,10 @@ wiki.ArticleRevision.ip_address: (fields.W900) IPAddressField has been deprecate
   Password (again): 
   Superuser created successfully.
       #+END_EXAMPLE
-  20. Now login with admin credentials to studio from
+  21. Now login with admin credentials to studio from
       http://54.233.130.215:18010
-  21. Then go to http://54.233.130.215/admin/ to view admin console.
-  22. Check it
+  22. Then go to http://54.233.130.215/admin/ to view admin console.
+  23. Check it
       #+BEGIN_EXAMPLE
       Log into LMS as a staff user. Ensure you can log into Insights and see all courses you have staff access to.
       #+END_EXAMPLE
