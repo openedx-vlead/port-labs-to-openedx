@@ -200,7 +200,7 @@
         # Insights gunicorn is on 8110
         curl localhost:8110
         # Insights nginx (the externally facing view) should be 18110
-        mybox.org:18110 
+        curl localhost:18110 
         #+END_EXAMPLE
   12. Get some test log files into HDFS
       + Copy some log files
