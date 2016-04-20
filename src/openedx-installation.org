@@ -177,8 +177,8 @@
      git checkout b677cea
      pip install -r requirements.txt
      #+END_EXAMPLE
-  10. Run ansible playbook as follows. Replace =INSIGHTS_LMS_BASE= and
-      =INSIGHTS_BASE_URL= variable with lms machine ip.
+  10. Run ansible playbook as follows. Replace =INSIGHTS_LMS_BASE=
+      variable with lms machine ip.
       #+BEGIN_EXAMPLE
       cd playbooks/edx-east/
       ansible-playbook -i localhost, -c local analytics_single.yml --extra-vars "INSIGHTS_LMS_BASE=http://54.233.130.215" 
