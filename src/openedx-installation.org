@@ -1,6 +1,7 @@
 #+Title: Openedx Installation
 #+Date: <2016-03-25 Fri>
 #+Author: Yogesh Agrawal
+#+Email: yogeshiiith@gmail.com; yogesh@vlabs.ac.in
 
 * Introduction
   This document describes the [[https://openedx.atlassian.net/wiki/display/OpenOPS/Native+Open+edX+Ubuntu+12.04+64+bit+Installation][steps]] to install openedx lms and
@@ -10,8 +11,8 @@
   - Ubuntu-12.04 amd64
   - minimum 4gb of memory
   - at least one 2.00 GHZ CPU
-  - Minimum 25gb of free disk.
-  - Recommended :: m3.medium server.
+  - Minimum 25gb of free disk; we allotted 50gb disk space
+  - Recommended is m3.medium server, but we used m3.large
 
 * Edx lms platform installation steps
   1. Launch an instance for edx lms.
@@ -134,34 +135,32 @@
      security groups in both vm to accept connections from each other
      ips. Do following tests on analytics machine.
      #+BEGIN_EXAMPLE
-     curl lms.mysite.org
-     telnet mysql.mysite.org 3306
+     ubuntu@ip-172-31-19-247:~$ telnet 54.233.130.215 3306
+     Trying 54.233.130.215...
+     Connected to 54.233.130.215.
+     Escape character is '^]'.
+     a
+     5.6.14-1+debphp.org~precise+1Gx?r@'AP�z<Z1&h[pB96Bmysql_native_password
+     ^[
+     !#08S01Got packets out of orderConnection closed by foreign host.
      #+END_EXAMPLE
      + Status :: This is not an error as telnet is a mysql
                  client. mysql server is entitled to print anything
                  that mysql client understands. refer:
                  [[http://stackoverflow.com/questions/36246030/telnet-localhost-3306-returns-mysql-native-password-connection-closed-by-foreig?noredirect=1#comment60121887_36246030][stackoverflow-link]]
-       #+BEGIN_EXAMPLE
-       ubuntu@ip-172-31-19-247:~$ telnet 54.233.130.215 3306
-       Trying 54.233.130.215...
-       Connected to 54.233.130.215.
-       Escape character is '^]'.
-       a
-       5.6.14-1+debphp.org~precise+1Gx?r@'AP�z<Z1&h[pB96Bmysql_native_password
-       ^[
-       !#08S01Got packets out of orderConnection closed by foreign host.
-       #+END_EXAMPLE
   5. Generate ssh key in lms machine and copy public key to analytics
      machine authorized_keys.
+     #+BEGIN_EXAMPLE
+     ubuntu@ip-172-31-22-202:~$ ssh-keygen -t rsa
+     #+END_EXAMPLE
   6. scp =/edx/var/log/tracking/tracking.log= file from lms machine to
      analytics machine home directory as =tracking.log=.
   7. Install following:
      #+BEGIN_EXAMPLE
-     sudo apt-get update
-     sudo apt-get install git
-     sudo apt-get install python-pip
-     sudo apt-get install python-dev
-     sudo apt-get install libmysqlclient-dev
+     sudo apt-get install git -y
+     sudo apt-get install python-pip -y
+     sudo apt-get install python-dev -y
+     sudo apt-get install libmysqlclient-dev -y
      sudo pip install virtualenv
      #+END_EXAMPLE
   8. Create virtualenv and activate it
@@ -169,45 +168,22 @@
      virtualenv ansible
      . ansible/bin/activate
      #+END_EXAMPLE
-  9. Run ansible as follows:
+  9. Clone the repo, checkout out dogwood version
+     https://github.com/edx/configuration/releases/tag/named-release%2Fdogwood
+     and then install the requirements.
      #+BEGIN_EXAMPLE
      git clone https://github.com/edx/configuration.git
      cd configuration/
+     git checkout b677cea
      pip install -r requirements.txt
-     cd playbooks/edx-east/
-     ansible-playbook -i localhost, -c local analytics_single.yml --extra-vars "INSIGHTS_LMS_BASE=http://54.233.130.215 INSIGHTS_BASE_URL=http://54.233.142.226:8100"
      #+END_EXAMPLE
-     - Error :: This fails as follows
-       #+BEGIN_EXAMPLE
-       Collecting MySQL-python==1.2.5 (from -r requirements.txt (line 21))
-       Downloading MySQL-python-1.2.5.zip (108kB)
-       100% |████████████████████████████████| 112kB 9.0MB/s 
-       Complete output from command python setup.py egg_info:
-       sh: 1: mysql_config: not found
-       Traceback (most recent call last):
-       File "<string>", line 1, in <module>
-       File "/tmp/pip-build-ppl3bW/MySQL-python/setup.py", line 17, in <module>
-         metadata, options = get_config()
-       File "/tmp/pip-build-ppl3bW/MySQL-python/setup_posix.py", line 43, in get_config
-         libs = mysql_config("libs_r")
-       File "/tmp/pip-build-ppl3bW/MySQL-python/setup_posix.py", line 25, in mysql_config
-         raise EnvironmentError("%s not found" % (mysql_config.path,))
-       EnvironmentError: mysql_config not found
-     
-       ----------------------------------------
-       Command "python setup.py egg_info" failed with error code 1 in /tmp/pip-build-ppl3bW/MySQL-python/
-       #+END_EXAMPLE
-     - Solution :: The error got resolved by installing following
-                   package. Then rerun installation of requirements.
-                   source:
-                   http://stackoverflow.com/questions/5178292/pip-install-mysql-python-fails-with-environmenterror-mysql-config-not-found
-       #+BEGIN_EXAMPLE
-       sudo apt-get install libmysqlclient-dev
-       pip install MySQL-python==1.2.5
-       pip install -r requirements.txt
-       #+END_EXAMPLE
-     - status :: ran ansible playbook at 16:52; end: 17:18
-  10. Check it
+  10. Run ansible playbook as follows. Replace =INSIGHTS_LMS_BASE=
+      variable with lms machine ip.
+      #+BEGIN_EXAMPLE
+      cd playbooks/edx-east/
+      ansible-playbook -i localhost, -c local analytics_single.yml --extra-vars "INSIGHTS_LMS_BASE=http://54.233.130.215" 
+      #+END_EXAMPLE
+  11. Check it
       + Run test job
         #+BEGIN_EXAMPLE
         sudo su - hadoop
@@ -224,11 +200,12 @@
         # Insights gunicorn is on 8110
         curl localhost:8110
         # Insights nginx (the externally facing view) should be 18110
-        mybox.org:18110 
+        curl localhost:18110 
         #+END_EXAMPLE
-  11. Get some test log files into HDFS
+  12. Get some test log files into HDFS
       + Copy some log files
         #+BEGIN_EXAMPLE
+        # Exit from hadoop user
         # scp /edx/var/log/tracking/tracking.log file from lms machine to analytics machine. Then...
         cd $HOME
         sudo mkdir -p /edx/var/log/tracking
@@ -243,7 +220,7 @@
         -rw-r--r--   1 hadoop supergroup     308814 2015-10-15 14:31 /data/tracking.log
         # Exit from hadoop user
         #+END_EXAMPLE
-  12. Set up pipeline
+  13. Set up pipeline
       #+BEGIN_EXAMPLE
       cd $HOME
       ssh-keygen -t rsa -f ~/.ssh/id_rsa -P ''
@@ -252,19 +229,31 @@
       # check: ssh localhost "echo It worked" -- make sure it works.
         
       # Make a new virtualenv -- otherwise will have conflicts
+      # Exit from existing virtual env
+      deactivate
       virtualenv pipeline
       . pipeline/bin/activate
        
       git clone https://github.com/edx/edx-analytics-pipeline
       cd edx-analytics-pipeline
+      git checkout 4f1ade8  (named-release/dogwood)
       make bootstrap
       #+END_EXAMPLE
-  13. config file for pipeline
+      - Error ::
+      #+BEGIN_EXAMPLE
+      Cannot uninstall requirement edx.analytics.tasks, not installed
+      #+END_EXAMPLE
+  14. Check the pipeline install by running a simple job to count
+      events per day.
+      #+BEGIN_EXAMPLE
+      remote-task --host localhost --repo https://github.com/edx/edx-analytics-pipeline --user ubuntu --override-config $HOME/edx-analytics-pipeline/config/devstack.cfg --wheel-url http://edx-wheelhouse.s3-website-us-east-1.amazonaws.com/Ubuntu/precise --remote-name analyticstack --wait TotalEventsDailyTask --interval 2015 --output-root hdfs://localhost:9000/output/ --local-scheduler
+      #+END_EXAMPLE 
+  15. config file for pipeline
       #+BEGIN_EXAMPLE
       sudo vim /edx/etc/edx-analytics-pipeline/input.json
       # put in the right url and credentials for your LMS database
       #+END_EXAMPLE
-  14. Grant =read_only= user privileges to login remotely to LMS
+  16. Grant =read_only= user privileges to login remotely to LMS
       #+BEGIN_EXAMPLE
       mysql -u root
       GRANT ALL PRIVILEGES ON *.* TO 'read_only'@'%' IDENTIFIED BY 'password' WITH GRANT OPTION;
@@ -272,12 +261,7 @@
       \q
       sudo /etc/init.d/mysql restart
       #+END_EXAMPLE
-  15. Check pipeline install, use =--skip-setup below=
-      #+BEGIN_EXAMPLE
-      # Ensure you're in the pipeline virtualenv 
-      remote-task --host localhost --repo https://github.com/edx/edx-analytics-pipeline --user ubuntu --override-config $HOME/edx-analytics-pipeline/config/devstack.cfg --wheel-url http://edx-wheelhouse.s3-website-us-east-1.amazonaws.com/Ubuntu/precise --remote-name analyticstack --wait TotalEventsDailyTask --interval 2015 --output-root hdfs://localhost:9000/output/ --local-scheduler
-      #+END_EXAMPLE
-  16. Finish rest of the pipeline config
+  17. Finish rest of the pipeline config
       + Test setup
         #+BEGIN_EXAMPLE
         remote-task --host localhost --user ubuntu --remote-name analyticstack --skip-setup --wait ImportEnrollmentsIntoMysql --interval 2015 --local-scheduler
@@ -311,8 +295,8 @@
           mysql> \q
           Bye
           #+END_EXAMPLE
-  17. Run following on *lms machine*
-      + INSIGHTS_BASE_URL :: 54.233.142.226
+  18. Run following on *lms machine*, set =INSIGHTS_BASE_URL= variable
+      properly e.g. =54.233.142.226=
       #+BEGIN_EXAMPLE
       sudo su edxapp -s /bin/bash
       /edx/bin/python.edxapp /edx/bin/manage.edxapp lms --setting=aws create_oauth2_client http://54.233.142.226:18110 http://54.233.142.226:18110/complete/edx-oidc/ confidential --client_name insights --client_id YOUR_OAUTH2_KEY --client_secret secret --trusted
@@ -351,7 +335,7 @@ wiki.ArticleRevision.ip_address: (fields.W900) IPAddressField has been deprecate
 }
 
       #+END_EXAMPLE
-  18. Create admin user
+  19. Create admin user
       #+BEGIN_EXAMPLE
       sudo su edxapp -s /bin/bash
       cd ~
@@ -369,10 +353,10 @@ wiki.ArticleRevision.ip_address: (fields.W900) IPAddressField has been deprecate
   Password (again): 
   Superuser created successfully.
       #+END_EXAMPLE
-  19. Now login with admin credentials to studio from
+  20. Now login with admin credentials to studio from
       http://54.233.130.215:18010
-  20. Then go to http://54.233.130.215/admin/ to view admin console.
-  21. Check it
+  21. Then go to http://54.233.130.215/admin/ to view admin console.
+  22. Check it
       #+BEGIN_EXAMPLE
       Log into LMS as a staff user. Ensure you can log into Insights and see all courses you have staff access to.
       #+END_EXAMPLE
@@ -391,24 +375,32 @@ wiki.ArticleRevision.ip_address: (fields.W900) IPAddressField has been deprecate
    https://django-oauth-toolkit.readthedocs.org/en/latest/
 
 ** Studio error :: Solved
-Error occurs while creating a new course in a vm launched from an
-ami. Log file: =/edx/var/log/lms/edx.log=. This error is discussed in
-forum:
-https://groups.google.com/forum/#!topic/openedx-ops/1SsdJ39IQRc/Execute
-
-Execute following in lms machine to resolve this issue:
- + Create a celery user:
-   #+BEGIN_EXAMPLE
-   sudo rabbitmqctl add_user celery celery
-   #+END_EXAMPLE
- + Set permissions on celery user
-   #+BEGIN_EXAMPLE
-   sudo rabbitmqctl set_permissions celery ".*" ".*" ".*"
-   #+END_EXAMPLE
- + Restart rabbitmq service
-   #+BEGIN_EXAMPLE
-   sudo service rabbitmq-server restart
-   #+END_EXAMPLE
+1. Error occurs while creating a new course in a vm launched from an
+   ami. Log file: =/edx/var/log/lms/edx.log=. This error is discussed
+   in forum:
+   https://groups.google.com/forum/#!topic/openedx-ops/1SsdJ39IQRc/Execute
+   
+   + See if users exist:
+     #+BEGIN_EXAMPLE
+     sudo rabbitmqctl list_users
+     #+END_EXAMPLE
+   + If you're seeing the celery user, than check it's permissions:
+     #+BEGIN_EXAMPLE
+     sudo rabbitmqctl list_permissions -p /celery
+     #+END_EXAMPLE
+  Execute following in lms machine to resolve this issue:
+  + Create a celery user:
+    #+BEGIN_EXAMPLE
+    sudo rabbitmqctl add_user celery celery
+    #+END_EXAMPLE
+  + Set permissions on celery user
+    #+BEGIN_EXAMPLE
+    sudo rabbitmqctl set_permissions celery ".*" ".*" ".*"
+    #+END_EXAMPLE
+  + Restart rabbitmq service
+    #+BEGIN_EXAMPLE
+    sudo service rabbitmq-server restart
+    #+END_EXAMPLE
 
 * Reference
 1. https://openedx.atlassian.net/wiki/display/OpenOPS/Managing+OpenEdX+Tips+and+Tricks

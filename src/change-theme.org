@@ -41,5 +41,5 @@
 
    5. Restart the services 
       #+BEGIN_EXAMPLE
-      sudo /edx/bin/supervisorctl restart
+      sudo /edx/bin/supervisorctl restart all
       #+END_EXAMPLE
