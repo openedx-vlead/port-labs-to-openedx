@@ -13,7 +13,37 @@
   We have setup lms dogwood.0 (52.67.4.199) and customized it. We have
   setup analytics dogwood.0 (52.67.21.94).
 
-* Things to do
+* Mrs Sukla's suggestions 
+  - Install edx with all necessary modules like course_discovery,
+     oauth_client_setup,
+
+  - Create dns names for lms, insights & preferrably cms services
+
+  - Create the ssl certificates for both lms & insights on the
+    respective machines under /etc/nginx/ssl directory
+
+  - Change the configuration files for lms, insights under the
+    /edx/app/nginx/sites­available on both machines for https protocol
+    which will use the above certificates
+
+  - Change the configuration files for lms & insights on respective
+    machine. Configuration file for lms is
+    /edx/app/edxapp/lms.env.json & for insights is
+    /edx/etc/insights.yml to reflect the proper urls.
+
+  - Edit the properties of trusted insights client created during
+    installation using the lms admin,change the urls with the correct
+    url (url & redirect url)
+
+  - Synchronize the computer times of both insights & edx machine using
+    'ntp'
+
+  - Append the lms nginx certificate to the file
+    /edx/app/insights/venvs/insights/lib/pyhton2.7/requests/cacert.pem
+
+  - Restart all services under supervisorctl & nginx service on both
+    machines
+* Things to do based on Mrs Sukla feedback and suggestions
   1. Sync time on both the machines.
   2. Create https protcol certificate.
      #+BEGIN_EXAMPLE
