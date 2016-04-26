@@ -1,0 +1,6 @@
+* Introduction
+* Changing theme on dogwood0
+* Changing theme on dogwood2
+* Customization using -
+** By changing configuration files
+** By editing source code
