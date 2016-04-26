@@ -1,0 +1,300 @@
+#+TITLE: Setup Open edX platform and Configure it
+#+Author: Siva Shanker
+#+Date: [2016-04-26]
+#+PROPERTY: results output
+#+PROPERTY: exports code
+#+SETUPFILE: ../org-templates/level-0.org
+
+* Introduction
+  This document describes about setting up Open edX platfrom and
+  Configuring it. Once we setup Open edX platform, we can port all
+  our virtual-labs to the edX platform. 
+* Sett up Open edX platform on AWS
+** Launch an instance on AWS ( Provision of Open edX setup)
+   By default some AMIs on AWS comes with Open edX platform setup.
+   Use any of the following instances from AWS for Open edX platform
+   setup.
+   - From Community AMI ::
+     + Chose ami-ad161ee8 with at least 4GB of RAM and 50GB HDD      
+   - From AWS Marketplace ::
+     + Chose AMI : Open edX powered by Bitnami (HVM).
+   - Use the Public IP of the instance to see the web console of
+     Open edX platform 
+     + port 80 is to see the default edx web console
+     + If we want to see the edX studio web console, use 18010 port
+       number
+       #+BEGIN_EXAMPLE
+       <public_ip>:18010    # Studio
+       http://<public-ip> # courses dashboard
+       #+END_EXAMPLE
+   - Use satff@example.com as user email-id and edx as password for
+     logging into edx studio and to make changes in courses
+** Setup Open edX platform using Automation scripts
+  - Launch an Ubuntu 12.04 64 bit on AWS Minimum Requirements as
+    follows for setting up Open edX platform
+  - Instance id :  ami-019b6745
+    + Instance Type: t2.medium
+    + RAM : 4 GB
+    + Hard Disk : 50 GB
+  - SSH to launched instance using 
+    #+BEGIN_EXAMPLE
+    ssh -i "OpenedX.pem" ubuntu@ec2-54-153-2-214.us-west-1.compute.amazonaws.com
+    #+END_EXAMPLE
+  - Update and upgrade instance
+    #+BEGIN_EXAMPLE
+    sudo apt-get update -y  
+    sudo apt-get upgrade -y
+    #+END_EXAMPLE
+  - Reboot the instance 
+    #+BEGIN_EXAMPLE
+    sudo reboot
+    #+END_EXAMPLE
+  - Automated Installation scripts
+    + Install Open edX release
+      - export =OPENEDX_RELEASE= variable with suitable version of
+        edx-platform. By default, it edx-platform comes with the
+        master branch which will be the latest sources. For example,
+        if we want to use cypress release to setup edX-platform,
+        issue the following command on command line.
+	#+BEGIN_EXAMPLE
+        export OPENEDX_RELEASE=named-release/cypress
+	#+END_EXAMPLE
+	if we want to use dogwood release, issue the following
+        command on command line
+	#+BEGIN_EXAMPLE
+        export OPENEDX_RELEASE=named-release/dogwood
+	#+END_EXAMPLE
+	if we want to use dogwood.1 release, issue the following
+        command on command line
+	#+BEGIN_EXAMPLE
+        export OPENEDX_RELEASE=named-release/dogwood.1
+	#+END_EXAMPLE
+    + Then run the following two scripts to complete Open edX
+      platform setup.
+      #+BEGIN_EXAMPLE
+      wget https://raw.githubusercontent.com/edx/configuration/master/util/install/ansible-bootstrap.sh -O - | sudo bash     
+      wget https://raw.githubusercontent.com/edx/configuration/master/util/install/sandbox.sh -O - | bash     
+      #+END_EXAMPLE
+  - edX platform is ready 
+  - port 80 is to see the default edx web console
+    + If we want to see the edX studio web console, use 18010 port
+      number
+      #+BEGIN_EXAMPLE
+      <public_ip>:18010    # Studio
+      http://<public-ip> # courses dashboard
+      #+END_EXAMPLE
+  - Use satff@example.com as user email-id and edx as password for
+    logging into edx studio and to make changes in courses
+  - Reference
+    https://openedx.atlassian.net/wiki/display/OpenOPS/Native+Open+edX+Ubuntu+12.04+64+bit+Installation
+** Setup Open edX platform using manual steps 
+    - Launch a VM ubuntu 12.04 64 bit on AWS with above VM
+      configuration details.
+    - Update and upgrade VM
+      #+BEGIN_SRC 
+      sudo apt-get update -y
+      sudo apt-get upgrade -y
+      #+END_SRC
+    - Perform the steps bellow 
+      #+BEGIN_SRC 
+      sudo apt-get install -y build-essential software-properties-common python-software-properties curl git-core libxml2-dev libxslt1-dev libfreetype6-dev python-pip python-apt python-dev libxmlsec1-dev swig libmysqlclient-dev
+      sudo pip install --upgrade pip
+      #+END_SRC
+    - On the new server, clone the configuration repo
+      #+BEGIN_SRC 
+      cd /var/tmp
+      git clone https://github.com/edx/configuration
+      #+END_SRC
+    - Allow password based SSH authentication. For that edit the
+      common role inside of
+      =configuration/playbooks/roles/common_vars/defaults/main.yml= and
+      set *COMMON_SSH_PASSWORD_AUTH to "yes"*
+    - Install the ansible requirements 
+      #+BEGIN_SRC 
+      cd /var/tmp/configuration
+      sudo pip install -r requirements.txt
+      sudo pip install setuptools --upgrade
+      #+END_SRC
+    - NOTE :: By default, next command (which would run play books to
+	      setup platform)uses edx-platform master branch. Latest
+	      release is dogwood.2.
+	    
+	      So, set environment variable for OPENEDX_RELEASE
+	      variable for installing required Open edX platform
+	      release.
+	     
+	      For example, 
+	      #+BEGIN_EXAMPLE
+	      export OPENEDX_RELEASE=named-release/birtch.2
+	      or 
+	      export OPENEDX_RELEASE=named-release/cypress
+	      #+END_EXAMPLE
+    - NOTE :: You may be getting the problem with paramiko
+	      package. Install it and run the below command.
+		#+BEGIN_EXAMPLE
+		sudo pip install paramiko==1.10
+		#+END_EXAMPLE
+      
+    - Run the edx_sandbox.yml playbook from configuration/playbooks directory
+      #+BEGIN_SRC 
+      cd /var/tmp/configuration/playbooks && sudo ansible-playbook -c local ./edx_sandbox.yml -i "localhost,"
+      #+END_SRC
+    - Reference
+      https://github.com/edx/configuration/wiki/edX-Ubuntu-12.04-64-bit-Installation. 
+
+* Configuring Open edX platform
+** To provide proper verification link to registered users
+   - Modify the files 
+     #+BEGIN_SRC 
+     vim /edx/app/edxapp/lms.env.json
+     vim /edx/app/edxapp/cms.env.json
+     #+END_SRC
+     and add the FQDN of LMS machine to =SITE_NAME= variable in both the
+     files. 
+   - Restart the edx services 
+     #+BEGIN_SRC 
+     /edx/bin/supervisorctl restart edxapp:       
+     edxapp:cms: stopped
+     edxapp:lms: stopped
+     edxapp:lms: started
+     edxapp:cms: started
+     
+     /edx/bin/supervisorctl restart edxapp_worker:
+     edxapp_worker:cms_low_3: stopped
+     edxapp_worker:lms_high_mem_2: stopped
+     edxapp_worker:lms_default_3: stopped
+     edxapp_worker:cms_high_1: stopped
+     edxapp_worker:lms_low_1: stopped
+     edxapp_worker:cms_default_4: stopped
+     edxapp_worker:lms_high_4: stopped
+     edxapp_worker:cms_low_3: started
+     edxapp_worker:lms_high_mem_2: started
+     edxapp_worker:lms_default_3: started
+     edxapp_worker:cms_high_1: started
+     edxapp_worker:lms_low_1: started
+     edxapp_worker:cms_default_4: started
+     edxapp_worker:lms_high_4: started
+     #+END_SRC
+     OR
+     #+BEGIN_EXAMPLE
+     /edx/bin/supervisorctl restart all
+     #+END_EXAMPLE
+
+** Disable course creation for users on edX-Studio
+   In =/edx/app/edxapp/edx-platform/cms/envs/common.py=, or your
+   extension of it, set 'ENABLE_CREATOR_GROUP': True to
+   MITX_FEATURES. .
+
+   1) Update ENABLE_CREATOR_GROUP in common.py
+      #+BEGIN_SRC 
+      cd /edx/app/edxapp/edx-platform/cms/envs 
+      sudo nano common.py      
+      #+END_SRC
+      Set :
+      #+BEGIN_SRC 
+      FEATURES {
+      ENABLE_CREATOR_GROUP : True
+      }
+      #+END_SRC
+
+   2) Update the database structure of the CMS and reboot the CMS
+     #+BEGIN_SRC 
+      cd /edx/app/edxapp/edx-platform     
+     #+END_SRC
+   3) Update CMS DB structure 
+      #+BEGIN_SRC 
+      sudo -u www-data /edx/bin/python.edxapp ./manage.py cms syncdb --migrate --settings aws --migrate –noinput
+      #+END_SRC
+   4) Restart the edX services
+      #+BEGIN_SRC 
+      /edx/etc/supervisord.conf restart all:
+      #+END_SRC
+   Then registered users will not be able create courses on
+   edX-studio. They need to contact admin or super-user to get
+   privileges for creating courses. 
+** Create super user for Django administration page
+   Create super user by issuing following commands on the LMS machine.
+
+   - Create superuser (with profile) ::  Replace "user@example.com"
+        with the email address you want to use, and replace "user"
+        with the first part of the email address that you used. So for
+        example, if you use "staff+87@yourdomain.com" for the email
+        address, the username will be "staff+87".
+     #+BEGIN_SRC 
+     sudo -u www-data /edx/bin/python.edxapp ./manage.py lms --settings aws create_user -s -p edx -e user@example.com
+     sudo -u www-data /edx/bin/python.edxapp ./manage.py lms --settings aws changepassword user
+     sudo -u www-data /edx/bin/python.edxapp ./manage.py lms --settings aws shell
+     from django.contrib.auth.models import User
+     me = User.objects.get(username="user")
+     me.is_superuser = True
+     me.is_staff = True
+     me.save()
+   #+END_SRC
+   - Create superuser (without profile) ::
+     #+BEGIN_SRC 
+     sudo su edxapp -s /bin/bash
+     cd ~
+     source edxapp_env
+     python /edx/app/edxapp/edx-platform/manage.py lms createsuperuser --settings aws
+     #+END_SRC
+   - Reference
+     https://openedx.atlassian.net/wiki/display/OpenOPS/Managing+OpenEdX+Tips+and+Tricks
+** Update Analytics Dashboard URL on LMS machine
+   - Open the file =/edx/app/edxapp/lms.env.json= and update following
+     variable with Analytics/insights fqdn/public-ip with the proper
+     port number on which insights app is running
+     #+BEGIN_EXAMPLE
+     "ANALYTICS_DASHBOARD_URL": "http://54.153.71.178:18110
+     #+END_EXAMPLE
+   - Restart the edX services 
+     #+BEGIN_SRC 
+     /edx/bin/supervisorctl restart edxapp:       
+     /edx/bin/supervisorctl restart edxapp_worker:
+     #+END_SRC
+** Configure Mysql server so that it allows remote machines to execute queries
+   Allow Analytics machine to connect LMS machine's databases by
+   running the following example commands
+   - Log in as root user
+   #+BEGIN_EXAMPLE
+   mysql -uroot -p 
+   #+END_EXAMPLE
+   - Grant permissions from analytics machine with the following details
+     #+BEGIN_EXAMPLE
+     mysql> GRANT ALL PRIVILEGES ON edxapp.* TO 'edxapp001'@'<analytics-server-ip>' IDENTIFIED BY 'password';
+     #+END_EXAMPLE
+   
+   LMS database( Mysql) is not open to all remote hosts. It is open to
+   only localhost.
+   
+   In order to make database open for all remote hosts, we need to do
+   the following steps.
+   - Open =/et/mysql/my.conf=
+   - Change =bind-address= from =127.0.0.1= to =0.0.0.0=
+   - Restart the mysql server
+     #+BEGIN_EXAMPLE
+     /etc/init.d/mysql restart
+     #+END_EXAMPLE
+   - Reference 
+     https://easyengine.io/tutorials/mysql/remote-access/     
+
+** TODO Remove default users from Open edX platform
+** TODO Add/Create required users to login into LMS/CMS
+* Setting up Open edX platform on a VM (Base4)
+  - Minimum hardware requirements 
+    + RAM : 4GB 
+    + HDD : 50GB
+    + CPUs: 2 
+  - Create a VM using
+    http://wiki.vlabs.ac.in/index.php/Creating_new_VM link 
+  - After creating VM, follow the steps given at [[Using manual steps to
+    Setup Open edX platform]] to setup Open edX platform.
+ 
+* References
+  - https://github.com/edx/configuration/wiki
+  - https://openedx.atlassian.net/wiki/display/OpenOPS/Native+Open+edX+Ubuntu+12.04+64+bit+Installation
+  - http://edx-developer-guide.readthedocs.org/en/latest/public_sandboxes.html
+  - https://openedx.atlassian.net/wiki/display/OPEN/Debugging+Issues+with+LMS+and+Studio
+
+
+
+      

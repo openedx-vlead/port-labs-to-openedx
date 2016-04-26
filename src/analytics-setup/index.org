@@ -1,0 +1,229 @@
+#+TITLE: Setup Analytics for Virtual-labs 
+#+Author: Siva Shanker
+#+Date: [2016-04-26]
+#+PROPERTY: results output
+#+PROPERTY: exports code
+#+SETUPFILE: ../org-templates/level-0.org
+
+* Introduction
+  Analytics provide the user activity while using virtual labs on Open edX
+  platform.  This data allows an insight into the usage of virtual labs that
+  could be used for various purposes.  
+* Requirements
+  - Have a Open edX platform setup ready. Refer [[../platform-installation/index.org]]
+  - One more VM for setting up analytics.
+* Architecture of Open edX Analytics Gathering
+
+  [[http://edx.readthedocs.org/projects/edx-installing-configuring-and-running/en/latest/_images/Analytics_Pipeline.png][Architecture Diagram]]
+
+  Capturing of Analytics is three phased.  
+  1. LMS, read as Open edX platfrom from which the labs are run, captures the
+     events of a user.
+  2. Pipeline reads this data from the platform, collates and creates a store
+     in a format that could be read by an API.
+  3. edx Analytics Data API provides an HTTP interface to access the store
+     created by the Pipeline.
+  4. Finally insights application will serve the analytics of courses
+     which are hosted on LMS.
+  The platform also exposes a [[http://edx.readthedocs.org/projects/edx-platform-api/en/latest/course_structure/index.html][set of API]] to get all the courses that are being
+  run on a platform. 
+* Configure Open edX analytics for the courses 
+** Setup edx-analytics
+   1. Create a separate VM with at least 2GB of RAM and 30GB of HDD
+      for setting up edX analytics
+   2. Update and upgrade the VM
+      #+BEGIN_EXAMPLE
+      sudo apt-get update -y
+      sudo apt-get upgrade -y
+      #+END_EXAMPLE
+   3. Create a separate virtual environment for the edx analytics setup.
+      #+BEGIN_EXAMPLE
+      # create an "ansible" virtualenv and activate it
+      virtualenv ansible
+      . ansible/bin/activate
+      #+END_EXAMPLE
+   4. Do the following steps
+      #+BEGIN_EXAMPLE
+      git clone https://github.com/edx/configuration.git
+
+      cd configuration/
+    
+      pip install -r requirements.txt
+    
+      cd playbooks/edx-east/
+      sudo ansible-playbook -i localhost, -c local analytics_single.yml --extra-vars "INSIGHTS_LMS_BASE=<LMS_HOSTNAME> INSIGHTS_BASE_URL=<INSIGHTS_HOSTNAME>
+      # (If your site uses https, change the scheme and set the oauth flag to true. Enforce_secure means "insist on https".)
+    
+    
+      # wait for a while :)
+      #+END_EXAMPLE
+   5. Run the following commands to see hadoop job. This job has
+      built-in "compute pi"
+      #+BEGIN_EXAMPLE
+      sudo su - hadoop
+  
+      cd /edx/app/hadoop
+ 
+      hadoop jar hadoop-2.3.0/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.3.0.jar pi 2 100
+      # it should compute something -- I got pi = 3.12. Close enough :)
+      #+END_EXAMPLE
+   6. Also make sure you can run hive
+      #+BEGIN_EXAMPLE
+      /edx/app/hadoop/hive/bin/hive
+      # it should work
+      ^D to get back to your regular user
+      #+END_EXAMPLE
+   7. Get some test logs into HDFS
+      
+      #+BEGIN_EXAMPLE
+      # scp tracking.log onto the machine from the LMS. Then...
+      sudo mkdir -p /edx/var/log/tracking # if directory not exists.
+      sudo scp root@<LMS-IP>:/edx/var/log/tracking/tracking.log /edx/var/log/tracking
+      sudo chown hadoop /edx/var/log/tracking/tracking.log
+      # wait a minute -- ansible creates a cron job to load files in that dir every minute
+    
+      # Check it  
+      hdfs dfs -ls /data
+    
+      Found 1 items
+      -rw-r--r--   1 hadoop supergroup     308814 2015-10-15 14:31 /data/tracking.log
+      #+END_EXAMPLE
+   8. Setup PIPELINE 
+      #+BEGIN_SRC 
+      ssh-keygen -t rsa -f ~/.ssh/id_rsa -P ''
+      echo >> ~/.ssh/authorized_keys # Make sure there's a newline at the end
+      cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+      # check: ssh localhost "echo It worked!" -- make sure it works.
+  
+      # Make a new virtualenv -- otherwise will have conflicts
+      virtualenv pipeline
+      . pipeline/bin/activate
+  
+  
+      git clone https://github.com/edx/edx-analytics-pipeline
+      cd edx-analytics-pipeline
+  
+      make bootstrap
+    
+      #+END_SRC
+   9. Check the pipeline install by running a simple job to count
+      events per day.
+
+      *NOTE* : You may have to change the user name in the following
+      command according to your system user accounts. 
+
+      For example, If you want to run the command from root user (ssh
+      access should be enabled for this access) then provide *--user
+      root*
+      #+BEGIN_SRC 
+      # Ensure you're in the pipeline virtualenv 
+      remote-task --host localhost --repo https://github.com/edx/edx-analytics-pipeline --user ubuntu --override-config $HOME/edx-analytics-pipeline/config/devstack.cfg --wheel-url http://edx-wheelhouse.s3-website-us-east-1.amazonaws.com/Ubuntu/precise --remote-name analyticstack --wait TotalEventsDailyTask --interval 2015 --output-root hdfs://localhost:9000/output/ --local-scheduler
+      #+END_SRC
+   10. Update the following file so that insights will be connected to
+       LMS edxapp database.
+       #+BEGIN_SRC 
+       sudo vim /edx/etc/edx-analytics-pipeline/input.json
+       # put in the right url and credentials for your LMS database
+       #+END_SRC
+       - Test it by running the following command. The output of the
+	 below command shows the mysql queries. 
+	 #+BEGIN_SRC
+	 remote-task --host localhost --user ubuntu --remote-name analyticstack --skip-setup --wait ImportEnrollmentsIntoMysql --interval 2015 --local-scheduler
+	 #+END_SRC
+
+   11. Create OAUTH2 client_id and secret from Django administartion
+       page of LMS machine
+       - *How to create OAUTH2 client_id and secret key:*
+	 By default, edx-platform is not providing/creating default
+	 user and password for signing in. So we need to create a
+	 superuser so that we can access the django admin page using
+	 those credentials. 
+	
+	 Create super user by issuing following commands on the LMS
+	 machine.
+	 #+BEGIN_SRC 
+	 sudo -u www-data /edx/bin/python.edxapp ./manage.py lms --settings aws create_user -s -p edx -e user@example.com
+	 sudo -u www-data /edx/bin/python.edxapp ./manage.py lms --settings aws changepassword user
+	 sudo -u www-data /edx/bin/python.edxapp ./manage.py lms --settings aws shell
+
+	 from django.contrib.auth.models import User
+	 me = User.objects.get(username="user")
+	 me.is_superuser = True
+	 me.is_staff = True
+	 me.save()
+	 #+END_SRC
+       - Do the following steps
+	 + Log in to Django admin page
+	 + Find the Oauth2 table/app in the admin page
+	 + Add client 
+	 + Find the Oauth2_provider table/app
+	 + Add created client to Trusted clients
+   12. On insights VM, you will now need to update three settings: Open
+       the file =/edx/etc/insights.yml= and update the following
+       variables with appropriate values (that are generated
+       automatically on django admin page on LMS machine).
+       #+BEGIN_SRC 
+       SOCIAL_AUTH_EDX_OIDC_KEY: '<PREFILLED VALUE 1 from LMS>'
+       SOCIAL_AUTH_EDX_OIDC_SECRET: '<PREFILLED VALUE 2 FROM LMS>'
+       SOCIAL_AUTH_EDX_OIDC_URL_ROOT: '<LMS URL>/oauth2'
+       #+END_SRC
+
+   13. References
+       - https://openedx.atlassian.net/wiki/display/OpenOPS/edX+Analytics+Installation
+       - https://openedx.atlassian.net/wiki/pages/viewpage.action?spaceKey=AN&title=Configuring+Insights+for+Open+ID+Connect+SSO+with+LMS
+   
+** Test LMS and Insights for analytics
+    - *Page Not Found* :: 
+      + Log into LMS as a staff@example.com 
+      + Select any course
+      + Navigate to course analytics button/link (Click on instructor
+        button)
+      + Redirects to LMS machine to see the analytics.
+      + Page not found  
+* Mrs.Sukla's suggestions on setting up Open edX analytics
+  - Install edx with all necessary modules like course_discovery,
+     oauth_client_setup,
+
+  - Create dns names for lms, insights & preferrably cms services
+
+  - Create the ssl certificates for both lms & insights on the
+    respective machines under /etc/nginx/ssl directory
+
+  - Change the configuration files for lms, insights under the
+    /edx/app/nginx/sites­available on both machines for https protocol
+    which will use the above certificates
+
+  - Change the configuration files for lms & insights on respective
+    machine. Configuration file for lms is
+    /edx/app/edxapp/lms.env.json & for insights is
+    /edx/etc/insights.yml to reflect the proper urls.
+
+  - Edit the properties of trusted insights client created during
+    installation using the lms admin,change the urls with the correct
+    url (url & redirect url)
+
+  - Synchronize the computer times of both insights & edx machine using
+    'ntp'
+
+  - Append the lms nginx certificate to the file
+    /edx/app/insights/venvs/insights/lib/pyhton2.7/requests/cacert.pem
+
+  - Restart all services under supervisorctl & nginx service on both
+    machines
+** Work on setting up Open edX analytics based on Mrs.Sukla's suggestions 
+   - Used following link to generate self-signed certificate on both
+     LMS and insights machines.
+     https://www.digitalocean.com/community/tutorials/how-to-create-a-ssl-certificate-on-nginx-for-ubuntu-12-04
+   - Yogesh and I tried setting up Open edX analytics using
+     Mrs.Sukla's suggestions, but the issue is not solved.
+   - Once again I alone have tried to setup Open edX analytics using
+     the  steps/suggestions provided by Mrs.Sukla. But the issue is
+     not resolved.
+
+* References
+  - https://github.com/edx/configuration/wiki
+  - https://openedx.atlassian.net/wiki/display/OPEN/Debugging+Issues+with+LMS+and+Studio
+  - https://github.com/edx/edx-analytics-pipeline/wiki
+  - http://edx.readthedocs.org/projects/edx-installing-configuring-and-running/en/latest/analytics/install_analytics.html
+  - https://github.com/open-craft/edx-analytics-devstack
+      
