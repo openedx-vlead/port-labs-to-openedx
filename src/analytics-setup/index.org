@@ -28,8 +28,8 @@
   The platform also exposes a [[http://edx.readthedocs.org/projects/edx-platform-api/en/latest/course_structure/index.html][set of API]] to get all the courses that are being
   run on a platform. 
 * Configure Open edX analytics for the courses 
-** Setup edx-analytics-pipeline
-   1. Create a saperate VM with at least 2GB of RAM and 30GB of HDD
+** Setup edx-analytics
+   1. Create a separate VM with at least 2GB of RAM and 30GB of HDD
       for setting up edX analytics
    2. Update and upgrade the VM
       #+BEGIN_EXAMPLE
@@ -180,7 +180,45 @@
         button)
       + Redirects to LMS machine to see the analytics.
       + Page not found  
+* Mrs.Sukla's suggestions on setting up Open edX analytics
+  - Install edx with all necessary modules like course_discovery,
+     oauth_client_setup,
 
+  - Create dns names for lms, insights & preferrably cms services
+
+  - Create the ssl certificates for both lms & insights on the
+    respective machines under /etc/nginx/ssl directory
+
+  - Change the configuration files for lms, insights under the
+    /edx/app/nginx/sites­available on both machines for https protocol
+    which will use the above certificates
+
+  - Change the configuration files for lms & insights on respective
+    machine. Configuration file for lms is
+    /edx/app/edxapp/lms.env.json & for insights is
+    /edx/etc/insights.yml to reflect the proper urls.
+
+  - Edit the properties of trusted insights client created during
+    installation using the lms admin,change the urls with the correct
+    url (url & redirect url)
+
+  - Synchronize the computer times of both insights & edx machine using
+    'ntp'
+
+  - Append the lms nginx certificate to the file
+    /edx/app/insights/venvs/insights/lib/pyhton2.7/requests/cacert.pem
+
+  - Restart all services under supervisorctl & nginx service on both
+    machines
+** Work on setting up Open edX analytics based on Mrs.Sukla's suggestions 
+   - Used following link to generate self-signed certificate on both
+     LMS and insights machines.
+     https://www.digitalocean.com/community/tutorials/how-to-create-a-ssl-certificate-on-nginx-for-ubuntu-12-04
+   - Yogesh and I tried setting up Open edX analytics using
+     Mrs.Sukla's suggestions, but the issue is not solved.
+   - Once again I alone have tried to setup Open edX analytics using
+     the  steps/suggestions provided by Mrs.Sukla. But the issue is
+     not resolved.
 
 * References
   - https://github.com/edx/configuration/wiki
