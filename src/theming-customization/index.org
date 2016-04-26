@@ -39,11 +39,11 @@ This document briefly explaines the process of customizting the themes,
       #+END_EXAMPLE
 
 * Changing theme on dogwood2
-* Customization using -
+* Customization using 
 ** By changing configuration files
 ** By editing source code
 
-** Changing the body of activation mail sent to a user on registration
+*** Changing the body of activation mail sent to a user on registration
 - Log into the edX VM.
 - Enter into history mode
 
@@ -71,7 +71,7 @@ cd /edx/app/edxapp/
 
 - Observe changes.
 
-** Changing footer contents on studio landing page
+*** Changing footer contents on studio landing page
 - Change directory to
 
 #+begin_src example
@@ -90,7 +90,7 @@ cd /edx/app/edxapp/
 #+end_src
 -Observe changes.
  
-** Changing account activation notification to a registered user
+*** Changing account activation notification to a registered user
 - Change directory to
 
 #+begin_src example
@@ -109,7 +109,7 @@ cd /edx/app/edxapp/
 #+end_src
 - Observe changes.
  
-** Changing platform name in edX LMS and CMS
+*** Changing platform name in edX LMS and CMS
 - Change directory to
 
 #+begin_src example
@@ -131,7 +131,7 @@ cd /edx/app/edxapp/
 #+end_src
 - Observe changes.
   
-** Changing the site log on studio
+*** Changing the site log on studio
 - Change the directory
 
 #+begin_src example
@@ -149,18 +149,18 @@ cd /edx/app/edxapp/
 #+end_src
 - Observe changes.
 
-** Changing site name
+*** Changing site name
 - Open the file =cms.env.json= file using =vim /edx/app/edxapp/cms.env.json=
   and change the variable name =SITE_NAME= to SITE_NAME="edx-courses.vlabs.ac.in"
 - Change the same variable value at =vim /edx/app/edxapp/lms.env.json=
 
-** Changing url for social networks (facebook.com, twitter.com)
+*** Changing url for social networks (facebook.com, twitter.com)
 - Open file =vim
   /edx/app/edxapp/edx-platform/lms/static/templates/student_account/register.underscore=
   and to change the facebook url update variable =EDXAPP_PLATFORM_FACEBOOK_ACCOUNT= value to
   'http://www.facebook.com/VlabsIITB/' and to change the twitter update the
   variable =EDXAPP_PLATFORM_TWITTER_ACCOUNT= to '@TheVirtualLabs'
-** Adding/attaching external websites with edX
+*** Adding/attaching external websites with edX
 Read document at https://github.com/edx/edx-platform/wiki/Alternate-site-for-marketing-links for enabling external sites in edX platform
 We used steps given at https://github.com/edx/edx-platform/wiki/Alternate-site-for-marketing-links#to-run-without-an-alternate-marketing-site
 
@@ -186,7 +186,7 @@ We used steps given at https://github.com/edx/edx-platform/wiki/Alternate-site-f
 10. vim themes/default/templates/static_templates/theme-tos.html
 11. Edit this file to customize your terms and conditions.
 #+end_src
-** Changing all email address with example.com domai
+*** Changing all email address with example.com domai
 + Replace all the email address with example.com 
 + Create new email id's with @vlabs.ac.in. Email id's identified are below -
   Purpose                                       current email         | to be replaced with        |   Existence   |
