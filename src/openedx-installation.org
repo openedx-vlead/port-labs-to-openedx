@@ -335,7 +335,7 @@ wiki.ArticleRevision.ip_address: (fields.W900) IPAddressField has been deprecate
 }
 
       #+END_EXAMPLE
-  19. Create admin user
+  19. Create admin user in lms machine
       #+BEGIN_EXAMPLE
       sudo su edxapp -s /bin/bash
       cd ~
@@ -418,3 +418,7 @@ wiki.ArticleRevision.ip_address: (fields.W900) IPAddressField has been deprecate
 2. django-oauth2-provider:
    + directory: /edx/app/edxapp/venvs/edxapp/src/django-oauth2-provider
 
+* Fixing analytics issue
+** Generate ssl certificates in both lms and insights
+  Follow steps described in
+  https://www.digitalocean.com/community/tutorials/how-to-create-a-ssl-certificate-on-nginx-for-ubuntu-12-04
