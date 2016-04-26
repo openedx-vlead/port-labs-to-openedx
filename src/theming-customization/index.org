@@ -1,3 +1,10 @@
+
+* Strategy
+Efforts in theming and customization are carried in three different ways -
+** Theming in dogwood 0 - Sripathi
+** Theming in dogwood 2 - Ashay
+** Editing source code  - Ashay/Sripathi  
+
 * Introduction
 This document briefly explaines the process of customizting the themes,
 * Changing theme on dogwood0
