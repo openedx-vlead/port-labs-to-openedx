@@ -143,7 +143,7 @@
       https://github.com/edx/configuration/wiki/edX-Ubuntu-12.04-64-bit-Installation. 
 
 * Configuring Open edX platform
-** To provide proper verification link to registers
+** To provide proper verification link to registered users
    - Modify the files 
      #+BEGIN_SRC 
      vim /edx/app/edxapp/lms.env.json
