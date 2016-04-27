@@ -46,9 +46,9 @@ This document briefly explaines the process of customizting the themes,
       #+END_EXAMPLE
 
 * Changing theme on dogwood2
-* Customization using 
-** By changing configuration files
-** By editing source code
+**Customization using 
+*** By changing configuration files
+*** By editing source code
 
 *** Changing the body of activation mail sent to a user on registration
 - Log into the edX VM.
@@ -156,7 +156,7 @@ cd /edx/app/edxapp/
 #+end_src
 - Observe changes.
 
-*** Changing site name(fixing the activation email link which comes with http://localohst*)
+*** Changing site name(fixing the activation email link which comes with http://localhost*)
 - Open the file =cms.env.json= file using =vim /edx/app/edxapp/cms.env.json=
   and change the variable name =SITE_NAME= to SITE_NAME="edx-courses.vlabs.ac.in"
 - Change the same variable value at =vim /edx/app/edxapp/lms.env.json=
