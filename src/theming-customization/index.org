@@ -156,7 +156,7 @@ cd /edx/app/edxapp/
 #+end_src
 - Observe changes.
 
-*** Changing site name
+*** Changing site name(fixing the activation email link which comes with http://localohst*)
 - Open the file =cms.env.json= file using =vim /edx/app/edxapp/cms.env.json=
   and change the variable name =SITE_NAME= to SITE_NAME="edx-courses.vlabs.ac.in"
 - Change the same variable value at =vim /edx/app/edxapp/lms.env.json=
