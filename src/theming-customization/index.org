@@ -282,15 +282,15 @@ This is fixed. Document to be uploaded.
 5. Save changed and restart services using command /edx/bin/supervisorctl restart all
 #+end_src
 Below are the email id's which are to replaced.
-Purpose                                       current email         | to be replaced with        |   Existence   |
------------------------------------------------------------------------------------------------------
-BUGS_EMAIL                                    bugs@example.com        edx-bugs@vlabs.ac.in          to be created
-BULK_EMAIL_DEFAULT_FROM_EMAIL                 no-reply@example.com    no-reply@vlabs.ac.in          exists
-CONTACT_EMAIL                                 info@example.com        engg@vlabs.ac.in              exists
-DEFAULT_FEEDBACK_EMAIL                        feedback@example.com    edx-feedback@vlabs.ac.in      to be created
-LTI_USER_EMAIL_DOMAIN                         lti.example.com         not needed for now             -               
-PAYMENT_SUPPORT_EMAIL                         billing@example.com     not needed for now             -                
-PRESS_EMAIL                                   press@example.com       not needed for now             -                     
-SERVER_EMAIL                                  devops@example.com      not needed for now             -                    
-TECH_SUPPORT_EMAIL                            technical@example.com   engg@vlabs.ac.in              exists
-UNIVERSITY_EMAIL                              university@example.com  not needed for now             - 
+| Key to be changed in Json      |    default emails                    | change with this         |  Status           |
+|----------------------------------------------------------------------------------------------------------------------|
+| BUGS_EMAIL                     |               bugs@example.com       | edx-bugs@vlabs.ac.in     |     to be created |
+| BULK_EMAIL_DEFAULT_FROM_EMAIL  |               no-reply@example.com   | no-reply@vlabs.ac.in     |     exists        |
+| CONTACT_EMAIL                  |               info@example.com       | engg@vlabs.ac.in         |     exists        |
+| DEFAULT_FEEDBACK_EMAIL         |               feedback@example.com   | edx-feedback@vlabs.ac.in |     to be created |
+| LTI_USER_EMAIL_DOMAIN          |               lti.example.com        | not needed for now       |      -            |   
+| PAYMENT_SUPPORT_EMAIL          |               billing@example.com    | not needed for now       |      -            |   
+| PRESS_EMAIL                    |               press@example.com      | not needed for now       |      -            |  
+| SERVER_EMAIL                   |               devops@example.com     | not needed for now       |      -            |  
+| TECH_SUPPORT_EMAIL             |               technical@example.com  | engg@vlabs.ac.in         |    exists         |
+| UNIVERSITY_EMAIL               |               university@example.com | not needed for now       |      -            |
