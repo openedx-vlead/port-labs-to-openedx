@@ -1,9 +1,5 @@
 #+TITLE: Setup Open edX platform and Configure it
 #+Author: Siva Shanker
-#+Date: [2016-04-26]
-#+PROPERTY: results output
-#+PROPERTY: exports code
-#+SETUPFILE: ../org-templates/level-0.org
 
 * Introduction
   This document describes about setting up Open edX platfrom and
@@ -18,17 +14,17 @@
      + Chose ami-ad161ee8 with at least 4GB of RAM and 50GB HDD      
    - From AWS Marketplace ::
      + Chose AMI : Open edX powered by Bitnami (HVM).
-   - Use the Public IP of the instance to see the web console of
+   - Use the Public IP of the instance to see the web consoles of
      Open edX platform 
-     + port 80 is to see the default edx web console
+     + Port 80 is to see the default edx web console
      + If we want to see the edX studio web console, use 18010 port
        number
        #+BEGIN_EXAMPLE
-       <public_ip>:18010    # Studio
        http://<public-ip> # courses dashboard
+       http://<public_ip>:18010    # Studio
        #+END_EXAMPLE
-   - Use satff@example.com as user email-id and edx as password for
-     logging into edx studio and to make changes in courses
+     + Use satff@example.com as user email-id and edx as password for
+       logging into edx studio and to make changes in courses
 ** Setup Open edX platform using Automation scripts
   - Launch an Ubuntu 12.04 64 bit on AWS Minimum Requirements as
     follows for setting up Open edX platform
@@ -80,7 +76,7 @@
     + If we want to see the edX studio web console, use 18010 port
       number
       #+BEGIN_EXAMPLE
-      <public_ip>:18010    # Studio
+      http://<public_ip>:18010    # Studio
       http://<public-ip> # courses dashboard
       #+END_EXAMPLE
   - Use satff@example.com as user email-id and edx as password for
@@ -91,30 +87,30 @@
     - Launch a VM ubuntu 12.04 64 bit on AWS with above VM
       configuration details.
     - Update and upgrade VM
-      #+BEGIN_SRC 
+      #+BEGIN_EXAMPLE 
       sudo apt-get update -y
       sudo apt-get upgrade -y
-      #+END_SRC
+      #+END_EXAMPLE
     - Perform the steps bellow 
-      #+BEGIN_SRC 
+      #+BEGIN_EXAMPLE 
       sudo apt-get install -y build-essential software-properties-common python-software-properties curl git-core libxml2-dev libxslt1-dev libfreetype6-dev python-pip python-apt python-dev libxmlsec1-dev swig libmysqlclient-dev
       sudo pip install --upgrade pip
-      #+END_SRC
+      #+END_EXAMPLE
     - On the new server, clone the configuration repo
-      #+BEGIN_SRC 
+      #+BEGIN_EXAMPLE 
       cd /var/tmp
       git clone https://github.com/edx/configuration
-      #+END_SRC
+      #+END_EXAMPLE
     - Allow password based SSH authentication. For that edit the
       common role inside of
       =configuration/playbooks/roles/common_vars/defaults/main.yml= and
       set *COMMON_SSH_PASSWORD_AUTH to "yes"*
     - Install the ansible requirements 
-      #+BEGIN_SRC 
+      #+BEGIN_EXAMPLE 
       cd /var/tmp/configuration
       sudo pip install -r requirements.txt
       sudo pip install setuptools --upgrade
-      #+END_SRC
+      #+END_EXAMPLE
     - NOTE :: By default, next command (which would run play books to
 	      setup platform)uses edx-platform master branch. Latest
 	      release is dogwood.2.
@@ -136,23 +132,23 @@
 		#+END_EXAMPLE
       
     - Run the edx_sandbox.yml playbook from configuration/playbooks directory
-      #+BEGIN_SRC 
+      #+BEGIN_EXAMPLE 
       cd /var/tmp/configuration/playbooks && sudo ansible-playbook -c local ./edx_sandbox.yml -i "localhost,"
-      #+END_SRC
+      #+END_EXAMPLE
     - Reference
       https://github.com/edx/configuration/wiki/edX-Ubuntu-12.04-64-bit-Installation. 
 
 * Configuring Open edX platform
-** To provide proper verification link to registered users
+** Provide proper verification link to registered users
    - Modify the files 
-     #+BEGIN_SRC 
+     #+BEGIN_EXAMPLE 
      vim /edx/app/edxapp/lms.env.json
      vim /edx/app/edxapp/cms.env.json
-     #+END_SRC
+     #+END_EXAMPLE
      and add the FQDN of LMS machine to =SITE_NAME= variable in both the
      files. 
    - Restart the edx services 
-     #+BEGIN_SRC 
+     #+BEGIN_EXAMPLE 
      /edx/bin/supervisorctl restart edxapp:       
      edxapp:cms: stopped
      edxapp:lms: stopped
@@ -174,45 +170,42 @@
      edxapp_worker:lms_low_1: started
      edxapp_worker:cms_default_4: started
      edxapp_worker:lms_high_4: started
-     #+END_SRC
+     #+END_EXAMPLE
      OR
      #+BEGIN_EXAMPLE
      /edx/bin/supervisorctl restart all
      #+END_EXAMPLE
-
+     
 ** Disable course creation for users on edX-Studio
    In =/edx/app/edxapp/edx-platform/cms/envs/common.py=, or your
    extension of it, set 'ENABLE_CREATOR_GROUP': True to
    MITX_FEATURES. .
 
    1) Update ENABLE_CREATOR_GROUP in common.py
-      #+BEGIN_SRC 
+      #+BEGIN_EXAMPLE 
       cd /edx/app/edxapp/edx-platform/cms/envs 
       sudo nano common.py      
-      #+END_SRC
+      #+END_EXAMPLE
       Set :
-      #+BEGIN_SRC 
+      #+BEGIN_EXAMPLE 
       FEATURES {
       ENABLE_CREATOR_GROUP : True
       }
-      #+END_SRC
-
-   2) Update the database structure of the CMS and reboot the CMS
-     #+BEGIN_SRC 
+      #+END_EXAMPLE
+   
+   2) Update CMS DB structure 
+      #+BEGIN_EXAMPLE
       cd /edx/app/edxapp/edx-platform     
-     #+END_SRC
-   3) Update CMS DB structure 
-      #+BEGIN_SRC 
       sudo -u www-data /edx/bin/python.edxapp ./manage.py cms syncdb --migrate --settings aws --migrate –noinput
-      #+END_SRC
-   4) Restart the edX services
-      #+BEGIN_SRC 
+      #+END_EXAMPLE
+   3) Restart the edX services
+      #+BEGIN_EXAMPLE 
       /edx/etc/supervisord.conf restart all:
-      #+END_SRC
+      #+END_EXAMPLE
    Then registered users will not be able create courses on
    edX-studio. They need to contact admin or super-user to get
    privileges for creating courses. 
-** Create super user for Django administration page
+** Create superuser for Django administration page
    Create super user by issuing following commands on the LMS machine.
 
    - Create superuser (with profile) ::  Replace "user@example.com"
@@ -220,7 +213,8 @@
         with the first part of the email address that you used. So for
         example, if you use "staff+87@yourdomain.com" for the email
         address, the username will be "staff+87".
-     #+BEGIN_SRC 
+     #+BEGIN_EXAMPLE 
+     cd /edx/app/edxapp/edx-platfrom/
      sudo -u www-data /edx/bin/python.edxapp ./manage.py lms --settings aws create_user -s -p edx -e user@example.com
      sudo -u www-data /edx/bin/python.edxapp ./manage.py lms --settings aws changepassword user
      sudo -u www-data /edx/bin/python.edxapp ./manage.py lms --settings aws shell
@@ -229,14 +223,14 @@
      me.is_superuser = True
      me.is_staff = True
      me.save()
-   #+END_SRC
+     #+END_EXAMPLE
    - Create superuser (without profile) ::
-     #+BEGIN_SRC 
+     #+BEGIN_EXAMPLE 
      sudo su edxapp -s /bin/bash
      cd ~
      source edxapp_env
      python /edx/app/edxapp/edx-platform/manage.py lms createsuperuser --settings aws
-     #+END_SRC
+     #+END_EXAMPLE
    - Reference
      https://openedx.atlassian.net/wiki/display/OpenOPS/Managing+OpenEdX+Tips+and+Tricks
 ** Update Analytics Dashboard URL on LMS machine
@@ -247,10 +241,10 @@
      "ANALYTICS_DASHBOARD_URL": "http://54.153.71.178:18110
      #+END_EXAMPLE
    - Restart the edX services 
-     #+BEGIN_SRC 
+     #+BEGIN_EXAMPLE 
      /edx/bin/supervisorctl restart edxapp:       
      /edx/bin/supervisorctl restart edxapp_worker:
-     #+END_SRC
+     #+END_EXAMPLE
 ** Configure Mysql server so that it allows remote machines to execute queries
    Allow Analytics machine to connect LMS machine's databases by
    running the following example commands
@@ -277,17 +271,120 @@
    - Reference 
      https://easyengine.io/tutorials/mysql/remote-access/     
 
-** TODO Remove default users from Open edX platform
-** TODO Add/Create required users to login into LMS/CMS
+** Remove default users from Open edX platform
+   For this we need superuser. superuser can be created using the
+   steps mentioned in [[Create superuser for Django administration page]]
+   
+   Then 
+   - Log in to django administration page
+     #+BEGIN_EXAMPLE
+     http://<lms-domain-name>/admin
+     #+END_EXAMPLE
+   - Navigate to =Authentication and Autherization= table and choose
+     =Users=.
+   - =Users= table lists all the default users and one django admin
+     user.
+   - Delete all default users except django admin user if you really want to delete.
+     - Select default users which you want to delete by selecting
+       check boxes provided in front of every user
+     - Choose Action drop down menu and select "Delete selected users"
+
+** Add/Create required users to log in to LMS/CMS
+   For this also we need superuser. superuser can be created using the
+   steps mentioned in [[Create superuser for Django administration page]]
+   
+   Then 
+   - Log in to django administration page
+     #+BEGIN_EXAMPLE
+     http://<lms-domain-name>/admin
+     #+END_EXAMPLE
+   - Navigate to =Authentication and Autherization= table and choose
+     =Users=.
+   - Click on =Add user= button in top right corner
+   - Create a new user by providing user name and password
+   - Then click on =Save and Continue= button and provide proper
+     permissions to that user.
+      
 * Setting up Open edX platform on a VM (Base4)
   - Minimum hardware requirements 
     + RAM : 4GB 
     + HDD : 50GB
     + CPUs: 2 
   - Create a VM using
-    http://wiki.vlabs.ac.in/index.php/Creating_new_VM link 
-  - After creating VM, follow the steps given at [[Using manual steps to
-    Setup Open edX platform]] to setup Open edX platform.
+** Process for creating new VM on base1
+   - ssh into base1 machine using below command.
+     #+begin_example
+     ssh -X root@<base1_ip>
+     #+end_example
+     *Note :-* Here -X will allow us to open application in GUI mode.
+   - Change directory into vms folder
+     #+begin_example 
+     cd /mnt/das1/vms
+     #+end_example
+   - Create a folder with VM name
+     #+begin_example
+     mkdir test_vm
+     #+end_example
+   - Change PWD to newly created VM folder and use 'qemu-img' command
+     to create disk image for VM. For example, to create a 60GB disk
+     image use:
+     #+begin_example
+     qemu-img create -f qcow2 test_vm.qcow2 60G
+     #+end_example
+   - Run below command to view the virtual machines in GUI mode.
+     #+begin_example
+     [root@base1 vms]# virt-manager
+     #+end_example
+   - Click on =create new virtual machine= icon
+   - Name your VM name and click on forward button.
+   - Choose an ISO image from local disk for base1 use path as
+     =/mnt/das1/operating_systems= and select OS name and its version
+     number.
+   - Choose at least 4GB of RAM and 2 CPUs.
+   - Choose radio button (Select managed or other existing storage)
+     and browse for hard disk image for VM from location where it was
+     created using qemu-img command. In our case it will be in
+     =/mnt/das1/vms/test_vm/testvm.qcow2=
+   - Check Customize configuration before install Use correct bridge
+     for networking. You can use 'ifconfig' command on base machine to
+     see which bridge in base machine is in 10.4.12.0/22 range and use
+     it while creating new VM. Use =breth1= bridge in base1.
+   - Then click on =Disk 1= choose advance options and select storage
+     format as =qcow2=. And apply
+   - Click on begin installation to start the os installation process.
+   - Once OS installation is done please log into the machine using
+     user name and password of the machine that you provided.
+   - Configure eth0 interface to do so open file at =vim
+     /etc/network/interfaces= and add the below details before that
+     find the free available ip address in the range of 10.4.12.0/22
+     using =ping <ip>= command
+     #+begin_example
+     auto eth0
+     iface eth0 inet static
+     address <ip-address>
+     netmask 255.255.252.0
+     gateway 10.4.12.236
+     #+end_example
+   - Add gateway to resolve domain names edit =vim /etc/resolve.conf=
+     #+begin_example
+     nameserver 10.4.12.160
+     #+end_example
+   - Restart the network manager to apply new changes
+     #+begin_example
+     /etc/init.d/networking restart
+     #+end_example
+   - Now check the internet connection 
+     #+begin_example
+     ping vlabs.ac.in (or) ping google.com
+     #+end_example
+   - After creating VM, follow the steps given at [[Using manual steps
+     to Setup Open edX platform]] to setup Open edX platform.
+   - Reference 
+     http://wiki.vlead.vlabs.ac.in/index.php/Creating_new_VM
+
+** Process for creating & restoring snapshots
+   [[https://www.sbarjatiya.com/notes_wiki/index.php/Creating_KVM_VM_with_qcow2_disk_format_for_supporting_snapshots][Clickhere]]
+
  
 * References
   - https://github.com/edx/configuration/wiki
