@@ -34,7 +34,7 @@
      https://openedx.atlassian.net/wiki/display/OpenOPS/Managing+OpenEdX+Tips+and+Tricks
 ** Remove default users from Open edX platform
    For this we need superuser. superuser can be created using the
-   steps mentioned in [[Create superuser for Django administration page]]
+   steps mentioned in *Create superuser for Django administration page*
    
    Then 
    - Log in to django administration page
@@ -52,7 +52,7 @@
 
 ** Add/Create required users to log in to LMS/CMS
    For this also we need superuser. superuser can be created using the
-   steps mentioned in [[Create superuser for Django administration page]]
+   steps mentioned in *Create superuser for Django administration page*
    
    Then 
    - Log in to django administration page
