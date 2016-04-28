@@ -205,34 +205,6 @@
    Then registered users will not be able create courses on
    edX-studio. They need to contact admin or super-user to get
    privileges for creating courses. 
-** Create superuser for Django administration page
-   Create super user by issuing following commands on the LMS machine.
-
-   - Create superuser (with profile) ::  Replace "user@example.com"
-        with the email address you want to use, and replace "user"
-        with the first part of the email address that you used. So for
-        example, if you use "staff+87@yourdomain.com" for the email
-        address, the username will be "staff+87".
-     #+BEGIN_EXAMPLE 
-     cd /edx/app/edxapp/edx-platfrom/
-     sudo -u www-data /edx/bin/python.edxapp ./manage.py lms --settings aws create_user -s -p edx -e user@example.com
-     sudo -u www-data /edx/bin/python.edxapp ./manage.py lms --settings aws changepassword user
-     sudo -u www-data /edx/bin/python.edxapp ./manage.py lms --settings aws shell
-     from django.contrib.auth.models import User
-     me = User.objects.get(username="user")
-     me.is_superuser = True
-     me.is_staff = True
-     me.save()
-     #+END_EXAMPLE
-   - Create superuser (without profile) ::
-     #+BEGIN_EXAMPLE 
-     sudo su edxapp -s /bin/bash
-     cd ~
-     source edxapp_env
-     python /edx/app/edxapp/edx-platform/manage.py lms createsuperuser --settings aws
-     #+END_EXAMPLE
-   - Reference
-     https://openedx.atlassian.net/wiki/display/OpenOPS/Managing+OpenEdX+Tips+and+Tricks
 ** Update Analytics Dashboard URL on LMS machine
    - Open the file =/edx/app/edxapp/lms.env.json= and update following
      variable with Analytics/insights fqdn/public-ip with the proper
@@ -271,40 +243,6 @@
    - Reference 
      https://easyengine.io/tutorials/mysql/remote-access/     
 
-** Remove default users from Open edX platform
-   For this we need superuser. superuser can be created using the
-   steps mentioned in [[Create superuser for Django administration page]]
-   
-   Then 
-   - Log in to django administration page
-     #+BEGIN_EXAMPLE
-     http://<lms-domain-name>/admin
-     #+END_EXAMPLE
-   - Navigate to =Authentication and Autherization= table and choose
-     =Users=.
-   - =Users= table lists all the default users and one django admin
-     user.
-   - Delete all default users except django admin user if you really want to delete.
-     - Select default users which you want to delete by selecting
-       check boxes provided in front of every user
-     - Choose Action drop down menu and select "Delete selected users"
-
-** Add/Create required users to log in to LMS/CMS
-   For this also we need superuser. superuser can be created using the
-   steps mentioned in [[Create superuser for Django administration page]]
-   
-   Then 
-   - Log in to django administration page
-     #+BEGIN_EXAMPLE
-     http://<lms-domain-name>/admin
-     #+END_EXAMPLE
-   - Navigate to =Authentication and Autherization= table and choose
-     =Users=.
-   - Click on =Add user= button in top right corner
-   - Create a new user by providing user name and password
-   - Then click on =Save and Continue= button and provide proper
-     permissions to that user.
-      
 * Setting up Open edX platform on a VM (Base4)
   - Minimum hardware requirements 
     + RAM : 4GB 
@@ -385,7 +323,6 @@
 ** Process for creating & restoring snapshots
    [[https://www.sbarjatiya.com/notes_wiki/index.php/Creating_KVM_VM_with_qcow2_disk_format_for_supporting_snapshots][Clickhere]]
 
- 
 * References
   - https://github.com/edx/configuration/wiki
   - https://openedx.atlassian.net/wiki/display/OpenOPS/Native+Open+edX+Ubuntu+12.04+64+bit+Installation
