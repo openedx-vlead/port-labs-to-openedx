@@ -1,6 +1,5 @@
 #+TITLE: Manage the Open edX platform (LMS and CMS)
 #+Author: VLEAD
-#+Date: [2016-04-28]
 
 * Introduction
   This document describes the managing Open edX paltform
