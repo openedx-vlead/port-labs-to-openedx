@@ -97,7 +97,7 @@
 ** Deleting a course from Open edX Studio
    - Delete a particular course using the following command 
      #+BEGIN_SRC
-     cd /edx/app/edxapp/edx_platform/
+     cd /edx/app/edxapp/edx-platform/
      sudo -u www-data /edx/bin/python.edxapp ./manage.py cms --settings=aws delete_course course-v1:Organization+CourseNumber+CourseRun commit
      #+END_SRC
    - For example, if we want to delete course
