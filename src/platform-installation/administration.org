@@ -1,68 +1,10 @@
 #+TITLE: Manage the Open edX platform (LMS and CMS)
 #+Author: VLEAD
-#+Date: [2016-02-23 Tue]
+#+Date: [2016-04-28]
 
 * Introduction
   This document describes the managing Open edX paltform
-* Upgrade Open edX platform from older/past release to the newer release 
-*** Upgrade from birtch.2 release to cypress release  
-    - Export 
-      #+BEGIN_EXAMPLE
-      export OPENEDX_RELEASE="named-release/cypress"
-      #+END_EXAMPLE    
-    - Run 
-      #+BEGIN_EXAMPLE
-      cd /var/tmp/configuration/playbooks && sudo ansible-playbook -c local ./edx_sandbox.yml -i "localhost,"     
-      #+END_EXAMPLE
-    - Successfully upgraded/migrated to cypress
-*** Setup Open edX platform with named-release/birtch.2
-    - Launch an Ubuntu 12.04 64 bit (ami-019b6745)  instance on AWS
-      + RAM : 4 GB 
-      + HDD : 50 GB
-    - Update and upgrade the machine
-    - Install 
-      #+BEGIN_EXAMPLE
-      sudo apt-get install -y build-essential software-properties-common python-software-properties curl git-core libxml2-dev libxslt1-dev libfreetype6-dev python-pip python-apt python-dev libxmlsec1-dev swig libmysqlclient-dev
-      sudo pip install --upgrade pip
-      sudo pip install --upgrade virtualenv
-      #+END_EXAMPLE
-    - Perform the steps
-      #+BEGIN_EXAMPLE
-      cd /var/tmp
-      git clone https://github.com/edx/configuration
-      #+END_EXAMPLE
-    - Allow password based SSH authentication, for that do the
-      following 
-      #+BEGIN_EXAMPLE
-      cd configuration/
-      vim configuration/playbooks/roles/common_vars/defaults/main.yml
-      #+END_EXAMPLE
-      and set =COMMON_SSH_PASSWORD_AUTH= to "yes"
-    - Issue the following command to install required packages.
-      #+BEGIN_EXAMPLE
-      sudo pip install -r requirements.txt
-      #+END_EXAMPLE
-    - Export 
-      #+BEGIN_EXAMPLE
-      export OPENEDX_RELEASE="named-release/birch.2"
-      #+END_EXAMPLE
-    - Install paramiko package
-      #+BEGIN_EXAMPLE
-      sudo pip install paramiko==1.10
-      #+END_EXAMPLE
-    - Run 
-      #+BEGIN_EXAMPLE
-      cd /var/tmp/configuration/playbooks && sudo ansible-playbook -c local ./edx_sandbox.yml -i "localhost,"     
-      #+END_EXAMPLE
-    - Open edX platform has been setup with the
-      "named-release/birtch.2"
-*** Downgrading the Open edX platform (Don't do this, It does not work)
-**** Example
-     Suppose,you have the latest version(Dogwood) of the Open edX
-     platform setup, If you want to upgrade to the older version, you
-     can follow the below steps. But it will not work (We may get
-     Database sync/migration problem).
-* Work around the configuration files of Open edX setup.
+* Administration tasks on Open edX platform
 ** Create superuser for Django administration page
    Create super user by issuing following commands on the LMS machine.
 
