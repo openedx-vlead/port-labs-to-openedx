@@ -1,142 +1,172 @@
 #+TITLE: Setup Open edX platform and Configure it
 #+Author: Siva Shanker
+#+PROPERTY: results output
+#+PROPERTY: exports code
+#+SETUPFILE: ../../org-templates/level-0.org
 
 * Introduction
-  This document describes about setting up Open edX platfrom and
-  Configuring it. Once we setup Open edX platform, we can port all
-  our virtual-labs to the edX platform. 
-* Sett up Open edX platform on AWS
-** Launch an instance on AWS ( Provision of Open edX setup)
-   By default some AMIs on AWS comes with Open edX platform setup.
-   Use any of the following instances from AWS for Open edX platform
-   setup.
-   - From Community AMI ::
-     + Chose ami-ad161ee8 with at least 4GB of RAM and 50GB HDD      
-   - From AWS Marketplace ::
-     + Chose AMI : Open edX powered by Bitnami (HVM).
-   - Use the Public IP of the instance to see the web consoles of
-     Open edX platform 
-     + Port 80 is to see the default edx web console
-     + If we want to see the edX studio web console, use 18010 port
-       number
-       #+BEGIN_EXAMPLE
-       http://<public-ip> # courses dashboard
-       http://<public_ip>:18010    # Studio
-       #+END_EXAMPLE
-     + Use satff@example.com as user email-id and edx as password for
-       logging into edx studio and to make changes in courses
-** Setup Open edX platform using Automation scripts
-  - Launch an Ubuntu 12.04 64 bit on AWS Minimum Requirements as
-    follows for setting up Open edX platform
-  - Instance id :  ami-019b6745
-    + Instance Type: t2.medium
-    + RAM : 4 GB
-    + Hard Disk : 50 GB
-  - SSH to launched instance using 
-    #+BEGIN_EXAMPLE
-    ssh -i "OpenedX.pem" ubuntu@ec2-54-153-2-214.us-west-1.compute.amazonaws.com
-    #+END_EXAMPLE
-  - Update and upgrade instance
-    #+BEGIN_EXAMPLE
-    sudo apt-get update -y  
-    sudo apt-get upgrade -y
-    #+END_EXAMPLE
-  - Reboot the instance 
-    #+BEGIN_EXAMPLE
-    sudo reboot
-    #+END_EXAMPLE
-  - Automated Installation scripts
-    + Install Open edX release
-      - export =OPENEDX_RELEASE= variable with suitable version of
-        edx-platform. By default, it edx-platform comes with the
-        master branch which will be the latest sources. For example,
-        if we want to use cypress release to setup edX-platform,
-        issue the following command on command line.
-	#+BEGIN_EXAMPLE
-        export OPENEDX_RELEASE=named-release/cypress
-	#+END_EXAMPLE
-	if we want to use dogwood release, issue the following
-        command on command line
-	#+BEGIN_EXAMPLE
-        export OPENEDX_RELEASE=named-release/dogwood
-	#+END_EXAMPLE
-	if we want to use dogwood.1 release, issue the following
-        command on command line
-	#+BEGIN_EXAMPLE
-        export OPENEDX_RELEASE=named-release/dogwood.1
-	#+END_EXAMPLE
-    + Then run the following two scripts to complete Open edX
-      platform setup.
+  This document describes the set up and configuration of Open edX platfrom.
+  Once we setup Open edX platform, we can port all our virtual-labs to the edX
+  platform.
+
+* Set up Open edX platform
+  Open edx Platform [[http://edx.readthedocs.io/projects/edx-installing-configuring-and-running/en/latest/installation/installation_options.html][installation]] has various [[https://openedx.atlassian.net/wiki/display/OpenOPS/Open+edX+Installation+Options][options]].  VLEAD has chosen to go
+  with =Native= Open edX installation on Ubuntu 12.04 64-bit. 
+  
+** Installation on an AWS VM. 
+
+*** <<creation>> Creation of VM   
+
+    1. Launch an Ubuntu 12.04 64 bit VM on AWS the following way:
+       - Choose an instance from community with instance id =ami-019b6745=
+       - Set the instance type to =t2.medium=
+       - Set RAM size to 4 GB
+       - Set Hard Disk size to 50 GB
+       - Enable “Auto-assign Public IP”
+       - Choose appropriate “Security Group”
+       - Choose a key-pair if one exists or create a new key-pair.
+
+    2. <<login>> Login to launched instance using SSH
       #+BEGIN_EXAMPLE
-      wget https://raw.githubusercontent.com/edx/configuration/master/util/install/ansible-bootstrap.sh -O - | sudo bash     
-      wget https://raw.githubusercontent.com/edx/configuration/master/util/install/sandbox.sh -O - | bash     
+      ssh -i <key-pair>" <user-name>@<public-ip>
+      ssh -i "OpenedX.pem" ubuntu@54.153.2.214
       #+END_EXAMPLE
-  - edX platform is ready 
-  - port 80 is to see the default edx web console
-    + If we want to see the edX studio web console, use 18010 port
-      number
+
+    3. Update and upgrade instance
       #+BEGIN_EXAMPLE
-      http://<public_ip>:18010    # Studio
-      http://<public-ip> # courses dashboard
-      #+END_EXAMPLE
-  - Use satff@example.com as user email-id and edx as password for
-    logging into edx studio and to make changes in courses
-  - Reference
-    https://openedx.atlassian.net/wiki/display/OpenOPS/Native+Open+edX+Ubuntu+12.04+64+bit+Installation
-** Setup Open edX platform using manual steps 
-    - Launch a VM ubuntu 12.04 64 bit on AWS with above VM
-      configuration details.
-    - Update and upgrade VM
-      #+BEGIN_EXAMPLE 
-      sudo apt-get update -y
+      sudo apt-get update -y  
       sudo apt-get upgrade -y
       #+END_EXAMPLE
-    - Perform the steps bellow 
-      #+BEGIN_EXAMPLE 
-      sudo apt-get install -y build-essential software-properties-common python-software-properties curl git-core libxml2-dev libxslt1-dev libfreetype6-dev python-pip python-apt python-dev libxmlsec1-dev swig libmysqlclient-dev
-      sudo pip install --upgrade pip
+
+    4. Reboot the instance 
+      #+BEGIN_EXAMPLE
+      sudo reboot
       #+END_EXAMPLE
-    - On the new server, clone the configuration repo
-      #+BEGIN_EXAMPLE 
-      cd /var/tmp
-      git clone https://github.com/edx/configuration
-      #+END_EXAMPLE
-    - Allow password based SSH authentication. For that edit the
-      common role inside of
-      =configuration/playbooks/roles/common_vars/defaults/main.yml= and
-      set *COMMON_SSH_PASSWORD_AUTH to "yes"*
-    - Install the ansible requirements 
-      #+BEGIN_EXAMPLE 
-      cd /var/tmp/configuration
-      sudo pip install -r requirements.txt
-      sudo pip install setuptools --upgrade
-      #+END_EXAMPLE
-    - NOTE :: By default, next command (which would run play books to
-	      setup platform)uses edx-platform master branch. Latest
-	      release is dogwood.2.
-	    
-	      So, set environment variable for OPENEDX_RELEASE
-	      variable for installing required Open edX platform
-	      release.
-	     
-	      For example, 
-	      #+BEGIN_EXAMPLE
-	      export OPENEDX_RELEASE=named-release/birtch.2
-	      or 
-	      export OPENEDX_RELEASE=named-release/cypress
-	      #+END_EXAMPLE
-    - NOTE :: You may be getting the problem with paramiko
-	      package. Install it and run the below command.
-		#+BEGIN_EXAMPLE
-		sudo pip install paramiko==1.10
-		#+END_EXAMPLE
-      
-    - Run the edx_sandbox.yml playbook from configuration/playbooks directory
-      #+BEGIN_EXAMPLE 
-      cd /var/tmp/configuration/playbooks && sudo ansible-playbook -c local ./edx_sandbox.yml -i "localhost,"
-      #+END_EXAMPLE
-    - Reference
-      https://github.com/edx/configuration/wiki/edX-Ubuntu-12.04-64-bit-Installation. 
+
+*** Automated Installation
+    1. [[login][Login]] in to the VM [[creation][created]] 
+    2. Installation of a particular release
+
+       The documented [[https://openedx.atlassian.net/wiki/display/OpenOPS/Native+Open+edX+Ubuntu+12.04+64+bit+Installation][procedure]] by Open edX platform team is followed here. 
+
+       + Export variable =OPENEDX_RELEASE= to install a particular release.
+         cypress, dogwood and dogwood.1 are some of the releases of Open edX
+         platform.
+         
+         If =dogwood= release of Open edX plaform has to be installed, set the
+         variable =OPENEDX_RELEASE= and export it the following way.
+
+	 #+BEGIN_EXAMPLE
+         export OPENEDX_RELEASE=named-release/dogwood
+	 #+END_EXAMPLE
+
+       + Execute Commands
+         Run the following commands
+
+         #+BEGIN_EXAMPLE
+         wget https://raw.githubusercontent.com/edx/configuration/master/util/install/ansible-bootstrap.sh -O - | sudo bash     
+         wget https://raw.githubusercontent.com/edx/configuration/master/util/install/sandbox.sh -O - | bash     
+         #+END_EXAMPLE
+
+         The above commands will copy the configuration files and run various
+         ansible playbooks to setup the platform.  When there are zero failures
+         displayed in the status, the installation is successful.
+  
+    3. Platform is ready, 
+       + LMS is accessible on port 80
+         #+BEGIN_EXAMPLE
+         http://<public-ip> # courses dashboard
+         #+END_EXAMPLE
+
+       + CMS is accessible on port 18010
+         #+BEGIN_EXAMPLE
+         http://<public_ip>:18010    # Studio
+         #+END_EXAMPLE
+
+    4. Login
+       A default user =staff@example.com= comes with the installation.  This
+       login is used to quickly test the instalaltion.  The password is =edx=
+ 
+    5. Reference
+       + [[https://openedx.atlassian.net/wiki/display/OpenOPS/Native+Open+edX+Ubuntu+12.04+64+bit+Installation][Native Open edX installation on Ubuntu 12.04 64-bit]]
+
+*** Manual Installation
+    1. [[login][Login]] in to the VM [[creation][created]]
+
+    2. Install Packages
+       #+BEGIN_EXAMPLE 
+       sudo apt-get install -y build-essential software-properties-common python-software-properties curl git-core libxml2-dev libxslt1-dev libfreetype6-dev python-pip python-apt python-dev libxmlsec1-dev swig libmysqlclient-dev
+       sudo pip install --upgrade pip
+       sudo pip install paramiko==1.10
+       #+END_EXAMPLE
+
+    3. Clone configuration repository
+       #+BEGIN_EXAMPLE 
+       cd /var/tmp
+       git clone https://github.com/edx/configuration
+       #+END_EXAMPLE
+
+    4. Choose the release
+       + Checkout to the release verion of configuration repository
+         #+BEGIN_EXAMPLE
+         cd /var/tmp/configuration
+         git checkout <version>
+         git checkout  named-release/dogwood #example
+         #+END_EXAMPLE
+
+       + Export variable =OPENEDX_RELEASE= to install a particular release.
+         cypress, dogwood and dogwood.1 are some of the releases of Open edX
+         platform.
+         
+         If =dogwood= release of Open edX plaform has to be installed, set the
+         variable =OPENEDX_RELEASE= to =dogwood= and export it the following way.
+
+	 #+BEGIN_EXAMPLE
+         export OPENEDX_RELEASE=named-release/dogwood
+	 #+END_EXAMPLE
+
+    5. Configure password based SSH authentication
+       Edit the =main.yaml= to and set =COMMON_SSH_PASSWORD_AUTH= to =yes= 
+       #+BEGIN_EXAMPLE
+       sudo vim =configuration/playbooks/roles/common_vars/defaults/main.yml
+       COMMON_SSH_PASSWORD_AUTH = yes
+       #+END_EXAMPLE
+
+    6. Install the ansible requirements 
+       
+       #+BEGIN_EXAMPLE 
+       cd /var/tmp/configuration
+       sudo pip install -r requirements.txt
+       sudo pip install setuptools --upgrade
+       #+END_EXAMPLE
+
+    7. Run the playbook
+       #+BEGIN_EXAMPLE 
+       cd /var/tmp/configuration/playbooks && sudo ansible-playbook -c local ./edx_sandbox.yml -i "localhost,"
+       #+END_EXAMPLE
+
+    8. The above command will copy the platform files and runs various ansible
+       playbooks to setup the platform.  When there are zero failures displayed
+       in the status, the installation is successful.
+  
+    9. Platform is ready, 
+       + LMS is accessible on port 80
+         #+BEGIN_EXAMPLE
+         http://<public-ip> # courses dashboard
+         #+END_EXAMPLE
+
+       + CMS is accessible on port 18010
+         #+BEGIN_EXAMPLE
+         http://<public_ip>:18010    # Studio
+         #+END_EXAMPLE
+
+    10. Login
+        A default user =staff@example.com= comes with the installation.  This
+        login is used to quickly test the instalaltion.  The password is =edx=
+ 
+    11. Reference
+        + [[https://openedx.atlassian.net/wiki/display/OpenOPS/Native+Open+edX+Ubuntu+12.04+64+bit+Installation][Native Open edX installation on Ubuntu 12.04 64-bit]]
+
 
 * Configuring Open edX platform
 ** Provide proper verification link to registered users
