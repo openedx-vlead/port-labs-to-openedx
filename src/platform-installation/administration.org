@@ -80,6 +80,13 @@
      #+END_EXAMPLE
      The above command will ask you whether to delete course or not ,
      proceed accordingly.
+** Start/Stop/restart/ all services of edX
+#+BEGIN_SRC 
+1. /edx/bin/supervisorctl start all
+2. /edx/bin/supervisorctl stop all
+3. /edx/bin/supervisorctl restart all
+4. /edx/bin/supervisorctl status all
+#+END_SRC
 * References
   - https://github.com/edx/configuration/wiki/edX-Managing-the-Full-Stack
   - http://oonlab.com/edx/code/2015/10/21/solve-celery-error-saat-migrasi-open-edx/
