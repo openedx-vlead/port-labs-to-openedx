@@ -1,0 +1,17 @@
+* open edX support/communication channels
+
+** Slack
+=Read here= - https://open.edx.org/blog/open-edx-slack
+=Join here= - http://openedx-slack-invite.herokuapp.com/
+ 
+** open edX partner portal
+=Join here= - https://partners.edx.org/user
+
+** edX google groups 
++ =General Open edX discussion= - https://groups.google.com/forum/#!forum/edx-code
++ =openedx-studio= - https://groups.google.com/forum/#!forum/openedx-studio
++ =openedx-analytics= - https://groups.google.com/forum/#!forum/openedx-analytics
++ =Open edX operations= - https://groups.google.com/forum/#!forum/openedx-ops
+
+** edX irc channel
+=Join here= - https://botbot.me/freenode/edx-code/2016-04-20/?page=1
