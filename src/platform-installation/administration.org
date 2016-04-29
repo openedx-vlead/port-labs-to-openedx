@@ -1,17 +1,25 @@
 #+TITLE: Manage the Open edX platform (LMS and CMS)
 #+Author: VLEAD
+#+Date: [2016-04-29 Fri]
+#+PROPERTY: results output
+#+PROPERTY: exports code
+#+SETUPFILE: ../org-templates/level-0.org
+
 
 * Introduction
   This document describes the managing Open edX paltform
 * Administration tasks on Open edX platform
 ** Create superuser for Django administration page
-   Create super user by issuing following commands on the LMS machine.
+   To perform any administration tasks from Django administration web console,
+   this step is mandatory. 
 
-   - Create superuser (with profile) ::  Replace "user@example.com"
-        with the email address you want to use, and replace "user"
-        with the first part of the email address that you used. So for
-        example, if you use "staff+87@yourdomain.com" for the email
-        address, the username will be "staff+87".
+   Creation of super user with profile is recommended. 
+   
+   - <<super user>> Create superuser (with profile) ::  Replace "user@example.com" with the
+        email address you want to use, and replace "user" with the first part
+        of the email address that you used. So for example, if you use
+        "staff+87@yourdomain.com" for the email address, the username will be
+        "staff+87".
      #+BEGIN_EXAMPLE 
      cd /edx/app/edxapp/edx-platfrom/
      sudo -u www-data /edx/bin/python.edxapp ./manage.py lms --settings aws create_user -s -p edx -e user@example.com
@@ -33,15 +41,16 @@
    - Reference
      https://openedx.atlassian.net/wiki/display/OpenOPS/Managing+OpenEdX+Tips+and+Tricks
 ** Remove default users from Open edX platform
-   For this we need superuser. superuser can be created using the
-   steps mentioned in *Create superuser for Django administration page*
+   For this we need superuser. superuser can be created using the steps
+   mentioned in [[super user]] for Django administration page.
+  
+   After creation of super user, follow the following steps. 
    
-   Then 
    - Log in to django administration page
      #+BEGIN_EXAMPLE
      http://<lms-domain-name>/admin
      #+END_EXAMPLE
-   - Navigate to =Authentication and Autherization= table and choose
+   - Navigate to =Authentication and Authorization= table and choose
      =Users=.
    - =Users= table lists all the default users and one django admin
      user.
@@ -51,15 +60,16 @@
      - Choose Action drop down menu and select "Delete selected users"
 
 ** Add/Create required users to log in to LMS/CMS
-   For this also we need superuser. superuser can be created using the
-   steps mentioned in *Create superuser for Django administration page*
+   A [[super user]] is needed for accomplishing this task.  If super user is not
+   present, please create a [[super user]].
    
-   Then 
+   Once this is done, follow the steps below. 
+
    - Log in to django administration page
      #+BEGIN_EXAMPLE
      http://<lms-domain-name>/admin
      #+END_EXAMPLE
-   - Navigate to =Authentication and Autherization= table and choose
+   - Navigate to =Authentication and Authorization= table and choose
      =Users=.
    - Click on =Add user= button in top right corner
    - Create a new user by providing user name and password
@@ -80,7 +90,8 @@
      #+END_EXAMPLE
      The above command will ask you whether to delete course or not ,
      proceed accordingly.
+
 * References
-  - https://github.com/edx/configuration/wiki/edX-Managing-the-Full-Stack
-  - http://oonlab.com/edx/code/2015/10/21/solve-celery-error-saat-migrasi-open-edx/
-  - https://groups.google.com/forum/#!topic/openedx-ops/1SsdJ39IQRc
+  - [[https://openedx.atlassian.net/wiki/display/OpenOPS/Managing+OpenEdX+Tips+and+Tricks][Manage Open edX, Tips & Tricks]]
+  
+

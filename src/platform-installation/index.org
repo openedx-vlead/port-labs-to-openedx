@@ -9,6 +9,7 @@
   Once we setup Open edX platform, we can port all our virtual-labs to the edX
   platform.
 
+
 * Set up Open edX platform
   Open edx Platform [[http://edx.readthedocs.io/projects/edx-installing-configuring-and-running/en/latest/installation/installation_options.html][installation]] has various [[https://openedx.atlassian.net/wiki/display/OpenOPS/Open+edX+Installation+Options][options]].  VLEAD has chosen to go
   with =Native= Open edX installation on Ubuntu 12.04 64-bit. 
@@ -170,22 +171,28 @@
 
 * Configuring Open edX platform
 ** Provide proper verification link to registered users
+   [[https://openedx.atlassian.net/wiki/display/OPEN/Debugging+Issues+with+LMS+and+Studio][Reference]]
    - Modify the files 
      #+BEGIN_EXAMPLE 
-     vim /edx/app/edxapp/lms.env.json
-     vim /edx/app/edxapp/cms.env.json
+     sudo vim /edx/app/edxapp/lms.env.json
+     sudo vim /edx/app/edxapp/cms.env.json
      #+END_EXAMPLE
-     and add the FQDN of LMS machine to =SITE_NAME= variable in both the
-     files. 
-   - Restart the edx services 
+
+     and set =SITE_NAME= variable to FQDN of LMS machine in both the files.
+
+     #+BEGIN_EXAMPLE
+     SITE_NAME = <FQDN of lms machine>
+     #+END_EXAMPLE
+
+   - Restart the edx [[https://openedx.atlassian.net/wiki/display/OpenOPS/Managing+OpenEdX+Tips+and+Tricks][services]]
      #+BEGIN_EXAMPLE 
-     /edx/bin/supervisorctl restart edxapp:       
+     sudo /edx/bin/supervisorctl restart edxapp:       
      edxapp:cms: stopped
      edxapp:lms: stopped
      edxapp:lms: started
      edxapp:cms: started
      
-     /edx/bin/supervisorctl restart edxapp_worker:
+     sudo /edx/bin/supervisorctl restart edxapp_worker:
      edxapp_worker:cms_low_3: stopped
      edxapp_worker:lms_high_mem_2: stopped
      edxapp_worker:lms_default_3: stopped
@@ -207,14 +214,13 @@
      #+END_EXAMPLE
      
 ** Disable course creation for users on edX-Studio
-   In =/edx/app/edxapp/edx-platform/cms/envs/common.py=, or your
-   extension of it, set 'ENABLE_CREATOR_GROUP': True to
-   MITX_FEATURES. .
+   In =/edx/app/edxapp/edx-platform/cms/envs/common.py=, or your extension of
+   it, set 'ENABLE_CREATOR_GROUP':True to FEATURES. [[https://github.com/edx/edx-platform/wiki/Controlling-course-creation-rights][Reference]]
 
    1) Update ENABLE_CREATOR_GROUP in common.py
       #+BEGIN_EXAMPLE 
       cd /edx/app/edxapp/edx-platform/cms/envs 
-      sudo nano common.py      
+      sudo vim common.py      
       #+END_EXAMPLE
       Set :
       #+BEGIN_EXAMPLE 
@@ -225,16 +231,19 @@
    
    2) Update CMS DB structure 
       #+BEGIN_EXAMPLE
-      cd /edx/app/edxapp/edx-platform     
+      sudo cd /edx/app/edxapp/edx-platform     
       sudo -u www-data /edx/bin/python.edxapp ./manage.py cms syncdb --migrate --settings aws --migrate –noinput
       #+END_EXAMPLE
+
    3) Restart the edX services
       #+BEGIN_EXAMPLE 
-      /edx/etc/supervisord.conf restart all:
+      sudo /edx/etc/supervisord.conf restart all:
       #+END_EXAMPLE
-   Then registered users will not be able create courses on
-   edX-studio. They need to contact admin or super-user to get
-   privileges for creating courses. 
+
+   Then registered users will not be able create courses on edX-studio. They
+   will need to contact admin or super-user to get privileges for creating
+   courses.
+
 ** Update Analytics Dashboard URL on LMS machine
    - Open the file =/edx/app/edxapp/lms.env.json= and update following
      variable with Analytics/insights fqdn/public-ip with the proper
@@ -248,12 +257,15 @@
      /edx/bin/supervisorctl restart edxapp_worker:
      #+END_EXAMPLE
 ** Configure Mysql server so that it allows remote machines to execute queries
-   Allow Analytics machine to connect LMS machine's databases by
+   
+   [[https://easyengine.io/tutorials/mysql/remote-access/][Allow]] Analytics machine to connect LMS machine's databases by
    running the following example commands
+
    - Log in as root user
    #+BEGIN_EXAMPLE
    mysql -uroot -p 
    #+END_EXAMPLE
+
    - Grant permissions from analytics machine with the following details
      #+BEGIN_EXAMPLE
      mysql> GRANT ALL PRIVILEGES ON edxapp.* TO 'edxapp001'@'<analytics-server-ip>' IDENTIFIED BY 'password';
@@ -270,10 +282,20 @@
      #+BEGIN_EXAMPLE
      /etc/init.d/mysql restart
      #+END_EXAMPLE
-   - Reference 
-     https://easyengine.io/tutorials/mysql/remote-access/     
+   - [[https://easyengine.io/tutorials/mysql/remote-access/][Reference]] 
 
-* Setting up Open edX platform on a VM (Base4)
+
+* [[./administration.org][Administration of Open edX platform]]
+
+* [[./trouble-shooting.org][Trouble Shooting of Open edX platform]]
+
+* References
+  - [[https://openedx.atlassian.net/wiki/display/OpenOPS/Native+Open+edX+Ubuntu+12.04+64+bit+Installation][Native Open edX Ubuntu 12.04 64 bit Installation]]
+  - [[https://openedx.atlassian.net/wiki/display/OPEN/Debugging+Issues+with+LMS+and+Studio][Email Registration]]
+  - [[https://openedx.atlassian.net/wiki/display/OpenOPS/Managing+OpenEdX+Tips+and+Tricks][Manage Tips & Tricks]]
+
+
+* COMMENT Setting up Open edX platform on a VM (Base1)
   - Minimum hardware requirements 
     + RAM : 4GB 
     + HDD : 50GB
@@ -352,12 +374,6 @@
 
 ** Process for creating & restoring snapshots
    [[https://www.sbarjatiya.com/notes_wiki/index.php/Creating_KVM_VM_with_qcow2_disk_format_for_supporting_snapshots][Clickhere]]
-
-* References
-  - https://github.com/edx/configuration/wiki
-  - https://openedx.atlassian.net/wiki/display/OpenOPS/Native+Open+edX+Ubuntu+12.04+64+bit+Installation
-  - http://edx-developer-guide.readthedocs.org/en/latest/public_sandboxes.html
-  - https://openedx.atlassian.net/wiki/display/OPEN/Debugging+Issues+with+LMS+and+Studio
 
 
 

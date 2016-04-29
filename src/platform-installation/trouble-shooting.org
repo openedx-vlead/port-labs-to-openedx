@@ -1,0 +1,63 @@
+#+TITLE: Trouble Shooting
+#+Author: VLEAD
+#+Date: [2016-04-29 Fri]
+#+PROPERTY: results output
+#+PROPERTY: exports code
+#+SETUPFILE: ../org-templates/level-0.org
+
+
+* Introduction
+  This document describes few problems encountered during installation of
+  platform and creation of course. 
+
+* Problems
+
+** Installation Problem
+   During platform installation, the installation fails saying no file
+   =/edx/app/edx_notes_api/edx_notes_api/requirements/optional.txt= found.
+   This is solved by creating the file and running the playbook. 
+   #+BEGIN_EXAMPLE
+   touch /edx/app/edx_notes_api/edx_notes_api/requirements/optional.txt
+   #+END_EXAMPLE
+   [[https://groups.google.com/forum/#!topic/openedx-ops/_x2tt9PoeSs][Reference]]
+
+** Page not found error after a reboot of a AWS VM.
+   This is solved by clearing the cache of rabbitmq.
+   Run the below commands to clear this cache.
+   #+BEGIN_EXAMPLE
+   cd /edx/var/log/
+   find . -type f ! -path "./rabbitmq/*" -printf '%T@ %p\n' | sort -n | tail -n5 | cut -f2- -d" "
+   #+END_EXAMPLE
+
+** Celery errors after moving AWS ami server on a new machine (Studio Error)
+1. Error occurs while creating a new course in a vm launched from an
+   ami. Log file: =/edx/var/log/lms/edx.log=. This [[https://groups.google.com/forum/#!topic/openedx-ops/1SsdJ39IQRc/Execute][error]] is discussed
+   in [[https://groups.google.com/forum/#!topic/openedx-ops/1SsdJ39IQRc/Execute][forum]]
+   
+   + See if users exist:
+     #+BEGIN_EXAMPLE
+     sudo rabbitmqctl list_users
+     #+END_EXAMPLE
+   + If you're seeing the celery user, than check it's permissions:
+     #+BEGIN_EXAMPLE
+     sudo rabbitmqctl list_permissions -p /celery
+     #+END_EXAMPLE
+  Execute following in lms machine to resolve this issue:
+  + Create a celery user:
+    #+BEGIN_EXAMPLE
+    sudo rabbitmqctl add_user celery celery
+    #+END_EXAMPLE
+  + Set permissions on celery user
+    #+BEGIN_EXAMPLE
+    sudo rabbitmqctl set_permissions celery ".*" ".*" ".*"
+    #+END_EXAMPLE
+  + Restart rabbitmq service
+    #+BEGIN_EXAMPLE
+    sudo service rabbitmq-server restart
+    #+END_EXAMPLE
+
+
+* References
+  - [[https://github.com/edx/configuration/wiki/edX-Managing-the-Full-Stack][Manage Open edX, tips & tricks]]
+  - [[https://groups.google.com/forum/#!topic/openedx-ops/1SsdJ39IQRc][Celery errors after moving AWS ami server on a new machine]]
+  - [[https://groups.google.com/forum/#!topic/openedx-ops/_x2tt9PoeSs][File not found during platform installation]]
