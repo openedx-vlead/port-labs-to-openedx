@@ -3,7 +3,7 @@
 Efforts in theming and customization are carried in three different ways -
 + Theming in dogwood 0 - Sripathi
 + Theming in dogwood 2 - Ashay
-+ Editing source code  - Ashay/Sripathi  
++ Editing source code  - Ashay/Sripathi  -- We will not this technique.
 
 * Introduction
 This document briefly explaines the process of customizting the themes,
