@@ -91,6 +91,15 @@
      The above command will ask you whether to delete course or not ,
      proceed accordingly.
 
+** Start/Stop/restart/ all services of edX
+#+BEGIN_SRC 
+1. /edx/bin/supervisorctl start all
+2. /edx/bin/supervisorctl stop all
+3. /edx/bin/supervisorctl restart all
+4. /edx/bin/supervisorctl status all
+#+END_SRC
+
+
 * References
   - [[https://openedx.atlassian.net/wiki/display/OpenOPS/Managing+OpenEdX+Tips+and+Tricks][Manage Open edX, Tips & Tricks]]
   
