@@ -237,7 +237,7 @@
 
    3) Restart the edX services
       #+BEGIN_EXAMPLE 
-      sudo /edx/etc/supervisord.conf restart all:
+      sudo /edx/etc/supervisorctl restart all:
       #+END_EXAMPLE
 
    Then registered users will not be able create courses on edX-studio. They
