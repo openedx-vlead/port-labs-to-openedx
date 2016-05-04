@@ -63,9 +63,5 @@ lint:
 build-with-lint: build lint
 
 clean:  clean-literate
-	cp -R src/static/ ${BUILD_DEST}/code/src/
-	cp -R src/templates/ ${BUILD_DEST}/code/src/
-	cp -R src/static/ ${BUILD_DEST}/code/src/
-	cp -R src/templates/ ${BUILD_DEST}/code/src/
 	rm -rf ${BUILD_DEST}
 
