@@ -161,10 +161,10 @@ cd /edx/app/edxapp/
 This is fixed editing source code. We are not going to use this mode of customization.
 
 *** Removing extra labels on edX from studio and other pages
-This link http://edx-courses.vlabs.ac.in:18010/signup contains some
+This [[http://edx-courses.vlabs.ac.in:18010/signup]][link]] contains some
 text "EdX, Open edX, Studio, and the edX and Open edX logos are
 registered trademarks or trademarks of edX Inc."  Follow the steps to
-remove this extra text from web page
+remove this extra text from web page -
 #+begin_src command
 1. Login to edX VM.
 2. sudo su -
@@ -206,8 +206,8 @@ cd /edx/app/edxapp/
 - Change the same variable value at =vim /edx/app/edxapp/lms.env.json=
 
 *** Adding/attaching external websites with edX
-Read document at https://github.com/edx/edx-platform/wiki/Alternate-site-for-marketing-links for enabling external sites in edX platform
-We used steps given at https://github.com/edx/edx-platform/wiki/Alternate-site-for-marketing-links#to-run-without-an-alternate-marketing-site
+Read [[https://github.com/edx/edx-platform/wiki/Alternate-site-for-marketing-links][document]] for enabling external sites in edX platform.
+We used [[https://github.com/edx/edx-platform/wiki/Alternate-site-for-marketing-links#to-run-without-an-alternate-marketing-site][steps given at]]
 
 #+begin_src command
 1. Login into edX VM as user =ubuntu=
