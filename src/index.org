@@ -83,8 +83,10 @@
 
 * Open edX platform
   - [[./platform-install-configure/index.org][Setup and Configure Open edX platform]]
+  - [[./analytics-setup/index.org][Setup Analytics]]
   - [[./theming-customization/index.org][Change the way Open edX platform looks]]
   - [[./porting-labs/index.org][Port a lab to Open edX platform]]
+  - [[./communication-channels/index.org][Communication Channels for collaboration]]
 
 * Planning
 ** Phases
