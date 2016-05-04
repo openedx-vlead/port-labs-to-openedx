@@ -22,8 +22,6 @@ clean-literate:
 	rm -rf ${ELISP_DIR}
 	rm -rf ${ORG_DIR}
 	rm -rf ${STYLE_DIR}
-	rm -rf src/${ORG_DIR}
-	rm -rf src/${STYLE_DIR}
 
 pull-literate-tools:
 	@echo "pulling literate support code"
@@ -35,8 +33,6 @@ ifeq ($(wildcard elisp),)
 	mv ${LITERATE_DIR}/${ELISP_DIR} .
 	mv ${LITERATE_DIR}/${ORG_DIR} .
 	mv ${LITERATE_DIR}/${STYLE_DIR} .
-	ln -s ${PWD}/${ORG_DIR}/ ${PWD}/src/${ORG_DIR}
-	ln -s ${PWD}/${STYLE_DIR}/ ${PWD}/src/${STYLE_DIR}
 	rm -rf ${LITERATE_DIR}
 else
 	@echo "Literate support code already present"
@@ -49,6 +45,8 @@ init: pull-literate-tools
 build: init write-version
 	emacs  --script elisp/publish.el
 	rm -f ${BUILD_DEST}/docs/*.html~
+	rsync -a ${ORG_DIR} ${BUILD_DEST}/
+	rsync -a ${STYLE_DIR} ${BUILD_DEST}/
 
 # get the latest commit hash and its subject line
 # and write that to the VERSION file

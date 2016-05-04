@@ -1,3 +1,9 @@
+#+TITLE: Porting Virtual Labs to Open edX Platform
+#+Author: VLEAD
+#+Date: [2016-01-27 Wed]
+#+PROPERTY: results output
+#+PROPERTY: exports code
+#+SETUPFILE: ../../org-templates/level-1.org
 
 * Strategy
 Efforts in theming and customization are carried in three different ways -
