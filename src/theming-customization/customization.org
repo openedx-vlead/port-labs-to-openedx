@@ -255,10 +255,29 @@ Below are the email id's which are to replaced.
 | UNIVERSITY_EMAIL               |               university@example.com | not needed for now       |      -            |
 
 *** All courses should be "Anytime"
-*** Start dates to be removed from each course tile
-*** Color Theming ( match the current vlabs.ac.in)
-*** Footer and Header to match the current vlabs.ac.in landing page
+We can set start date of every course as "Anytime". Please follow the steps given below 
+#+BEGIN_SRC 
+1. Loigin to Studio. 
+2. Click on Course name which you own.
+3. Go to settings drop down, and click Advanced settings.
+4. Change field "Course Advertised Start Date" from =null= to "Anytime".
+5. Save your changes.
+#+END_SRC
 
+For more detials related to course import and other things visit this [[https://github.com/vlead/port-labs-to-openedx/blob/develop/src/porting-labs/index.org#port-a-lab][link]]
+
+*** Start dates to be removed from each course tile
+This can be accomplished using same steps as given above.
+
+* Changing the default course preview, upload course image and remove start dates and end dates
+#+BEGIN_SRC
+1. Click on Course name which you own.
+2. Go to schedule and details in settings drop down
+3. Let all the field in course schedule be empty.
+4. In "Introducing your Course" section edit the "Course Overview" as per your requirement.
+5. Add a course image by clicking on Upload image button.
+6. Save your changes.
+#+END_SRC
 
 
 ** Terms and conditions page of Studio signup
