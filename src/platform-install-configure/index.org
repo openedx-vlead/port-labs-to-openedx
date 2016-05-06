@@ -2,7 +2,7 @@
 #+Author: Siva Shanker
 #+PROPERTY: results output
 #+PROPERTY: exports code
-#+SETUPFILE: ../../org-templates/level-1.org
+#+SETUPFILE: ../org-templates/level-1.org
 
 * Introduction
   This document describes the set up and configuration of Open edX platfrom.

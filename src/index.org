@@ -3,7 +3,7 @@
 #+Date: [2016-01-27 Wed]
 #+PROPERTY: results output
 #+PROPERTY: exports code
-#+SETUPFILE: ../org-templates/level-0.org
+#+SETUPFILE: ./org-templates/level-0.org
 
 * Introduction
   This document deals with how to: 
@@ -41,47 +41,7 @@
   8. Virtual Labs on Open edX should adhere to [[https://open.edx.org/trademark-guidelines][trademark guidelines]] stipulated
      by Open edX platform. 
      
-
-* Labs chosen
-
-  The first six labs are picked from the labs there were listed to be
-  demonstrated at T4E conference at NIT, Warangal.
-
-  |------+-------------------------------+------------------------+------+----------+--------------------|
-  | S.No | Lab Name                      | Discipline             | Lab  | Oped edX | Institute          |
-  |      |                               |                        | Url  | Sources  |                    |
-  |------+-------------------------------+------------------------+------+----------+--------------------|
-  |   1. | Computer Programming          | Computer Science       | [[http://cse02-iiith.vlabs.ac.in/][Link]] | [[https://github.com/vlead/Open-edX-Computer-Programming][Link]]     | IIIT, Hyderabad    |
-  |      | Lab                           |                        |      |          |                    |
-  |------+-------------------------------+------------------------+------+----------+--------------------|
-  |   2. | Structural Analysis           | Civil engineering      | [[http://eerc04-iiith.virtual-labs.ac.in/index.php][Link]] | [[https://github.com/vlead/Open-edX-Structural-Analysis][Link]]     | IIIT, Hyderabad    |
-  |------+-------------------------------+------------------------+------+----------+--------------------|
-  |   3. | Population Ecology II         | Biotechnology &        | [[http://pevii-au.virtual-labs.ac.in/][Link]] | [[https://github.com/vlead/Open-edX-Population-Ecology-2][Link]]     | Amrita, Coimbatore |
-  |      |                               | Biomedical Engineering |      |          |                    |
-  |------+-------------------------------+------------------------+------+----------+--------------------|
-  |   4. | Mine Automation               | Mechanical Engineering | [[http://iitkgp.vlab.co.in/?sub=40&brch=137][Link]] | [[https://github.com/vlead/open-edx-mine-automation][Link]]     | IIT, Kharagpur     |
-  |      | and Virtual Reality           |                        |      |          |                    |
-  |------+-------------------------------+------------------------+------+----------+--------------------|
-  |   5. | Chemical Engineering          | Chemical Engineering   | [[http://ce-iitb.vlabs.ac.in/][Link]] | [[https://github.com/vlead/open-edx-chemical-engineering][Link]]     | IIT, Bombay        |
-  |------+-------------------------------+------------------------+------+----------+--------------------|
-  |   6. | Sensors Modeling & Simulation | Electrical Engineering | [[http://sl-coep.vlabs.ac.in/][Link]] | [[https://github.com/vlead/open-edx-sensors-modeling-simulation][Link]]     | COE, Pune          |
-  |------+-------------------------------+------------------------+------+----------+--------------------|
-  |   7. | Industrial Electric           | Electrical             | [[http://ied-nitk.vlabs.ac.in/][Link]] | [[https://github.com/vlead/open-edx-industrial-electric-drives-lab][Link]]     | NIT, Surathkal     |
-  |      | Drives and Application        | Engineering            |      |          |                    |
-  |      | of PLC                        |                        |      |          |                    |
-  |------+-------------------------------+------------------------+------+----------+--------------------|
-  |   8. | Industrial Automation         | Electrical Engineering | [[http://ial-coep.vlabs.ac.in/Introduction.html][Link]] | [[https://github.com/vlead/open-edx-industrial-automation-lab][Link]]     | COE, Pune          |
-  |      | Laboratory                    |                        |      |          |                    |
-  |------+-------------------------------+------------------------+------+----------+--------------------|
-  |   9. | Hybrid Electronics            | Electronics &          | [[http://he-coep.vlabs.ac.in/][Link]] | [[https://github.com/vlead/open-edx-hybrid-electronics-lab][Link]]     | COE, Pune          |
-  |      |                               | Communications         |      |          |                    |
-  |------+-------------------------------+------------------------+------+----------+--------------------|
-  |  10. | Data Structures               | Computer Science       | [[http://cse01-iiith.vlabs.ac.in/][Link]] | [[https://github.com/vlead/open-edx-data-structures][Link]]     | IIIT, Hyderabad    |
-  |      |                               |                        |      |          |                    |
-  |------+-------------------------------+------------------------+------+----------+--------------------|
-
-
-* Open edX platform
+* Open edX platform for Virtual Labs
   - [[./platform-install-configure/index.org][Setup and Configure Open edX platform]]
   - [[./analytics-setup/index.org][Setup Analytics]]
   - [[./theming-customization/index.org][Change the way Open edX platform looks]]
