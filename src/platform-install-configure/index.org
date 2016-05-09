@@ -285,9 +285,21 @@
    - [[https://easyengine.io/tutorials/mysql/remote-access/][Reference]] 
 
 
-* [[./administration.org][Administration of Open edX platform]]
+* Administration of Open edX platform
+  This section describes tasks that can be done only by administrator.
+  Please go through [[./administration.org][Administration of Open edX platform]] for more
+  about administration tasks.
 
-* [[./trouble-shooting.org][Trouble Shooting of Open edX platform]]
+* Trouble Shooting of Open edX platform
+  Describes trouble shooting of Open edX platform. Please have look at
+  [[./trouble-shooting.org][Trouble Shooting of Open edX platform]] for more about trouble
+  shooting on Open edX platform.
+
+* Open Issues on GitHub
+  Records all open issues regarding edx-plaform and configuring it.
+  At present there is only one open issue on GitHub,
+  https://github.com/vlead/port-labs-to-openedx/issues/2. It shows us,
+  what is our status/progress on this task?
 
 * References
   - [[https://openedx.atlassian.net/wiki/display/OpenOPS/Native+Open+edX+Ubuntu+12.04+64+bit+Installation][Native Open edX Ubuntu 12.04 64 bit Installation]]

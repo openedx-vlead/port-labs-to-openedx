@@ -221,6 +221,11 @@
      the  steps/suggestions provided by Mrs.Sukla. But the issue is
      not resolved.
 
+* Open Issues on GitHub
+  Open Issues on GitHub regarding analytics/insights setup.  At
+  present, there is only one open issue, that is
+  https://github.com/vlead/port-labs-to-openedx/issues/4
+
 * References
   - https://github.com/edx/configuration/wiki
   - https://openedx.atlassian.net/wiki/display/OPEN/Debugging+Issues+with+LMS+and+Studio
