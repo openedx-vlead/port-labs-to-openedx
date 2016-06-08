@@ -276,7 +276,7 @@
    
    In order to make database open for all remote hosts, we need to do
    the following steps.
-   - Open =/et/mysql/my.conf=
+   - Open =/etc/mysql/my.cnf=
    - Change =bind-address= from =127.0.0.1= to =0.0.0.0=
    - Restart the mysql server
      #+BEGIN_EXAMPLE
