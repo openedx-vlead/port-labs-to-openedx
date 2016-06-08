@@ -90,7 +90,7 @@
       -rw-r--r--   1 hadoop supergroup     308814 2015-10-15 14:31 /data/tracking.log
       #+END_EXAMPLE
    8. Setup PIPELINE 
-      #+BEGIN_SRC 
+      #+BEGIN_SRC command
       ssh-keygen -t rsa -f ~/.ssh/id_rsa -P ''
       echo >> ~/.ssh/authorized_keys # Make sure there's a newline at the end
       cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
@@ -116,19 +116,19 @@
       For example, If you want to run the command from root user (ssh
       access should be enabled for this access) then provide *--user
       root*
-      #+BEGIN_SRC 
+      #+BEGIN_SRC command
       # Ensure you're in the pipeline virtualenv 
       remote-task --host localhost --repo https://github.com/edx/edx-analytics-pipeline --user ubuntu --override-config $HOME/edx-analytics-pipeline/config/devstack.cfg --wheel-url http://edx-wheelhouse.s3-website-us-east-1.amazonaws.com/Ubuntu/precise --remote-name analyticstack --wait TotalEventsDailyTask --interval 2015 --output-root hdfs://localhost:9000/output/ --local-scheduler
       #+END_SRC
    10. Update the following file so that insights will be connected to
        LMS edxapp database.
-       #+BEGIN_SRC 
+       #+BEGIN_SRC command
        sudo vim /edx/etc/edx-analytics-pipeline/input.json
        # put in the right url and credentials for your LMS database
        #+END_SRC
        - Test it by running the following command. The output of the
 	 below command shows the mysql queries. 
-	 #+BEGIN_SRC
+	 #+BEGIN_SRC command
 	 remote-task --host localhost --user ubuntu --remote-name analyticstack --skip-setup --wait ImportEnrollmentsIntoMysql --interval 2015 --local-scheduler
 	 #+END_SRC
 
@@ -142,7 +142,7 @@
 	
 	 Create super user by issuing following commands on the LMS
 	 machine.
-	 #+BEGIN_SRC 
+	 #+BEGIN_SRC command  
 	 sudo -u www-data /edx/bin/python.edxapp ./manage.py lms --settings aws create_user -s -p edx -e user@example.com
 	 sudo -u www-data /edx/bin/python.edxapp ./manage.py lms --settings aws changepassword user
 	 sudo -u www-data /edx/bin/python.edxapp ./manage.py lms --settings aws shell
@@ -163,7 +163,7 @@
        the file =/edx/etc/insights.yml= and update the following
        variables with appropriate values (that are generated
        automatically on django admin page on LMS machine).
-       #+BEGIN_SRC 
+       #+BEGIN_SRC command
        SOCIAL_AUTH_EDX_OIDC_KEY: '<PREFILLED VALUE 1 from LMS>'
        SOCIAL_AUTH_EDX_OIDC_SECRET: '<PREFILLED VALUE 2 FROM LMS>'
        SOCIAL_AUTH_EDX_OIDC_URL_ROOT: '<LMS URL>/oauth2'
@@ -181,51 +181,327 @@
         button)
       + Redirects to LMS machine to see the analytics.
       + Page not found  
-* Mrs.Sukla's suggestions on setting up Open edX analytics
-  - Install edx with all necessary modules like course_discovery,
-     oauth_client_setup,
+* Configuration changes suggested and made by Dr. Ramesh
 
-  - Create dns names for lms, insights & preferrably cms services
+** Problems identified in current Analytics configuration
+*** OAuth trust issues between Insights and LMS 
+We were unable to build a trust between Client application(Analaytics) and
+Resource Server(LMS).The ideal process which should happen is given below -
 
-  - Create the ssl certificates for both lms & insights on the
-    respective machines under /etc/nginx/ssl directory
 
-  - Change the configuration files for lms, insights under the
-    /edx/app/nginx/sites­available on both machines for https protocol
-    which will use the above certificates
+**** Process 
++ Client -> Insights/Analytics machine -> Client application   
++ Server -> LMS/CMS machine -> Resource Server
 
-  - Change the configuration files for lms & insights on respective
-    machine. Configuration file for lms is
-    /edx/app/edxapp/lms.env.json & for insights is
-    /edx/etc/insights.yml to reflect the proper urls.
++ When a client applications wants access to the resources of a resource owner,
+  hosted on a resource server, the client application must first obtain an
+  authorization grant.
++ Before a client application can request access to resources on a resource
+  server, the client application must first register with the authorization
+  server associated with the resource server.
++ The registration is typically a one-time task. Once registered, the
+  registration remains valid, unless the client app registration is revoked.
++ At registration the client application is assigned a client ID and a client
+  secret (password) by the authorization server.
++ The client ID and secret is unique to the client application on that
+  authorization server.
++ If a client application registers with multiple authorization servers
+  (e.g. both Facebook, Twitter and Google), each authorization server will
+  issue its own unique client ID to the client application.
++ Whenever the client application requests access to resources stored on that
+  same resource server, the client application needs to authenticate itself by
+  sending along the client ID and the client secret to the autorhization
+  server.
++ Whenever the client application requests access to resources stored on that
+  same resource server, the client application needs to authenticate itself by
+  sending along the client ID and the client secret to the autorhization
+  server.
 
-  - Edit the properties of trusted insights client created during
-    installation using the lms admin,change the urls with the correct
-    url (url & redirect url)
+*** SSL certificate issues
++ We were using https protocol without using SSL certificates configured in web
+server of LMS and Analytics machine. A SSL certificate issued by Certification
+Authority(CA) is required to urgently required to get someone approve your
+claim of who you are .
++ We were using Self-Signed certificates, which can be okay on local machines
+  within the network, but not in global internet.
++ [[https://www.sslshopper.com/what-is-ssl.html][Understand SSL here]]
 
-  - Synchronize the computer times of both insights & edx machine using
-    'ntp'
+*** Client machine(Analytics) was not verifying the SSL certificate  
+Insights machine was itself not verifying the SSL certificate from CA
+authority. As a result we were getting the following error in /edx/var/log/insights/edx.log
+#+BEGIN_SRC error
+ File "/edx/app/insights/venvs/insights/local/lib/python2.7/site-packages/social/backends/oauth.py", line 383, in auth_complete
+    method=self.ACCESS_TOKEN_METHOD
+  File "/edx/app/insights/venvs/insights/local/lib/python2.7/site-packages/social/backends/open_id.py", line 360, in request_access_token
+    response = self.get_json(*args, **kwargs)
+  File "/edx/app/insights/venvs/insights/local/lib/python2.7/site-packages/social/backends/base.py", line 229, in get_json
+    return self.request(url, *args, **kwargs).json()
+  File "/edx/app/insights/venvs/insights/local/lib/python2.7/site-packages/social/backends/base.py", line 224, in request
+    raise AuthFailed(self, str(err))
+AuthFailed: Authentication failed: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed (_ssl.c:590)
+#+END_SRC
+When tried with curl command, we obtained following error 
+#+BEGIN_SRC error
+curl https://lms.vlabs.ac.in
+curl: (51) SSL: certificate verification failed (result: 5)
+#+END_SRC
 
-  - Append the lms nginx certificate to the file
-    /edx/app/insights/venvs/insights/lib/pyhton2.7/requests/cacert.pem
 
-  - Restart all services under supervisorctl & nginx service on both
-    machines
-** Work on setting up Open edX analytics based on Mrs.Sukla's suggestions 
-   - Used following link to generate self-signed certificate on both
-     LMS and insights machines.
-     https://www.digitalocean.com/community/tutorials/how-to-create-a-ssl-certificate-on-nginx-for-ubuntu-12-04
-   - Yogesh and I tried setting up Open edX analytics using
-     Mrs.Sukla's suggestions, but the issue is not solved.
-   - Once again I alone have tried to setup Open edX analytics using
-     the  steps/suggestions provided by Mrs.Sukla. But the issue is
-     not resolved.
+*** Any change in .py files of should the be followed by compilation of files 
+We were changing some python files and identified that applied changes were not
+coming into effect. As a result it was identified that, changes to be applied
+will only come in effect after compilation of .py to.pyc files.
 
-* Open Issues on GitHub
-  Open Issues on GitHub regarding analytics/insights setup.  At
-  present, there is only one open issue, that is
-  https://github.com/vlead/port-labs-to-openedx/issues/4
+** Solutions to address above mentioned problems 
++ Replace IP address with domain names :: 
+  Public IP address was issued a domain name. 
++ Make changes in lms.env.json file in LMS server ::
+  + Login into LMS server
+  + Open file lms.env.json
+  #+BEGIN_SRC command
+  a. vim /edx/app/edxapp/lms.env.json
+  #+END_SRC
+  + Search and Replace 
+  #+BEGIN_SRC command
+  "ANALYTICS_DASHBOARD_URL":"https://your-insights.domain.com:18110"
+  "ANALYTICS_SERVER_URL": "https://your-insights.domain.com:18110"
+  "ENABLE_OAUTH2": true,
+  "ENABLE_OAUTH2_PROVIDER": true
+  "JWT_ISSUER": "https://your-lms.domain.com/oauth2"
+  "OAUTH_ENFORCE_SECURE": true,
+  "ENABLE_OAUTH2": true,
+  "OAUTH_OIDC_ISSUER": "https://your-lms.domain.com/oauth2"
+  #+END_SRC
+  + Save file and restart edx services 
+  #+BEGIN_SRC command
+  sudo /edx/bin/supervisorctl restart all 
+  #+END_SRC 
++ Make changes in cms.env.json file in LMS server :: 
+  + Login into LMS server
+  + Open file cms.env.json
+  #+BEGIN_SRC command
+  a. vim /edx/app/edxapp/cms.env.json
+  #+END_SRC
+  + Search and Replace 
+  #+BEGIN_SRC command
+  "ANALYTICS_DASHBOARD_URL":"https://your-insights.domain.com:18110"
+  "ANALYTICS_SERVER_URL": ""
+  "JWT_ISSUER": "https://your-lms.domain.com/oauth2"
+  #+END_SRC
+  + Save file and restart edx services 
+  #+BEGIN_SRC command
+  sudo /edx/bin/supervisorctl restart all 
+  #+END_SRC
++ Install SSL certificte in LMS server, i.e. in ngnix :: 
+   Follow the steps given below to add a SSL certificate in LMS machine 
 
+   +. Login to your lms machine 
+   +. Change directory 
+   #+BEGIN_SRC command
+   cd /etc/nginx/ssl/certs
+   #+END_SRC
+   +. Copy your .crt, .key, and .ca-bundle file in /etc/nginx/ssl/certs. Create directory *certs* if it does not exist.
+   +. Change directory
+   #+BEGIN_SRC command
+   cd /etc/nginx/sites-enabled
+   #+END_SRC
+   +. Open file lms and make following changes in server block of file 
+   #+BEGIN_SRC command
+   a. vim lms
+   b. server_name your-server-domain-name;
+   c. ssl_certificate /path/to/your/crt/file/.crt;
+   d. ssl_certificate_key /path/to/your/key/file/.key;
+   #+END_SRC 
+   +. Restart ngnix services 
+   #+BEGIN_SRC command
+   service ngnix restart 
+   #+END_SRC
+   +. Restart edx services 
+   #+BEGIN_SRC command
+   sudo /edx/bin/supervisorctl restart all
+   #+END_SRC
++ Install SSL certificate in Analytics Server, i.e. in ngninx ::
+   Follow the steps given below to add a SSL certificate in LMS machine 
+
+   +. Login to your insights machine 
+   +. Change directory 
+   #+BEGIN_SRC command
+   cd /etc/nginx/ssl/certs
+   #+END_SRC
+   +. Copy your .crt, .key, and .ca-bundle file in /etc/nginx/ssl/certs. Create directory *certs* if it does not exist.
+   +. Change directory
+   #+BEGIN_SRC command
+   cd /etc/nginx/sites-enabled
+   #+END_SRC
+   +. Open file insigts and make following changes in server block of file 
+   #+BEGIN_SRC command
+   a. vim insights
+   b. server_name your-server-domain-name;
+   c. ssl_certificate /path/to/your/crt/file/.crt;
+   d. ssl_certificate_key /path/to/your/key/file/.key;
+   #+END_SRC 
+   +. Restart ngnix services 
+   #+BEGIN_SRC command
+   service ngnix restart 
+   #+END_SRC
+   + Restart services of edx
+   #+BEGIN_SRC command
+   sudo /edx/bin/supervisorctl restart all
+   #+END_SRC
++ Add certificates in Insights machine ::
+  Follow the steps given below to add CA certificate in Insights machine.
+  + Install ca-certificate package in ubuntu. Ignore if already installed 
+  #+BEGIN_SRC command
+  apt-get install ca-certifcate
+  #+END_SRC
+  + Change directory to /usr/share/ca-certificates/
+  #+BEGIN_SRC command
+  cd /usr/share/ca-certificates/
+  #+END_SRC 
+  + Make a directory with name extra in /usr/share/ca-certificates/
+  #+BEGIN_SRC command 
+  mkdir extra
+  #+END_SRC
+  + Change directory to /usr/share/ca-certificates/extra
+  #+BEGIN_SRC command
+  cd /usr/share/ca-certificates/extra
+  #+END_SRC
+  + Copy your .crt and .ca-bundle files in current directory 
+  + Fire command to reconfigure ca-certificates
+  #+BEGIN_SRC command
+  sudo dpkg-reconfigure ca-certificates
+  #+END_SRC
+  + A GUI will appear. At the top, a certificate will be listed in the form
+    extra/your-crt-file.crt.
+  + Press <SPACE BAR> to select the certificate and Press <ENTER> 
+  + Fire command to update ca-certificates
+  #+BEGIN_SRC command
+  sudo update-ca-certificates
+  #+END_SRC
+  + Install package certifi==2015.04.28. We are no sure , whether this package
+    is required in functioning or not. 
+  #+BEGIN_SRC command
+  sudo pip install certifi==2015.04.28
+  #+END_SRC
+  + Restart insights services 
+  #+BEGIN_SRC command
+  sudo /edx/bin/supervisorctl restart all 
+  #+END_SRC
++ Edit open_id.py file in insights machines ::
+  Follow the steps to edit the open_id.py file in insights machine
+ 
+  + Login into Insights machine
+  + Fire command locate to find the path of open_id.py file
+  #+BEGIN_SRC command
+  insights # locate open_id.py
+  /edx/app/insights/venvs/insights/lib/python2.7/site-packages/social/backends/open_id.py
+  /edx/app/insights/venvs/insights/lib/python2.7/site-packages/social/backends/open_id.pyc
+  /edx/app/insights/venvs/insights/lib/python2.7/site-packages/social/tests/backends/open_id.py
+  /edx/app/insights/venvs/insights/lib/python2.7/site-packages/social/tests/backends/open_id.pyc
+  #+END_SRC
+  + Open file
+  #+BEGIN_SRC command
+  vim /edx/app/insights/venvs/insights/lib/python2.7/site-packages/social/backends/open_id.py
+  #+END_SRC
+  + Search for string "issuer=self.ID_TOKEN_ISSUER". This string will fall in
+    def validate_and_return_id_token of file.
+  + In try block replace 
+  #+BEGIN_SRC command
+  id_token = jwt_decode(id_token, decryption_key, audience=client_id,
+                                  issuer=self.ID_TOKEN_ISSUER,
+                                  algorithms=['HS256'])
+
+                       WITH
+
+  id_token = jwt_decode(id_token, decryption_key, audience=client_id,
+                                  issuer=self.ID_TOKEN_ISSUER, options = {'verify_iat' : False,},
+                                  algorithms=['HS256'])
+
+  #+END_SRC
+  + Save file
+  + Compile open_id.py files 
+  #+BEGIN_SRC command
+  insights # sudo python
+  Python 2.7.10 (default, Jun 29 2015, 22:38:23) 
+  [GCC 4.6.3] on linux2
+  Type "help", "copyright", "credits" or "license" for more information.
+  >>> import py_compile
+  >>> py_compile.compile("open_id.py")
+  >>> exit()
+  #+END_SRC
+  + Restart edx services
+  #+BEGIN_SRC command
+  sudo /edx/bin/supervisorctl restart all 
+  #+END_SRC
++ Edit base.py file in insights machine ::
+
+  + Login into Insights machine
+  + Open file
+  #+BEGIN_SRC command
+  vim /edx/app/insights/venvs/insights/lib/python2.7/site-packages/social/backends/base.py
+  #+END_SRC
+  + In def request(self, url, method='GET', *args, **kwargs):, add the
+    following line. This line says that please do not verify SSL.
+  #+BEGIN_SRC command
+  kwargs.setdefault('headers', {})
+  if self.setting('VERIFY_SSL') is not None:
+        kwargs.setdefault('verify', self.setting('VERIFY_SSL'))
+  kwargs.setdefault('verify', False) #Added by Dr. Ramesh. Add this line as it is.
+  kwargs.setdefault('timeout', self.setting('REQUESTS_TIMEOUT') or
+                                     self.setting('URLOPEN_TIMEOUT'))
+  #+END_SRC
+  + In the same def in try block, replace as shown. This is to ignore
+    SSL_PROTOCOL even if it is there.
+  #+BEGIN_SRC command
+  if self.SSL_PROTOCOL
+        WITH
+  if self.SSL_PROTOCOL is not None:
+  #+END_SRC
+  + In the same try block, add line in else section 
+  #+BEGIN_SRC command
+  else:
+      response = request(method, url, *args, **kwargs) #Added by Dr. Ramesh
+  #+END_SRC
+  + Finally your def function looks like the one shown below. Please see the
+    commented lines.
+  #+BEGIN_SRC command
+  def request(self, url, method='GET', *args, **kwargs):
+        kwargs.setdefault('headers', {})
+        if self.setting('VERIFY_SSL') is not None:
+            kwargs.setdefault('verify', self.setting('VERIFY_SSL'))
+        kwargs.setdefault('verify', False) #Added by Dr. Ramesh
+        kwargs.setdefault('timeout', self.setting('REQUESTS_TIMEOUT') or
+                                     self.setting('URLOPEN_TIMEOUT'))
+        if self.SEND_USER_AGENT and 'User-Agent' not in kwargs['headers']:
+            kwargs['headers']['User-Agent'] = user_agent()
+
+        try:
+            if self.SSL_PROTOCOL is not None: #Modified to not none
+                #session = SSLHttpAdapter.ssl_adapter_session(self.SSL_PROTOCOL)
+                #response = session.request(method, url, *args, **kwargs)
+                response = request(method, url, *args, **kwargs)
+            else:
+                response = request(method, url, *args, **kwargs) #Added by Dr. Ramesh
+        except ConnectionError as err:
+            raise AuthFailed(self, str(err))
+        response.raise_for_status()
+        return response
+  #+END_SRC
+  + Save file and compile it.
+ #+BEGIN_SRC command
+  insights # sudo python
+  Python 2.7.10 (default, Jun 29 2015, 22:38:23) 
+  [GCC 4.6.3] on linux2
+  Type "help", "copyright", "credits" or "license" for more information.
+  >>> import py_compile
+  >>> py_compile.compile("base.py")
+  >>> exit()
+  #+END_SRC
+  + Restart edx services
+  #+BEGIN_SRC command
+  sudo /edx/bin/supervisorctl restart all 
+  #+END_SRC
+    
 * References
   - https://github.com/edx/configuration/wiki
   - https://openedx.atlassian.net/wiki/display/OPEN/Debugging+Issues+with+LMS+and+Studio
@@ -233,3 +509,7 @@
   - http://edx.readthedocs.org/projects/edx-installing-configuring-and-running/en/latest/analytics/install_analytics.html
   - https://github.com/open-craft/edx-analytics-devstack
       
+* Acknowledgments 
+We acknowledge the valuable support of Dr. Ramesh NPN from APSSDC to help us identify and
+solve problems we were facing during setting up edx-analytics. We also thank
+Mrs. Sukla Nag from IIT-B for her appropriate suggestions.
