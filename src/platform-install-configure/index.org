@@ -9,7 +9,7 @@
   Once we setup Open edX platform, we can port all our virtual-labs to the edX
   platform.
 
-
+    
 * Set up Open edX platform
   Open edx Platform [[http://edx.readthedocs.io/projects/edx-installing-configuring-and-running/en/latest/installation/installation_options.html][installation]] has various [[https://openedx.atlassian.net/wiki/display/OpenOPS/Open+edX+Installation+Options][options]].  VLEAD has chosen to go
   with =Native= Open edX installation on Ubuntu 12.04 64-bit. 
@@ -60,7 +60,20 @@
 	 #+BEGIN_EXAMPLE
          export OPENEDX_RELEASE=named-release/dogwood
 	 #+END_EXAMPLE
-
+       + Create an emty file (This step is not needed in Mauall Installation
+         #+BEGIN_SRC 
+         sudo touch /edx/app/edx_notes_api/edx_notes_api/requirements/optional.txt
+         #+END_SRC
+	 - NOTE :: This could be the output if file is not created while running the second shell script
+	   #+BEGIN_EXAMPLE
+	   TASK: [edx_notes_api | install application requirements] ********************** 
+	   changed: [localhost] => (item=base.txt)
+	   failed: [localhost] => (item=optional.txt) => {"cmd": "/edx/app/edx_notes_api/venvs/edx_notes_api/bin/pip install --exists-action w -r /edx/app/edx_notes_api/edx_notes_api/requirements/optional.txt", "failed": true, "item": "optional.txt"}
+	   msg: 
+	   :stderr: Could not open requirements file: [Errno 2] No such file or directory: '/edx/app/edx_notes_api/edx_notes_api/requirements/optional.txt'
+	   You are using pip version 7.1.2, however version 8.1.2 is available.
+	   You should consider upgrading via the 'pip install --upgrade pip' command.
+	   #+END_EXAMPLE
        + Execute Commands
          Run the following commands
 
@@ -170,7 +183,230 @@
 
 
 * Configuring Open edX platform
-** Provide proper verification link to registered users
+** Install SSL certificates in LMS machine
+   Follow the steps given below to add a SSL certificate in LMS machine 
+   + Login to your lms machine 
+   + Create a directory =certs= if it does not exist in =/etc/nginx/ssl/=
+     #+BEGIN_EXAMPLE
+     sudo  mkdir /etc/nginx/ssl/certs
+     #+END_EXAMPLE
+   + Change directory 
+     #+BEGIN_SRC
+     cd /etc/nginx/ssl/certs
+     #+END_SRC
+   + Copy your .crt, .key, and .ca-bundle file into =/etc/nginx/ssl/certs=
+   + Change directory
+   #+BEGIN_SRC 
+   cd /etc/nginx/sites-enabled
+   #+END_SRC
+   + Open file lms 
+     #+BEGIN_SRC
+     sudo vim lms
+     #+END_SRC 
+   + Append/Add the following lines to the opened file
+     #+BEGIN_SRC 
+ server {
+   # LMS configuration file for nginx, templated by ansible
+   
+     # error p		   ages
+     error_page 504	    /server/server-error.html;
+     error_page 502 /server/server-error.html;
+     error_page 500 /server/server-error.html;
+     
+     listen 443 ssl default;
+     server_name lms.vlabs.ac.in;
+
+     ssl on;
+     # ssl_certificate /etc/nginx/ssl/server.crt;
+     ssl_certificate /etc/nginx/ssl/certs/STAR_vlabs_ac_in.crt;
+     #  ssl_certificate_key /etc/nginx/ssl/server.key; 
+     ssl_certificate_key /etc/nginx/ssl/certs/vlabs.ac.in.key; 
+     
+     access_log /edx/var/log/nginx/access.log p_combined;
+     error_log /edx/var/log/nginx/error.log error;
+
+     # CS184 requires uploads of up to 4MB for submitting screenshots.
+     # CMS requires larger value for course assest, values provided
+     # via hiera.
+     client_max_body_size 4M;
+
+     rewrite ^(.*)/favicon.ico$ /static/images/favicon.ico last;
+
+  location @proxy_to_lms_app {
+  	     proxy_set_header X-Forwarded-Proto $scheme;
+	     proxy_set_header X-Forwarded-Port $server_port;
+	     proxy_set_header X-Forwarded-For $remote_addr;
+	     proxy_set_header Host $http_host;
+
+	     proxy_redirect off;
+	     proxy_pass http://lms-backend;
+  }
+
+  location / {
+        try_files $uri @proxy_to_lms_app;
+  }
+
+
+  # No basic auth for /segmentio/event
+  location /segmentio/event {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+  # The api is accessed using OAUTH2 which
+  # uses the authorization header so we can't have
+  # basic auth on it as well.
+  location /api {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+  # Need a separate location for the image uploads endpoint to limit upload sizes
+
+  location ~ ^/api/profile_images/[^/]*/[^/]*/upload$ {
+    try_files $uri @proxy_to_lms_app;
+    client_max_body_size 1049576;
+  }
+
+  location /notifier_api {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+  location /user_api {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+  # No basic auth security on the github_service_hook url, so that github can use it for cms
+  location /github_service_hook {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+  # No basic auth security on oauth2 endpoint
+  location /oauth2 {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+  # No basic auth security on third party auth endpoints
+  location /auth {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+
+  # No basic auth security on the heartbeat url, so that ELB can use it
+  location /heartbeat {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+  # No basic auth on the LTI provider endpoint, it does OAuth1
+  location /lti_provider {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+  # No basic auth on LTI component grade.
+  location ~ /handler_noauth {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+  location /courses {    try_files $uri @proxy_to_lms_app;
+  }
+
+location ~ ^/media/(?P<file>.*) {
+    root /edx/var/edxapp/media;
+    try_files /$file =404;
+    expires 31536000s;
+}
+
+      # static pages for server status
+  location ~ ^/server/(?P<file>.*) {
+      root /edx/var/nginx/server-static;
+      try_files /$file =404;
+  }
+
+  location ~ ^/static/(?P<file>.*) {
+    root /edx/var/edxapp;
+    try_files /staticfiles/$file /course_static/$file =404;
+
+    # return a 403 for static files that shouldn't be
+    # in the staticfiles directory
+    location ~ ^/static/(?:.*)(?:\.xml|\.json|README.TXT) {
+        return 403;
+    }
+
+    # http://www.red-team-design.com/firefox-doesnt-allow-cross-domain-fonts-by-default
+    location ~ "/static/(?P<collected>.*\.[0-9a-f]{12}\.(eot|otf|ttf|woff|woff2)$)" {
+        expires max;
+        add_header Access-Control-Allow-Origin *;
+        try_files /staticfiles/$collected /course_static/$collected =404;
+    }
+
+    # Set django-pipelined files to maximum cache time
+    location ~ "/static/(?P<collected>.*\.[0-9a-f]{12}\..*)" {
+        expires max;
+        # Without this try_files, files that have been run through
+        # django-pipeline return 404s
+        try_files /staticfiles/$collected /course_static/$collected =404;
+    }
+
+    # Set django-pipelined files for studio to maximum cache time
+    location ~ "/static/(?P<collected>[0-9a-f]{7}/.*)" {
+        expires max;
+
+        # Without this try_files, files that have been run through
+        # django-pipeline return 404s
+        try_files /staticfiles/$collected /course_static/$collected =404;
+    }
+
+    # Expire other static files immediately (there should be very few / none of these)
+    expires epoch;
+  }
+
+
+}
+
+     #+END_SRC 
+   + Restart ngnix service
+     #+BEGIN_SRC 
+     /etc/init.d/ngnix restart
+     #+END_SRC
+** Configure Mysql server so that it allows remote machines to execute queries
+   
+   [[https://easyengine.io/tutorials/mysql/remote-access/][Allow]] Analytics machine to connect LMS machine's databases by
+   running the following example commands
+
+   - Open =/et/mysql/my.conf=
+   - Change =bind-address= from =127.0.0.1= to =0.0.0.0=
+   - Restart the mysql server
+     #+BEGIN_EXAMPLE
+     /etc/init.d/mysql restart
+     #+END_EXAMPLE
+   - Log in as root user
+     #+BEGIN_EXAMPLE
+      mysql -uroot -p 
+     #+END_EXAMPLE
+    - Grant permissions from analytics machine with the following details
+     #+BEGIN_EXAMPLE
+     mysql> GRANT ALL PRIVILEGES ON edxapp.* TO 'edxapp001'@'<analytics-server-ip>' IDENTIFIED BY 'password';
+     #+END_EXAMPLE
+   - [[https://easyengine.io/tutorials/mysql/remote-access/][Reference]] 
+
+** Update Analytics Dashboard URL on LMS machine
+   - Edit the files =/edx/app/edxapp/lms.env.json= and =/edx/app/edxapp/cms.env.json=
+     #+BEGIN_SRC
+     sudo vim /edx/app/edxapp/lms.env.json
+     sudo vim /edx/app/edxapp/cms.env.json
+     #+END_SRC
+
+   - Replace line the *"ANALYTICS_DASHBOARD_URL": "http://localhost:18110/courses"*  with
+     #+BEGIN_SRC
+     "ANALYTICS_DASHBOARD_URL": "https://insights.vlabs.ac.in:18110"
+     #+END_SRC
+   - Restart the edX services 
+     #+BEGIN_SRC
+     /edx/bin/supervisorctl restart edxapp:       
+     /edx/bin/supervisorctl restart edxapp_worker:
+     or 
+     /edx/bin/supervisorctl restart all
+     #+END_SRC
+
+** Provide proper verification link for registered users
    [[https://openedx.atlassian.net/wiki/display/OPEN/Debugging+Issues+with+LMS+and+Studio][Reference]]
    - Modify the files 
      #+BEGIN_EXAMPLE 
@@ -186,30 +422,6 @@
 
    - Restart the edx [[https://openedx.atlassian.net/wiki/display/OpenOPS/Managing+OpenEdX+Tips+and+Tricks][services]]
      #+BEGIN_EXAMPLE 
-     sudo /edx/bin/supervisorctl restart edxapp:       
-     edxapp:cms: stopped
-     edxapp:lms: stopped
-     edxapp:lms: started
-     edxapp:cms: started
-     
-     sudo /edx/bin/supervisorctl restart edxapp_worker:
-     edxapp_worker:cms_low_3: stopped
-     edxapp_worker:lms_high_mem_2: stopped
-     edxapp_worker:lms_default_3: stopped
-     edxapp_worker:cms_high_1: stopped
-     edxapp_worker:lms_low_1: stopped
-     edxapp_worker:cms_default_4: stopped
-     edxapp_worker:lms_high_4: stopped
-     edxapp_worker:cms_low_3: started
-     edxapp_worker:lms_high_mem_2: started
-     edxapp_worker:lms_default_3: started
-     edxapp_worker:cms_high_1: started
-     edxapp_worker:lms_low_1: started
-     edxapp_worker:cms_default_4: started
-     edxapp_worker:lms_high_4: started
-     #+END_EXAMPLE
-     OR
-     #+BEGIN_EXAMPLE
      /edx/bin/supervisorctl restart all
      #+END_EXAMPLE
      
@@ -244,27 +456,6 @@
    will need to contact admin or super-user to get privileges for creating
    courses.
 
-** Update Analytics Dashboard URL on LMS machine
-   - Open the file =/edx/app/edxapp/lms.env.json= and update following
-     variable with Analytics/insights fqdn/public-ip with the proper
-     port number on which insights app is running
-     #+BEGIN_EXAMPLE
-     "ANALYTICS_DASHBOARD_URL": "http://54.153.71.178:18110
-     #+END_EXAMPLE
-   - Restart the edX services 
-     #+BEGIN_EXAMPLE 
-     /edx/bin/supervisorctl restart edxapp:       
-     /edx/bin/supervisorctl restart edxapp_worker:
-     #+END_EXAMPLE
-** Configure Mysql server so that it allows remote machines to execute queries
-   
-   [[https://easyengine.io/tutorials/mysql/remote-access/][Allow]] Analytics machine to connect LMS machine's databases by
-   running the following example commands
-
-   - Log in as root user
-   #+BEGIN_EXAMPLE
-   mysql -uroot -p 
-   #+END_EXAMPLE
 
    - Grant permissions from analytics machine with the following details
      #+BEGIN_EXAMPLE
@@ -283,7 +474,6 @@
      /etc/init.d/mysql restart
      #+END_EXAMPLE
    - [[https://easyengine.io/tutorials/mysql/remote-access/][Reference]] 
-
 
 * Administration of Open edX platform
   This section describes tasks that can be done only by administrator.

@@ -5,7 +5,7 @@
 #+PROPERTY: exports code
 #+SETUPFILE: ../org-templates/level-1.org
 #+OPTIONS: ^:nil
-
+	   
 * Introduction
   Analytics provide the user activity while using virtual labs on Open edX
   platform.  This data allows an insight into the usage of virtual labs that
@@ -35,7 +35,8 @@
    2. Update and upgrade the VM
       #+BEGIN_EXAMPLE
       sudo apt-get update -y
-      sudo apt-get upgrade -y
+      sudo apt-get install python-pip git libmysqlclient-dev autoconf g++ python-dev 
+      sudo pip install virtualenv
       #+END_EXAMPLE
    3. Create a separate virtual environment for the edx analytics setup.
       #+BEGIN_EXAMPLE
@@ -46,19 +47,88 @@
    4. Do the following steps
       #+BEGIN_EXAMPLE
       git clone https://github.com/edx/configuration.git
-
       cd configuration/
-    
+      git checkout named-release/dogwood
       pip install -r requirements.txt
-    
+      #+END_EXAMPLE
+   5. Install Nodejs and npm if you are using dogwood version Open edX platform and Open edX insights
+      #+BEGIN_SRC 
+      sudo add-apt-repository ppa:chris-lea/node.js
+      sudo apt-get update
+      sudo apt-get install -y nodejs --no-install-recommends
+      sudo apt-get install npm
+      #+END_SRC    
+   6. Run the playbook to setup insights app
+      #+BEGIN_SRC 
       cd playbooks/edx-east/
-      sudo ansible-playbook -i localhost, -c local analytics_single.yml --extra-vars "INSIGHTS_LMS_BASE=<LMS_HOSTNAME> INSIGHTS_BASE_URL=<INSIGHTS_HOSTNAME>
+      ansible-playbook -i localhost, -c local analytics_single.yml --extra-vars "INSIGHTS_LMS_BASE=https://lms.vlabs.ac.in"
       # (If your site uses https, change the scheme and set the oauth flag to true. Enforce_secure means "insist on https".)
     
     
       # wait for a while :)
+      #+END_SRC
+   7. Install SSL certficates 
+      Follow the steps given below to add a SSL certificate in LMS machine 
+      - Login to your lms machine 
+      - Create a directory =certs= if it does not exist in =/etc/nginx/ssl/=
+       #+BEGIN_EXAMPLE
+       sudo  mkdir -p /etc/nginx/ssl/certs
+       #+END_EXAMPLE
+      - Change directory 
+       #+BEGIN_SRC
+       cd /etc/nginx/ssl/certs
+       #+END_SRC
+      - Copy your .crt, .key, and .ca-bundle file into =/etc/nginx/ssl/certs=
+      - Modify the nginx configuration files of insights
+      #+BEGIN_EXAMPLE
+      vim /etc/nginx/sites-enabled/insights
       #+END_EXAMPLE
-   5. Run the following commands to see hadoop job. This job has
+      - Add the following lines to that opened file
+      #+BEGIN_EXAMPLE
+      	server {
+	#  listen 443 ssl default_server;
+	  listen 18110 default_server;
+	  server_name insights.vlabs.ac.in;
+
+	     ssl on;
+	     # ssl_certificate /etc/nginx/ssl/server.crt;
+	     ssl_certificate /etc/nginx/ssl/certs/STAR_vlabs_ac_in.crt;
+	     #  ssl_certificate_key /etc/nginx/ssl/server.key;
+	     ssl_certificate_key /etc/nginx/ssl/certs/vlabs.ac.in.key;
+
+
+
+
+	     location ~ ^/static/(?P<file>.*) {
+	     root /edx/var/insights;
+	     try_files /staticfiles/$file =404;
+	     }
+
+	     location / {
+             try_files $uri @proxy_to_app;
+	     }
+
+	     # No basic auth security on the heartbeat url, so that ELB can use it
+	     location /status {
+	     try_files $uri @proxy_to_app;
+	     }
+
+
+	     location @proxy_to_app {
+	     proxy_set_header X-Forwarded-Proto $http_x_forwarded_proto;
+	     proxy_set_header X-Forwarded-Port $http_x_forwarded_port;
+	     proxy_set_header X-Forwarded-For $http_x_forwarded_for;
+	     proxy_set_header Host $http_host;
+
+	     #    proxy_redirect off;
+	     proxy_redirect http://insights.vlabs.ac.in https://insights.vlabs.ac.in;
+	     proxy_pass http://insights_app_server;
+	     }
+
+	       }
+
+      	#+END_EXAMPLE
+   8. Run the following commands to see hadoop job. This job has
       built-in "compute pi"
       #+BEGIN_EXAMPLE
       sudo su - hadoop
@@ -68,71 +138,87 @@
       hadoop jar hadoop-2.3.0/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.3.0.jar pi 2 100
       # it should compute something -- I got pi = 3.12. Close enough :)
       #+END_EXAMPLE
-   6. Also make sure you can run hive
+   9. Also make sure you can run hive
       #+BEGIN_EXAMPLE
       /edx/app/hadoop/hive/bin/hive
       # it should work
-      ^D to get back to your regular user
+      ^D or exit  to get back to your regular user
       #+END_EXAMPLE
-   7. Get some test logs into HDFS
+   10. The Insights app should be up. Test them by runing the following commands
+       #+BEGIN_EXAMPLE
+       curl https:://localhost:8110
+       curl https://insights.vlabs.ac.in:18110
+       #+END_EXAMPLE
+   11. Get some test logs into HDFS of Insights machine from LMS machine
       
-      #+BEGIN_EXAMPLE
-      # scp tracking.log onto the machine from the LMS. Then...
-      sudo mkdir -p /edx/var/log/tracking # if directory not exists.
-      sudo scp root@<LMS-IP>:/edx/var/log/tracking/tracking.log /edx/var/log/tracking
-      sudo chown hadoop /edx/var/log/tracking/tracking.log
-      # wait a minute -- ansible creates a cron job to load files in that dir every minute
+       #+BEGIN_EXAMPLE
+       # scp tracking.log onto the machine from the LMS. Then...
+       sudo mkdir -p /edx/var/log/tracking # if directory not exists.
+       sudo scp root@<LMS-IP>:/edx/var/log/tracking/tracking.log /edx/var/log/tracking
+       sudo chown hadoop /edx/var/log/tracking/tracking.log
+       # wait a minute -- ansible creates a cron job to load files in that dir every minute
     
-      # Check it  
-      hdfs dfs -ls /data
+       # Check it  
+       hdfs dfs -ls /data
     
-      Found 1 items
-      -rw-r--r--   1 hadoop supergroup     308814 2015-10-15 14:31 /data/tracking.log
-      #+END_EXAMPLE
-   8. Setup PIPELINE 
-      #+BEGIN_SRC command
-      ssh-keygen -t rsa -f ~/.ssh/id_rsa -P ''
-      echo >> ~/.ssh/authorized_keys # Make sure there's a newline at the end
-      cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
-      # check: ssh localhost "echo It worked!" -- make sure it works.
+       Found 1 items
+       -rw-r--r--   1 hadoop supergroup     308814 2015-10-15 14:31 /data/tracking.log
+       #+END_EXAMPLE
+       - Exit from haddop user and get back to normal user(ubuntu)
+   12. Setup PIPELINE 
+	#+BEGIN_SRC 
+	ssh-keygen -t rsa -f ~/.ssh/id_rsa -P ''
+	echo >> ~/.ssh/authorized_keys # Make sure there's a newline at the end
+	cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+	# check: ssh localhost "echo It worked!" -- make sure it works.
   
-      # Make a new virtualenv -- otherwise will have conflicts
-      virtualenv pipeline
-      . pipeline/bin/activate
+	# Make a new virtualenv -- otherwise will have conflicts
+	virtualenv pipeline
+	. pipeline/bin/activate
   
   
-      git clone https://github.com/edx/edx-analytics-pipeline
-      cd edx-analytics-pipeline
-  
-      make bootstrap
+	git clone https://github.com/edx/edx-analytics-pipeline
+	cd edx-analytics-pipeline
+	git checkout named-release/dogwood  
+	make bootstrap
     
-      #+END_SRC
-   9. Check the pipeline install by running a simple job to count
-      events per day.
+       #+END_SRC
+   13. Check the pipeline install by running a simple job to count
+       events per day.
 
-      *NOTE* : You may have to change the user name in the following
-      command according to your system user accounts. 
+       - NOTE :: You may have to change the =--user= name and
+         =--interval= in the following command according to system's
+         user accounts.
 
-      For example, If you want to run the command from root user (ssh
-      access should be enabled for this access) then provide *--user
-      root*
-      #+BEGIN_SRC command
-      # Ensure you're in the pipeline virtualenv 
-      remote-task --host localhost --repo https://github.com/edx/edx-analytics-pipeline --user ubuntu --override-config $HOME/edx-analytics-pipeline/config/devstack.cfg --wheel-url http://edx-wheelhouse.s3-website-us-east-1.amazonaws.com/Ubuntu/precise --remote-name analyticstack --wait TotalEventsDailyTask --interval 2015 --output-root hdfs://localhost:9000/output/ --local-scheduler
-      #+END_SRC
-   10. Update the following file so that insights will be connected to
-       LMS edxapp database.
-       #+BEGIN_SRC command
+       For example, If you want to run the command from root user (ssh
+       access should be enabled on this user) then provide *--user
+       root*
+       #+BEGIN_SRC
+       # Ensure you're in the pipeline virtualenv 
+       remote-task --host localhost --repo https://github.com/edx/edx-analytics-pipeline --user ubuntu --override-config $HOME/edx-analytics-pipeline/config/devstack.cfg --wheel-url http://edx-wheelhouse.s3-website-us-east-1.amazonaws.com/Ubuntu/precise --remote-name analyticstack --wait TotalEventsDailyTask --interval 2015 --output-root hdfs://localhost:9000/output/ --local-scheduler
+       #+END_SRC
+   14. Write config files for the pipeline so that it knows where the LMS database is: 
+       #+BEGIN_SRC 
        sudo vim /edx/etc/edx-analytics-pipeline/input.json
        # put in the right url and credentials for your LMS database
+       # username = edxapp001
+       # host = LMS machine's IP/FQDN
+       # password = password of the edxapp001 user
        #+END_SRC
-       - Test it by running the following command. The output of the
-	 below command shows the mysql queries. 
-	 #+BEGIN_SRC command
-	 remote-task --host localhost --user ubuntu --remote-name analyticstack --skip-setup --wait ImportEnrollmentsIntoMysql --interval 2015 --local-scheduler
-	 #+END_SRC
-
-   11. Create OAUTH2 client_id and secret from Django administartion
+   
+   15. Test it by running the following command. The output of the
+       below command shows the mysql queries. 
+       #+BEGIN_SRC 
+       remote-task --host localhost --user ubuntu --remote-name analyticstack --skip-setup --wait ImportEnrollmentsIntoMysql --interval 2016 --local-scheduler
+       #+END_SRC
+       - If it succeeds, you'll see: 
+         #+BEGIN_EXAMPLE
+         sudo mysql
+	 SELECT * FROM reports.course_enrollment_daily;
+  
+	# Should give enrollments over time. Note that this only counts enrollments in the event logs -- if you manually created users / enrollments in the DB, they won't be counted.
+         #+END_EXAMPLE
+   16. Create OAUTH2 client_id and secret from Django administartion
        page of LMS machine
        - *How to create OAUTH2 client_id and secret key:*
 	 By default, edx-platform is not providing/creating default
@@ -159,7 +245,7 @@
 	 + Add client 
 	 + Find the Oauth2_provider table/app
 	 + Add created client to Trusted clients
-   12. On insights VM, you will now need to update three settings: Open
+   17. On insights VM, you will now need to update three settings: Open
        the file =/edx/etc/insights.yml= and update the following
        variables with appropriate values (that are generated
        automatically on django admin page on LMS machine).
@@ -169,7 +255,7 @@
        SOCIAL_AUTH_EDX_OIDC_URL_ROOT: '<LMS URL>/oauth2'
        #+END_SRC
 
-   13. References
+   18. References
        - https://openedx.atlassian.net/wiki/display/OpenOPS/edX+Analytics+Installation
        - https://openedx.atlassian.net/wiki/pages/viewpage.action?spaceKey=AN&title=Configuring+Insights+for+Open+ID+Connect+SSO+with+LMS
    
@@ -181,7 +267,233 @@
         button)
       + Redirects to LMS machine to see the analytics.
       + Page not found  
-* Configuration changes suggested and made by Dr. Ramesh
+
+* Mrs.Sukla's suggestions on setting up Open edX analytics
+  - Install edx with all necessary modules like course_discovery,
+     oauth_client_setup,
+
+  - Create dns names for lms, insights & preferrably cms services
+
+  - Create the ssl certificates for both lms & insights on the
+    respective machines under /etc/nginx/ssl directory
+
+  - Change the configuration files for lms, insights under the
+    /edx/app/nginx/sites­available on both machines for https protocol
+    which will use the above certificates
+
+  - Change the configuration files for lms & insights on respective
+    machine. Configuration file for lms is
+    /edx/app/edxapp/lms.env.json & for insights is
+    /edx/etc/insights.yml to reflect the proper urls.
+
+  - Edit the properties of trusted insights client created during
+    installation using the lms admin,change the urls with the correct
+    url (url & redirect url)
+
+  - Synchronize the computer times of both insights & edx machine using
+    'ntp'
+
+  - Append the lms nginx certificate to the file
+    /edx/app/insights/venvs/insights/lib/pyhton2.7/requests/cacert.pem
+
+  - Restart all services under supervisorctl & nginx service on both
+    machines
+** Work on setting up Open edX analytics based on Mrs.Sukla's suggestions 
+   - Used following link to generate self-signed certificate on both
+     LMS and insights machines.
+     https://www.digitalocean.com/community/tutorials/how-to-create-a-ssl-certificate-on-nginx-for-ubuntu-12-04
+   - Yogesh and I tried setting up Open edX analytics using
+     Mrs.Sukla's suggestions, but the issue is not solved.
+   - Once again I alone have tried to setup Open edX analytics using
+     the  steps/suggestions provided by Mrs.Sukla. But the issue is
+     not resolved.
+
+* After we met Mr.Ramesh (APSSDC), done the following steps
+  - Made entries in public and private dns servers of VLEAD
+    infrastructure to provide proper
+    dns names.
+    + =lms.vlabs.ac.in= 
+    + =insights.vlabs.ac.in=
+  - Update ssl certificates(which are purchased from NameCheap
+    Account) on both LMS and Insights machines as recommended by
+    [[https://openedx.atlassian.net/wiki/display/OpenOPS/edX+Analytics+Installation][Confluence]]. 
+  - Modify ngnix configuration files as follows
+    + *On LMS machine* : 
+      1. Add certificates to =/etc/nginx/ssl/certs/= folder
+      2. Open the following file 
+	 #+BEGIN_EXAMPLE
+	 vim /edx/app/nginx/sites-available/lms
+	 #+END_EXAMPLE
+      3. Edit/Add the following lines to above file to make it working with https 
+      	 #+BEGIN_EXAMPLE
+      	 server {
+	   # LMS configuration file for nginx, templated by ansible
+	   
+  	   
+  # error p	ages
+  error_page 504	 /server/server-error.html;
+  error_page 502 /server/server-error.html;
+  error_page 500 /server/server-error.html;
+  
+  listen 443 ssl default;
+  server_name lms.vlabs.ac.in;
+
+  ssl on;
+ # ssl_certificate /etc/nginx/ssl/server.crt;
+  ssl_certificate /etc/nginx/ssl/certs/STAR_vlabs_ac_in.crt;
+#  ssl_certificate_key /etc/nginx/ssl/server.key; 
+  ssl_certificate_key /etc/nginx/ssl/certs/vlabs.ac.in.key; 
+    
+  access_log /edx/var/log/nginx/access.log p_combined;
+  error_log /edx/var/log/nginx/error.log error;
+
+  # CS184 requires uploads of up to 4MB for submitting screenshots.
+  # CMS requires larger value for course assest, values provided
+  # via hiera.
+  client_max_body_size 4M;
+
+  rewrite ^(.*)/favicon.ico$ /static/images/favicon.ico last;
+
+  location @proxy_to_lms_app {
+        proxy_set_header X-Forwarded-Proto $scheme;
+    	proxy_set_header X-Forwarded-Port $server_port;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header Host $http_host;
+
+    proxy_redirect off;
+    proxy_pass http://lms-backend;
+  }
+
+  location / {
+        try_files $uri @proxy_to_lms_app;
+  }
+
+
+  # No basic auth for /segmentio/event
+  location /segmentio/event {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+  # The api is accessed using OAUTH2 which
+  # uses the authorization header so we can't have
+  # basic auth on it as well.
+  location /api {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+  # Need a separate location for the image uploads endpoint to limit upload sizes
+  location ~ ^/api/profile_images/[^/]*/[^/]*/upload$ {
+    try_files $uri @proxy_to_lms_app;
+    client_max_body_size 1049576;
+  }
+
+  location /notifier_api {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+  location /user_api {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+  # No basic auth security on the github_service_hook url, so that github can use it for cms
+  location /github_service_hook {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+  # No basic auth security on oauth2 endpoint
+  location /oauth2 {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+  # No basic auth security on third party auth endpoints
+  location /auth {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+
+  # No basic auth security on the heartbeat url, so that ELB can use it
+  location /heartbeat {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+  # No basic auth on the LTI provider endpoint, it does OAuth1
+  location /lti_provider {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+  # No basic auth on LTI component grade.
+  location ~ /handler_noauth {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+  location /courses {    try_files $uri @proxy_to_lms_app;
+  }
+
+location ~ ^/media/(?P<file>.*) {
+    root /edx/var/edxapp/media;
+    try_files /$file =404;
+    expires 31536000s;
+}
+
+      # static pages for server status
+  location ~ ^/server/(?P<file>.*) {
+      root /edx/var/nginx/server-static;
+      try_files /$file =404;
+  }
+
+  location ~ ^/static/(?P<file>.*) {
+    root /edx/var/edxapp;
+    try_files /staticfiles/$file /course_static/$file =404;
+
+    # return a 403 for static files that shouldn't be
+    # in the staticfiles directory
+    location ~ ^/static/(?:.*)(?:\.xml|\.json|README.TXT) {
+        return 403;
+    }
+
+    # http://www.red-team-design.com/firefox-doesnt-allow-cross-domain-fonts-by-default
+    location ~ "/static/(?P<collected>.*\.[0-9a-f]{12}\.(eot|otf|ttf|woff|woff2)$)" {
+        expires max;
+        add_header Access-Control-Allow-Origin *;
+        try_files /staticfiles/$collected /course_static/$collected =404;
+    }
+
+    # Set django-pipelined files to maximum cache time
+    location ~ "/static/(?P<collected>.*\.[0-9a-f]{12}\..*)" {
+        expires max;
+        # Without this try_files, files that have been run through
+        # django-pipeline return 404s
+        try_files /staticfiles/$collected /course_static/$collected =404;
+    }
+
+    # Set django-pipelined files for studio to maximum cache time
+    location ~ "/static/(?P<collected>[0-9a-f]{7}/.*)" {
+        expires max;
+
+        # Without this try_files, files that have been run through
+        # django-pipeline return 404s
+        try_files /staticfiles/$collected /course_static/$collected =404;
+    }
+
+    # Expire other static files immediately (there should be very few / none of these)
+    expires epoch;
+  }
+
+
+}
+
+      	 #+END_EXAMPLE
+      - Restart the nginx server
+      	#+BEGIN_EXAMPLE
+      	/etc/init.d/nginx restart
+      	#+END_EXAMPLE
+
+	
+* Open Issues on GitHub
+  Open Issues on GitHub regarding analytics/insights setup.  At
+  present, there is only one open issue, that is
+  https://github.com/vlead/port-labs-to-openedx/issues/4
+>>>>>>> Stashed changes
 
 ** Problems identified in current Analytics configuration
 *** OAuth trust issues between Insights and LMS 
