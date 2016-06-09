@@ -425,6 +425,60 @@ location ~ ^/media/(?P<file>.*) {
      /edx/bin/supervisorctl restart all
      #+END_EXAMPLE
      
+** Establish the connection between Insights and the LMS, so single sign on works.
+   - Generate admin user for accessing *OpenedX platform's django
+     admin page* using the steps mentioned in[[.administration.org][ Administration of OpenedX platform]]
+   - Log on to https://lms.vlabs.ac.in/admin.
+   - Provide admin-user name and password.
+   - Select/Choose Oauth2 section/table and click on clients to add a
+     new client
+   - In Add client form, provide following details.
+     #+BEGIN_EXAMPLE
+     1. We can ignore User field
+     2. Name can be anything. For now, Name : Insights
+     3. Url: https://insights.vlabs.ac.in:8110
+     4 Redirect
+     Uri:https://insights.vlabs.ac.in:8110/complete/edx-oidc/
+     5. Note down the Client id and Client secret. Example as follows
+     	client id: 76dad0fdb73bab0ca5e2
+	Client secret: 962a1c037eedaecc135835e9accd2d114ac44847
+     6. Client type: Confidential(Web Application)
+     7. Click on Save button to save the entered details
+
+     #+END_EXAMPLE
+   - *Important* 
+     #+BEGIN_EXAMPLE
+     Ensure that JWT_ISSUER and OAUTH_OIDC_ISSUER on the LMS in /edx/app/edxapp/lms.env.json match the url root in 
+     /edx/etc/insights.yml (SOCIAL_AUTH_EDX_OIDC_URL_ROOT). This
+     should be the case unless your environment is weird
+     #+END_EXAMPLE
+      + Edit the files =/edx/app/edxapp/lms.env.json= and
+   =/edx/app/edxapp/cms.env.json= 
+	#+BEGIN_SRC 
+	sudo vim /edx/app/edxapp/lms.env.json
+	sudo vim /edx/app/edxapp/cms.env.json
+	#+END_SRC
+     + Replace the following lines 
+       #+BEGIN_SRC 
+       "JWT_ISSUER": "https:///oauth2",
+       "OAUTH_OIDC_ISSUER": "https:///oauth2",
+       #+END_SRC
+       with 
+       #+BEGIN_SRC 
+       "JWT_ISSUER": "https://lms.vlabs.ac.in/oauth2",
+       "OAUTH_OIDC_ISSUER": "https://lms.vlabs.ac.in/oauth2",
+       #+END_SRC
+    - Update 
+      #+BEGIN_SRC 
+      	sudo vim /edx/app/edxapp/lms.env.json
+	sudo vim /edx/app/edxapp/cms.env.json
+      #+END_SRC
+      with 
+      #+BEGIN_SRC 
+       "ENABLE_OAUTH2_PROVIDER": true
+       "OAUTH_ENFORCE_SECURE": true,
+      #+END_SRC
+
 ** Disable course creation for users on edX-Studio
    In =/edx/app/edxapp/edx-platform/cms/envs/common.py=, or your extension of
    it, set 'ENABLE_CREATOR_GROUP':True to FEATURES. [[https://github.com/edx/edx-platform/wiki/Controlling-course-creation-rights][Reference]]
@@ -475,6 +529,7 @@ location ~ ^/media/(?P<file>.*) {
      #+END_EXAMPLE
    - [[https://easyengine.io/tutorials/mysql/remote-access/][Reference]] 
 
+   
 * Administration of Open edX platform
   This section describes tasks that can be done only by administrator.
   Please go through [[./administration.org][Administration of Open edX platform]] for more

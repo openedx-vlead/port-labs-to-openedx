@@ -218,46 +218,33 @@
   
 	# Should give enrollments over time. Note that this only counts enrollments in the event logs -- if you manually created users / enrollments in the DB, they won't be counted.
          #+END_EXAMPLE
-   16. Create OAUTH2 client_id and secret from Django administartion
-       page of LMS machine
-       - *How to create OAUTH2 client_id and secret key:*
-	 By default, edx-platform is not providing/creating default
-	 user and password for signing in. So we need to create a
-	 superuser so that we can access the django admin page using
-	 those credentials. 
-	
-	 Create super user by issuing following commands on the LMS
-	 machine.
-	 #+BEGIN_SRC command  
-	 sudo -u www-data /edx/bin/python.edxapp ./manage.py lms --settings aws create_user -s -p edx -e user@example.com
-	 sudo -u www-data /edx/bin/python.edxapp ./manage.py lms --settings aws changepassword user
-	 sudo -u www-data /edx/bin/python.edxapp ./manage.py lms --settings aws shell
-
-	 from django.contrib.auth.models import User
-	 me = User.objects.get(username="user")
-	 me.is_superuser = True
-	 me.is_staff = True
-	 me.save()
-	 #+END_SRC
-       - Do the following steps
-	 + Log in to Django admin page
-	 + Find the Oauth2 table/app in the admin page
-	 + Add client 
-	 + Find the Oauth2_provider table/app
-	 + Add created client to Trusted clients
-   17. On insights VM, you will now need to update three settings: Open
-       the file =/edx/etc/insights.yml= and update the following
-       variables with appropriate values (that are generated
-       automatically on django admin page on LMS machine).
-       #+BEGIN_SRC command
-       SOCIAL_AUTH_EDX_OIDC_KEY: '<PREFILLED VALUE 1 from LMS>'
-       SOCIAL_AUTH_EDX_OIDC_SECRET: '<PREFILLED VALUE 2 FROM LMS>'
+   16. Do the following steps
+       + Log in to Django admin page
+       + Find the Oauth2 table/app in the admin page
+       + Add client 
+       + Find the Oauth2_provider table/app
+       + Add created client to Trusted clients
+   17. Now, you will now need to update variable values in
+         #=/edx/etc/insights.yml= with appropriate values (that are
+         #generated automatically on django admin page on LMS machine).
+       #+BEGIN_SRC 
+       SOCIAL_AUTH_EDX_OIDC_KEY: '<Client id from LMS>'
+       SOCIAL_AUTH_EDX_OIDC_SECRET: '<Client secret FROM LMS>'
        SOCIAL_AUTH_EDX_OIDC_URL_ROOT: '<LMS URL>/oauth2'
+       SOCIAL_AUTH_REDIRECT_IS_HTTPS: true
+       #+END_SRC
+   18. Restart insights app
+       #+BEGIN_SRC 
+       /edx/bin/supervisorctl restart all
        #+END_SRC
 
    18. References
        - https://openedx.atlassian.net/wiki/display/OpenOPS/edX+Analytics+Installation
        - https://openedx.atlassian.net/wiki/pages/viewpage.action?spaceKey=AN&title=Configuring+Insights+for+Open+ID+Connect+SSO+with+LMS
+
+
+
+
    
 ** Test LMS and Insights for analytics
     - *Page Not Found* :: 
