@@ -218,13 +218,7 @@
   
 	# Should give enrollments over time. Note that this only counts enrollments in the event logs -- if you manually created users / enrollments in the DB, they won't be counted.
          #+END_EXAMPLE
-   16. Do the following steps
-       + Log in to Django admin page
-       + Find the Oauth2 table/app in the admin page
-       + Add client 
-       + Find the Oauth2_provider table/app
-       + Add created client to Trusted clients
-   17. Now, you will now need to update variable values in
+   16. Now, you will now need to update variable values in
          #=/edx/etc/insights.yml= with appropriate values (that are
          #generated automatically on django admin page on LMS machine).
        #+BEGIN_SRC 
@@ -233,18 +227,120 @@
        SOCIAL_AUTH_EDX_OIDC_URL_ROOT: '<LMS URL>/oauth2'
        SOCIAL_AUTH_REDIRECT_IS_HTTPS: true
        #+END_SRC
+
+   17. Edit open_id.py file 
+       + Fire =locate= command to find the path of the open_id.py file
+       #+BEGIN_SRC 
+	insights # locate open_id.py
+	  /edx/app/insights/venvs/insights/lib/python2.7/site-packages/social/backends/open_id.py
+	  /edx/app/insights/venvs/insights/lib/python2.7/site-packages/social/backends/open_id.pyc
+	  /edx/app/insights/venvs/insights/lib/python2.7/site-packages/social/tests/backends/open_id.py
+	  /edx/app/insights/venvs/insights/lib/python2.7/site-packages/social/tests/backends/open_id.pyc                     
+       #+END_SRC                                       
+       + Open file
+         #+BEGIN_SRC
+	  sudo vim /edx/app/insights/venvs/insights/lib/python2.7/site-packages/social/backends/open_id.py                        
+         #+END_SRC                                                                                                          
+       + Search for string "issuer=self.ID_TOKEN_ISSUER". This string
+         #will fall in  def validate_and_return_id_token of file.
+
+       + In try block replace
+         #+BEGIN_SRC
+         id_token = jwt_decode(id_token, decryption_key, audience=client_id,
+                                  issuer=self.ID_TOKEN_ISSUER,
+                                  algorithms=['HS256'])
+
+                       WITH
+         id_token = jwt_decode(id_token, decryption_key, audience=client_id,
+                                  issuer=self.ID_TOKEN_ISSUER, options = {'verify_iat' : False,},
+                                  algorithms=['HS256'])
+                                                                                                                     
+         #+END_SRC                                                                                                          
+       + Save file
+       + Compile open_id.py files
+         #+BEGIN_SRC
+	   insights # sudo python
+	   Python 2.7.10 (default, Jun 29 2015, 22:38:23)
+	   [GCC 4.6.3] on linux2
+	   Type "help", "copyright", "credits" or "license" for more information.
+	   >>> import py_compile
+	   >>> py_compile.compile("open_id.py")
+           >>> exit()                                                                                                         
+         #+END_SRC                                                                                                          
    18. Restart insights app
        #+BEGIN_SRC 
        /edx/bin/supervisorctl restart all
        #+END_SRC
+   19. Edit base.py file
+       #+BEGIN_SRC 
+	sudo vim  /edx/app/insights/venvs/insights/lib/python2.7/site-packages/social/backends/base.py                           
+       #+END_SRC                                                                                                          
+       + In def request(self, url, method='GET', *args, **kwargs):, add the   following line. This line says that please do not verify SSL.
+         #+BEGIN_SRC 
+	  kwargs.setdefault('headers', {})
+	  if self.setting('VERIFY_SSL') is not None:
+             		kwargs.setdefault('verify',self.setting('VERIFY_SSL'))
+          kwargs.setdefault('verify', False) ## This line needs to bee added
+	  kwargs.setdefault('timeout', self.setting('REQUESTS_TIMEOUT') or
+                                    self.setting('URLOPEN_TIMEOUT'))                                                
+         #+END_SRC                                                                                                          
+       + In the same def in try block, replace as shown. This is to ignore
+         SSL_PROTOCOL even if it is there.
+         #+BEGIN_SRC
+         if self.SSL_PROTOCOL
+         WITH
+         if self.SSL_PROTOCOL is not None:                                                                                  
+         #+END_SRC                                                                                                          
+       + In the same try block, add line in else section
+         #+BEGIN_SRC
+	  else:
+	      response = request(method, url, *args, **kwargs) 
+         #+END_SRC                                       
 
-   18. References
+       + Finally your def function looks like the one shown
+       below. Please see the commented lines.
+       #+BEGIN_SRC
+        def request(self, url, method='GET', *args, **kwargs):
+      	      kwargs.setdefault('headers', {})
+	      if self.setting('VERIFY_SSL') is not None:
+                  kwargs.setdefault('verify', self.setting('VERIFY_SSL'))
+              kwargs.setdefault('verify', False) #Added by Dr. Ramesh
+              kwargs.setdefault('timeout', self.setting('REQUESTS_TIMEOUT') or
+                                           self.setting('URLOPEN_TIMEOUT'))
+              if self.SEND_USER_AGENT and 'User-Agent' not in kwargs['headers']:
+                  kwargs['headers']['User-Agent'] = user_agent()
+
+              try:
+                  if self.SSL_PROTOCOL is not None: #Modified to not none
+                #session = SSLHttpAdapter.ssl_adapter_session(self.SSL_PROTOCOL)
+                #response = session.request(method, url, *args, **kwargs)
+                      response = request(method, url, *args, **kwargs)
+                  else:
+                      response = request(method, url, *args, **kwargs)
+              except ConnectionError as err:
+	      	  raise AuthFailed(self, str(err))
+              response.raise_for_status()
+              return response                                                                                              
+       #+END_SRC                                                                                                          
+       + Save file and compile it.
+         #+BEGIN_SRC
+	  insights # sudo python
+ 	  Python 2.7.10 (default, Jun 29 2015, 22:38:23)
+	  [GCC 4.6.3] on linux2
+          Type "help", "copyright", "credits" or "license" for more
+          information.
+          >>> import py_compile
+          >>> py_compile.compile("base.py")
+          >>> exit()                                                                                                         
+         #+END_SRC                                                                                                          
+       + Restart edx services
+         #+BEGIN_SRC
+       	 sudo /edx/bin/supervisorctl restart all                                                                            
+         #+END_SRC                                 
+
+   20. References
        - https://openedx.atlassian.net/wiki/display/OpenOPS/edX+Analytics+Installation
        - https://openedx.atlassian.net/wiki/pages/viewpage.action?spaceKey=AN&title=Configuring+Insights+for+Open+ID+Connect+SSO+with+LMS
-
-
-
-
    
 ** Test LMS and Insights for analytics
     - *Page Not Found* :: 
