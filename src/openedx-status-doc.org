@@ -108,7 +108,7 @@
 |       | in LMS                     | idea on cutomzation and theming.                     |              | [[http://issues.vlabs.ac.in/issues/794][redmine]]                                  |
 |-------+----------------------------+------------------------------------------------------+--------------+------------------------------------------|
 |    2. | Analytics                  | a). Taking help from Dr. Ramesh to fix issue         | IN PROGRESS  | Had a talk with Dr. Ramesh. He might     |
-|       |                            | ---------------------------------------------------- | ------------ | be available this Saturday.              |
+|       |                            |                                                      |              | be available this Saturday.              |
 |       |                            | b). Review document and check if it is reproducable  | TBD          |                                          |
 |-------+----------------------------+------------------------------------------------------+--------------+------------------------------------------|
 |    3. | Porting of labs            | Labs can be ported to edX Studio. Intern             |              |                                          |
