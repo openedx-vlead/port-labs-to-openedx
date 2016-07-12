@@ -136,12 +136,12 @@
 + [[https://github.com/vlead/port-labs-to-openedx/milestone/3][Release 3 : Pilot workshop for Integration team]]
 + [[https://github.com/vlead/port-labs-to-openedx/milestone/4][Release 4 : Virtual labs integration workshop]]
 
-* What are we confident with it ?
+** What are we confident with it ?
 + Setting up LMS and apply basic theming on edX
 + Port existing converted labs to Open edX
 + Converting current labs to Open edX 
 
-* What are we facing problem in ?
+** What are we facing problem in ?
 + Setting up Analytics (Even though we were able to reproduce after taking help from Dr. Ramesh same steps never worked and we added new)
 + We were able to acheive analytics for an instance. Same steps are not getting analytics again.
 + Our lack of knowledge of all the components used in Open edX.
@@ -149,7 +149,7 @@
 + Lack of proper documentation and support for complex tasks. Many of our emails and queries are unanswered.
 
 
-* Problems faced -
+** Problems faced -
 + Setting up Analytics Data API server ::
 + Execution of remote tasks ::
 + Setting up Analytics ::
