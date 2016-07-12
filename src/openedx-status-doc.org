@@ -30,7 +30,6 @@
      by Open edX platform.
 
 
-
 * Current status in Open edX till today
 ** Install and configure Open edX platform 
 + Status :: DONE
@@ -65,7 +64,6 @@
 
 
     
-
 * Github issues for open edx analytics 
 ** Closed github issues - Problems faced and solved
 + [[https://github.com/vlead/port-labs-to-openedx/issues/18][Page not found error]]
@@ -81,10 +79,8 @@
 + [[https://github.com/vlead/port-labs-to-openedx/issues/4][Install Open edX Analytics and view analytics]]
 
 
-
 * Github issues for customization and theming of LMS 
 + [[https://github.com/vlead/port-labs-to-openedx/issues/8][Customization and themeing]]
-
 
 
 
@@ -129,6 +125,35 @@
        
 
     
+
+
+
+
+
+* Status as of July 11, 2016
++ [[https://github.com/vlead/port-labs-to-openedx/issues/27][Overall Plan for upcoming releases]]
++ [[https://github.com/vlead/port-labs-to-openedx/milestone/2][Release 2 : Porting of labs, customized analytics and customized theming]]
++ [[https://github.com/vlead/port-labs-to-openedx/milestone/3][Release 3 : Pilot workshop for Integration team]]
++ [[https://github.com/vlead/port-labs-to-openedx/milestone/4][Release 4 : Virtual labs integration workshop]]
+
+* What are we confident with it ?
++ Setting up LMS and apply basic theming on edX
++ Port existing converted labs to Open edX
++ Converting current labs to Open edX 
+
+* What are we facing problem in ?
++ Setting up Analytics (Even though we were able to reproduce after taking help from Dr. Ramesh same steps never worked and we added new)
++ We were able to acheive analytics for an instance. Same steps are not getting analytics again.
++ Our lack of knowledge of all the components used in Open edX.
++ A problem and issue is hard to coorelate with the component because of complex structure. 
++ Lack of proper documentation and support for complex tasks. Many of our emails and queries are unanswered.
+
+
+* Problems faced -
++ Setting up Analytics Data API server ::
++ Execution of remote tasks ::
++ Setting up Analytics ::
+
 
 
 
