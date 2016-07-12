@@ -131,29 +131,42 @@
 
 
 * Status as of July 11, 2016
-+ [[https://github.com/vlead/port-labs-to-openedx/issues/27][Overall Plan for upcoming releases]]
-+ [[https://github.com/vlead/port-labs-to-openedx/milestone/2][Release 2 : Porting of labs, customized analytics and customized theming]]
-+ [[https://github.com/vlead/port-labs-to-openedx/milestone/3][Release 3 : Pilot workshop for Integration team]]
-+ [[https://github.com/vlead/port-labs-to-openedx/milestone/4][Release 4 : Virtual labs integration workshop]]
+  + [[https://github.com/vlead/port-labs-to-openedx/issues/27][Overall Plan for upcoming releases]]
+  + [[https://github.com/vlead/port-labs-to-openedx/milestone/2][Release 2 : Porting of labs, customized analytics and customized theming]]
+  + [[https://github.com/vlead/port-labs-to-openedx/milestone/3][Release 3 : Pilot workshop for Integration team]]
+  + [[https://github.com/vlead/port-labs-to-openedx/milestone/4][Release 4 : Virtual labs integration workshop]]
 
 * What are we confident with it ?
-+ Setting up LMS and apply basic theming on edX
-+ Port existing converted labs to Open edX
-+ Converting current labs to Open edX 
+  + Setting up LMS and apply basic theming on edX
+  + Porting labs to Open edX platform 
 
 * What are we facing problem in ?
-+ Setting up Analytics (Even though we were able to reproduce after taking help from Dr. Ramesh same steps never worked and we added new)
-+ We were able to acheive analytics for an instance. Same steps are not getting analytics again.
-+ Our lack of knowledge of all the components used in Open edX.
-+ A problem and issue is hard to coorelate with the component because of complex structure. 
-+ Lack of proper documentation and support for complex tasks. Many of our emails and queries are unanswered.
-
+  + Setting up Analytics (Even though we were able to reproduce after
+    taking help from Dr. Ramesh same steps never worked and we added new)
+  + We were able to acheive analytics for an instance. Same steps are not getting analytics again.
+  + Our lack of knowledge of all the [[http://www.appsembler.com/blog/why-open-edx-hosting-is-so-complicated/][components]] used in Open edX.
+  + A problem and issue is hard to coorelate with the component because of [[http://www.appsembler.com/blog/why-open-edx-hosting-is-so-complicated/][complex structure]]. 
+  + Lack of proper documentation and support for complex tasks. Many of our emails and queries are unanswered.
+  + Don't have proper and continues support.
+ 
 
 * Problems faced -
-+ Setting up Analytics Data API server ::
-+ Execution of remote tasks ::
-+ Setting up Analytics ::
+  + Setting up Analytics Data API server ::
+    We used following links to see Analytics Data APIs. But these
+    steps shows how to run apis and how to see dummy data of
+    analytics. We don't know how it works.
+    - https://github.com/edx/edx-analytics-pipeline/wiki/Running-the-analytics-backend-locally
+    - https://github.com/edx/edx-analytics-data-api
 
+    - We mailed regarding this to google-groups for help, but we have
+    not received any reply 
+  + Execution of remote tasks ::
+    - We are able to run some pipeline remote tasks but the thing is we
+    are not aware of the parameters and their values in remote tasks
+    - [[https://github.com/edx/edx-analytics-pipeline/wiki/Tasks-to-Run-to-Update-Insights][pipeline Remote tasks]]
+    
+  + Setting up Analytics ::
+    
 
 
 
