@@ -140,21 +140,21 @@
 ** What are we confident with it ?
    + Setting up LMS and apply basic theming on edX
    + Porting labs to Open edX platform 
+   + Setup basic analytiscs server with OAut established and get some analytics working and visible.
 
 ** What are we facing problem in ?
    + Setting up Analytics (Even though we were able to reproduce after
      taking help from Dr. Ramesh same steps never worked and we added new)
-   + We were able to acheive analytics for an instance. Same steps are not getting analytics again.
    + Our lack of knowledge of all the [[http://www.appsembler.com/blog/why-open-edx-hosting-is-so-complicated/][components]] used in Open edX.
-   + A problem and issue is hard to coorelate with the component because of [[http://www.appsembler.com/blog/why-open-edx-hosting-is-so-complicated/][complex structure]]. 
+   + A problem and issue is hard to corelate with the component because of [[http://www.appsembler.com/blog/why-open-edx-hosting-is-so-complicated/][complex structure]]. 
    + Lack of proper documentation and support for complex tasks. Many of our emails and queries are unanswered.
-   + Don't have proper and continues support.
+   
  
 
-** Problems faced -
+** Recent problems faced -
    + Setting up Analytics Data API server ::
      We used following links to see Analytics Data APIs. But these
-     steps shows how to run apis and how to see dummy data of
+     steps shows how to run APIs and how to see dummy data of
      analytics. We don't know how it works.
      - https://github.com/edx/edx-analytics-pipeline/wiki/Running-the-analytics-backend-locally
      - https://github.com/edx/edx-analytics-data-api
@@ -167,8 +167,9 @@
      - [[https://github.com/edx/edx-analytics-pipeline/wiki/Tasks-to-Run-to-Update-Insights][pipeline Remote tasks]]
     
    + Setting up Analytics ::
-    
-
+     - [[https://github.com/vlead/port-labs-to-openedx/issues/23][Analytics for course engangement]]
+     - [[https://github.com/vlead/port-labs-to-openedx/issues/24][Analytics for Demography]]
+     
 
 
 
