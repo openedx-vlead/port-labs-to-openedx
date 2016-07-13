@@ -153,17 +153,13 @@
 
 ** Recent problems faced -
    + Setting up Analytics Data API server ::
-     We used following links to see Analytics Data APIs. But these
-     steps shows how to run APIs and how to see dummy data of
-     analytics. We don't know how it works.
+     We used following links to see Analytics Data APIs. But these steps shows how to run APIs and how to see dummy data of analytics. We don't know how it works.
      - https://github.com/edx/edx-analytics-pipeline/wiki/Running-the-analytics-backend-locally
      - https://github.com/edx/edx-analytics-data-api
 
-     - We mailed regarding this to google-groups for help, but we have
-     not received any reply 
+     - We mailed regarding this to google-groups for help, but we have not received any reply 
    + Execution of remote tasks ::
-     - We are able to run some pipeline remote tasks but the thing is we
-     are not aware of the parameters and their values in remote tasks
+     - We are able to run some pipeline remote tasks but the thing is we are not aware of the parameters and their values in remote tasks
      - [[https://github.com/edx/edx-analytics-pipeline/wiki/Tasks-to-Run-to-Update-Insights][pipeline Remote tasks]]
     
    + Setting up Analytics ::
