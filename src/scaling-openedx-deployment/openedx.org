@@ -221,7 +221,7 @@
        +------------------+------------------+
        24 rows in set (0.00 sec)
        #+END_EXAMPLE
-       + Try the following command on terminal from cms machine
+       + Try the following command on terminal from lms machine
 	 #+BEGIN_EXAMPLE
 	 mysql -h <LMS and CMS machine IP> -uxqueue001 -p
 	 #+END_EXAMPLE
