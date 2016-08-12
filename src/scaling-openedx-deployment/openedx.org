@@ -1,0 +1,418 @@
+#+TITLE: Scaling of Open edX platform
+#+AUTHOR: Siva Shanker Narimalla
+
+
+* Introduction
+  This documents describes the scaling of the OpenedX platform. In
+  which, we will learn how to scale the open edx platform by
+  separating services
+* Requirements
+  - Complete edX platform setup in one machine VM0
+  - LMS setup on VM1
+  - VM1 has to talk to VM0 databases (mysql and mongo) for user login
+    and also course creation
+  - VM1 has to use VM0's rabbitmq server
+** TODO 
+   - Install only LMS on VM2
+   - Separate DB server edx services
+   - Load Balancer using HA proxy in front of all the above services
+* Implementation
+  - Create VM0 on AWS and install Open edX platform 
+  - Create VM1 on AWS and install Open edX platform for LMS
+** Manual steps for Installing  Open edX platform  
+   - Install dependencies
+     #+BEGIN_EXAMPLE
+     sudo apt-get install -y build-essential software-properties-common python-software-properties curl git-core libxml2-dev libxslt1-dev libfreetype6-dev python-pip python-apt python-dev libxmlsec1-dev swig libmysqlclient-dev
+     #+END_EXAMPLE
+   - Clone the configuration repo from edx GitHub 
+     #+BEGIN_EXAMPLE
+     cd /var/tmp
+     git clone https://github.com/edx/configuration
+     #+END_EXAMPLE
+   - Choose the Open edX release 
+     + Check out to release
+       #+BEGIN_EXAMPLE
+       cd /var/tmp/configuration
+       git checkout <version>
+       git checkout  named-release/dogwood.3 #example
+       #+END_EXAMPLE
+     *OR*
+     + Export 
+       #+BEGIN_EXAMPLE
+       export OPENEDX_RELEASE=named-release/dogwood(.2,.03)
+       #+END_EXAMPLE
+   - Configure password based SSH authentication Edit the main.yaml to
+     and set =COMMON_SSH_PASSWORD_AUTH= to yes 
+     #+BEGIN_EXAMPLE
+     sudo vim  configuration/playbooks/roles/common_vars/defaults/main.yml
+     #+END_EXAMPLE
+     #+BEGIN_EXAMPLE
+     COMMON_SSH_PASSWORD_AUTH = yes
+     #+END_EXAMPLE
+    - Install Ansible requirements
+      #+BEGIN_EXAMPLE
+      cd /var/tmp/configuration
+      sudo pip install -r requirements.txt
+      sudo pip install setuptools --upgrade
+      #+END_EXAMPLE
+    - Run the Playbook
+      #+BEGIN_EXAMPLE 
+      cd /var/tmp/configuration/playbooks && sudo ansible-playbook -c local ./edx_sandbox.yml -i "localhost,"
+      #+END_EXAMPLE
+    - SNACKS TIME ::  The above playbook may take at least 3 hours. It
+         depends on network speed. So time to snacks or work on
+         something else.
+    
+** Main Configuration files
+   After successful execution of Open edX platform
+   installation,following files are the important configuration
+   files. 
+
+   - NOTE TODO:: These values can be updated before running
+        =edx-sandbox.yaml= playbook for installing Open edX platform
+
+   The following table gives us more details about the main configuration files of
+   System services
+   |------+----------+-------------+-------------------------------------+----------------------------------------------------------------------------------------------------|
+   | S.No | Services | PORT Number | Configuration file                  | Parameter to be changed                                                                            |
+   |------+----------+-------------+-------------------------------------+----------------------------------------------------------------------------------------------------|
+   |   1. | Mysql    |        3306 | /etc/mysql/my.cf                    | bind-address ( to be 0.0.0.0)                                                                      |
+   |------+----------+-------------+-------------------------------------+----------------------------------------------------------------------------------------------------|
+   |   2. | Mongod   |       27017 | /etc/mongo/mongo.cf                 |                                                                                                    |
+   |------+----------+-------------+-------------------------------------+----------------------------------------------------------------------------------------------------|
+   |   3. | Nginx    |          80 | /etc/nginx/sites-enabled/           |                                                                                                    |
+   |------+----------+-------------+-------------------------------------+----------------------------------------------------------------------------------------------------|
+   |   4. | rabbitmq |        5672 | /edx/app/rabbitmq/rabbitmq-env.conf | RABBITMQ_NODE_IP_ADDRESS(to be 0.0.0.0) if rabbitmq acts as server for the clients(remote machines |
+   |------+----------+-------------+-------------------------------------+----------------------------------------------------------------------------------------------------|
+
+   
+   The following table gives us more details about the main configuration files of
+   edX platform services
+
+   |------+---------------+-------+-------------------------------------+----------------------------------------|
+   | S.No | Service       |       | Configuration file/directory        | supervisorctl file                     |
+   |------+---------------+-------+-------------------------------------+----------------------------------------|
+   |   1. | forum         |       | /edx/app/forum/                     | /edx/app/supervisor/conf.d/forum.conf  |
+   |------+---------------+-------+-------------------------------------+----------------------------------------|
+   |   2. | xqueue        |       | /edx/app/xqueue                     | /edx/app/supervisor/conf.d/xqueue.conf |
+   |------+---------------+-------+-------------------------------------+----------------------------------------|
+   |   3. | edxapp(group) |       | /edx/app/edxapp/                    | /edx/app/supervisor/conf.d/edxapp.conf |
+   |------+---------------+-------+-------------------------------------+----------------------------------------|
+   |   4. | edxapp:cms    | 18010 | /edx/app/edxapp/cms.env.json        | /edx/app/supervisor/conf.d/cms.conf    |
+   |      |               |       | /edx/app/edxapp/cms.auth.json       |                                        |
+   |------+---------------+-------+-------------------------------------+----------------------------------------|
+   |   5. | edxapp:lms    |  8000 | /edx/app/edxapp/lms.env.json        | /edx/app/supervisor/conf.d/lms.conf    |
+   |      |               |       | /edx/app/edxapp/lms.env.json        |                                        |
+   |------+---------------+-------+-------------------------------------+----------------------------------------|
+
+
+
+** Install Openedx platform VM0
+   - Install complete OpenedX platform using [[Manual steps for Installing Open edX platform][Manual installation]]
+   - Keep all services running
+   - Update =SITE_NAME= for registration links in =[lms|cms].env.json=
+     files
+   - Restart all edx services 
+     #+BEGIN_EXAMPLE
+      /edx/bin/supervisorctl restart all
+     #+END_EXAMPLE
+*** Configure mysql on VM0
+   - Comment =bind-address= in =/etc/mysql/my.cf=
+   - Restart mysql 
+     #+BEGIN_EXAMPLE
+     sudo service mysql restart
+     #+END_EXAMPLE
+   - Allow access to databases from remote machines
+     #+BEGIN_EXAMPLE
+     sudo mysql
+     use mysql;
+     select user,host from user;
+     #+END_EXAMPLE
+     + You will get the following output 
+       #+BEGIN_EXAMPLE
+       mysql> select user,host from user;
+       +------------------+------------------+
+       | user             | host             |
+       +------------------+------------------+
+       | root             | 127.0.0.1        |
+       | edxapp001        | 172.31.17.157    |
+       | root             | ::1              |
+       | root             | ip-172-31-25-197 |
+       | admin            | localhost        |
+       | api001           | localhost        |
+       | debian-sys-maint | localhost        |
+       | ecomm001         | localhost        |
+       | edxapp001        | localhost        |
+       | migrate          | localhost        |
+       | notes001         | localhost        |
+       | read_only        | localhost        |
+       | reports001       | localhost        |
+       | root             | localhost        |
+       | rosencrantz      | localhost        |
+       | xqueue001        | localhost        |
+       +------------------+------------------+
+       16 rows in set (0.00 sec)
+       #+END_EXAMPLE
+     + Like edxapp001 user, we have to do this for other users too so
+       that users can be able to access the respective databases from
+       localhost as well as from 172.31.17.157(remote machine IP).
+     #+BEGIN_EXAMPLE
+     mysql> GRANT ALL PRIVILEGES ON *.* TO 'admin'@'172.31.17.157' IDENTIFIED BY 'password';
+     Query OK, 0 rows affected (0.01 sec)
+
+     mysql> GRANT ALL PRIVILEGES ON *.* TO 'migrate'@'172.31.17.157' IDENTIFIED BY 'password';
+     Query OK, 0 rows affected (0.00 sec)
+
+     mysql> GRANT ALL PRIVILEGES ON *.* TO 'notes001'@'172.31.17.157' IDENTIFIED BY 'password';
+     Query OK, 0 rows affected (0.00 sec)
+
+     mysql> GRANT ALL PRIVILEGES ON *.* TO 'read_only'@'172.31.17.157' IDENTIFIED BY 'password';
+     Query OK, 0 rows affected (0.00 sec)
+
+     mysql> GRANT ALL PRIVILEGES ON *.* TO 'reports001'@'172.31.17.157' IDENTIFIED BY 'password';
+     Query OK, 0 rows affected (0.00 sec)
+
+     mysql> GRANT ALL PRIVILEGES ON *.* TO 'xqueue001'@'172.31.17.157' IDENTIFIED BY 'password';
+     Query OK, 0 rows affected (0.00 sec)
+
+     mysql> GRANT ALL PRIVILEGES ON *.* TO 'ecomm001'@'172.31.17.157' IDENTIFIED BY 'password';
+     Query OK, 0 rows affected (0.00 sec)
+
+     mysql> GRANT ALL PRIVILEGES ON *.* TO 'rosencrantz'@'172.31.17.157' IDENTIFIED BY 'password';
+     Query OK, 0 rows affected (0.00 sec)
+     
+     #+END_EXAMPLE  
+     + Check the updated details
+       #+BEGIN_EXAMPLE
+       mysql> select user,host from user;
+       +------------------+------------------+
+       | user             | host             |
+       +------------------+------------------+
+       | root             | 127.0.0.1        |
+       | admin            | 172.31.17.157    |
+       | ecomm001         | 172.31.17.157    |
+       | edxapp001        | 172.31.17.157    |
+       | migrate          | 172.31.17.157    |
+       | notes001         | 172.31.17.157    |
+       | read_only        | 172.31.17.157    |
+       | reports001       | 172.31.17.157    |
+       | rosencrantz      | 172.31.17.157    |
+       | xqueue001        | 172.31.17.157    |
+       | root             | ::1              |
+       | root             | ip-172-31-25-197 |
+       | admin            | localhost        |
+       | api001           | localhost        |
+       | debian-sys-maint | localhost        |
+       | ecomm001         | localhost        |
+       | edxapp001        | localhost        |
+       | migrate          | localhost        |
+       | notes001         | localhost        |
+       | read_only        | localhost        |
+       | reports001       | localhost        |
+       | root             | localhost        |
+       | rosencrantz      | localhost        |
+       | xqueue001        | localhost        |
+       +------------------+------------------+
+       24 rows in set (0.00 sec)
+       #+END_EXAMPLE
+       + Try the following command on terminal from cms machine
+	 #+BEGIN_EXAMPLE
+	 mysql -h <LMS and CMS machine IP> -uxqueue001 -p
+	 #+END_EXAMPLE
+*** Configure Rabbitmq 
+    Configure rabbitmq server in order to accept connections from
+    remote machines(clients:here, VM1). For this open the file 
+    #+BEGIN_EXAMPLE
+    sudo vim /etc/rabbitmq-env.conf
+    #+END_EXAMPLE
+    and change =RABBITMQ_NODE_IP_ADDRESS= parameter value
+    #+BEGIN_EXAMPLE
+    RABBITMQ_NODE_IP_ADDRESS=0.0.0.0
+    #+END_EXAMPLE
+    and then restart rabbitmq-server service
+    #+BEGIN_EXAMPLE
+    sudo service rabbitmq-server restart
+    #+END_EXAMPLE
+** Install OpenedX platform for LMS only
+   - Create a VM with ubunt-14.04 LTS on aws
+   - Use the [[Manual steps for Installing Open edX platform][manual installation]] steps for installation.
+*** Edit the configuration files
+    - =lms.env.json= 
+      #+BEGIN_EXAMPLE
+      sudo vim /edx/app/edxapp/lms.env.json    # Since we use LMS only.
+      #+END_EXAMPLE
+      Change the required parameter values in that file.
+      #+BEGIN_EXAMPLE
+      "SITE_NAME" : "<Domain Name of the LMS1>",  #It is needed for user registrations.
+      #Users will get a link from this SITE_NAME
+      "PLATFORM_NAME" : "<Name of the Platform>",
+      #+END_EXAMPLE
+    - =lms.auth.json=
+      
+       *Very important*. This configuration file contains databases
+      and their connection details. By default all databases uses
+      local servers (mysql and mongo). 
+
+      If we want to use remote server databases, we must to change the
+      parameter =HOST= value to VM0's ip. So that, This machine uses
+      VM0's databases. 
+
+
+     Edit the following file parameters
+      #+BEGIN_EXAMPLE
+      sudo vim /edx/app/edxapp/lms.auth.json
+      #+END_EXAMPLE
+      + For *mongo* databases
+      #+BEGIN_EXAMPLE
+      "CONTENTSTORE": {
+        "ADDITIONAL_OPTIONS": {},
+        "DOC_STORE_CONFIG": {
+            "collection": "modulestore",
+            "connectTimeoutMS": 2000,
+            "db": "edxapp",
+            "host": [
+                "localhost"   # Relace localhost to IP of VM0
+            ],
+            "password": "password",
+            "port": 27017,
+            "socketTimeoutMS": 3000,
+            "ssl": false,
+            "user": "edxapp"
+        },
+        "ENGINE": "xmodule.contentstore.mongo.MongoContentStore",
+        "OPTIONS": {
+            "db": "edxapp",
+            "host": [
+                "localhost"   # Relace localhost to IP of VM0
+            ],
+            "password": "password",
+            "port": 27017,
+            "ssl": false,
+            "user": "edxapp"
+        }
+
+      #+END_EXAMPLE
+      + for *mysql* databases
+	#+BEGIN_EXAMPLE
+	"DATABASES": {
+        "default": {
+            "ATOMIC_REQUESTS": true,
+            "ENGINE": "django.db.backends.mysql",
+            "HOST": "localhost",   # Relace localhost to IP of VM0
+            "NAME": "edxapp",
+            "PASSWORD": "password",
+            "PORT": "3306",
+            "USER": "edxapp001"
+        },
+        "read_replica": {
+            "ENGINE": "django.db.backends.mysql",
+            "HOST": "localhost",   # Relace localhost to IP of VM0
+            "NAME": "edxapp",
+            "PASSWORD": "password",
+            "PORT": "3306",
+            "USER": "edxapp001"
+        },
+        "student_module_history": {
+            "ENGINE": "django.db.backends.mysql",
+            "HOST": "localhost",   # Relace localhost to IP of VM0
+            "NAME": "edxapp_csmh",
+            "PASSWORD": "password",
+            "PORT": "3306",
+            "USER": "edxapp001"
+        }
+    },
+
+	#+END_EXAMPLE
+    + To access rabbitmq service which could be running from remote
+      machine (VM0), We need to change the following parameter value
+      in =/edx/app/edxapp/lms.env.json= 
+      #+BEGIN_EXAMPLE
+      "BROKER_HOST_NAME": "<VM0's IP>",
+      #+END_EXAMPLE
+
+    + Restart edx services 
+      #+BEGIN_EXAMPLE
+      /edx/bin/supervisorctl restart all
+      #+END_EXAMPLE
+
+    + OPTIONAL :: We can stop mysql and mongod services too, to
+         minimize load on the machine.
+
+*** Test Cases
+**** Check whether login is happening or not from LMS1
+     - Log into lms1 machine as staff user and also see the logs for
+       troubleshooting if anything goes wrong
+     #+BEGIN_EXAMPLE
+     sudo tail -f /edx/var/log/lms/edx.log
+     #+END_EXAMPLE
+     Output
+     #+BEGIN_EXAMPLE
+     Aug 11 07:07:57 ip-172-31-17-157 [service_variant=lms][celery.worker.consumer][env:sandbox] ERROR [ip-172-31-17-157  3463] [consumer.py:364] - consumer: Cannot connect to amqp://celery:**@127.0.0.1:5672//: [Errno 104] Connection reset by peer.
+     #+END_EXAMPLE
+     - You will be able to log into LMS1 machine even if you get above
+       issue.
+     - To solve the above problem, just run 
+       + See if celery user exist.
+       #+BEGIN_EXAMPLE
+       sudo rabbitmqctl list_users 
+       #+END_EXAMPLE
+       + If celery user not exist/created, create it using
+	 #+BEGIN_EXAMPLE
+	 sudo rabbitmqctl add_user celery celery
+	 #+END_EXAMPLE
+       + Set permissions to celery user, by running
+	 #+BEGIN_EXAMPLE
+	 sudo rabbitmqctl set_permissions celery ".*" ".*" ".*"
+	 #+END_EXAMPLE
+       + Restart rabbitmq service
+	 #+BEGIN_EXAMPLE
+	 sudo service rabbitmq-server restart
+	 #+END_EXAMPLE
+
+* OPTIONAL ::  EdX services 
+  + All edx services
+   #+BEGIN_EXAMPLE
+   xqueue_consumer
+   forum
+   analytics_api
+   certs
+   edx_notes_api
+   xqueue
+   edxapp
+   edxapp:cms
+   edxapp_worker:cms_low_1
+   edxapp_worker:lms_high_mem_1
+   edxapp_worker:cms_high_1
+   edxapp_worker:lms_default_1
+   edxapp_worker:cms_default_1
+   edxapp_worker:lms_low_1
+   edxapp_worker:lms_high_1
+   insights
+   notifier-celery-workers
+   notifier-scheduler
+
+   #+END_EXAMPLE
+  + Stop LMS services except CMS related services
+   #+BEGIN_EXAMPLE
+   /edx/bin/supervisorctl stop xqueue_consumer
+   /edx/bin/supervisorctl start forum
+   /edx/bin/supervisorctl start notifier-celery-workers
+   /edx/bin/supervisorctl start notifier-scheduler
+   /edx/bin/supervisorctl start edxapp:cms
+   /edx/bin/supervisorctl start edxapp_worker:cms_low_1
+   /edx/bin/supervisorctl start certs
+   /edx/bin/supervisorctl start edx_notes_api
+   /edx/bin/supervisorctl start xqueue
+   /edx/bin/supervisorctl start edxapp_worker:cms_high_1
+   /edx/bin/supervisorctl strat edxapp_worker:cms_default_1
+
+   /edx/bin/supervisorctl stop edxapp:lms
+   /edx/bin/supervisorctl stop edxapp_worker:lms_high_mem_1
+   /edx/bin/supervisorctl stop edxapp_worker:lms_default_1
+   /edx/bin/supervisorctl stop edxapp_worker:lms_low_1
+   /edx/bin/supervisorctl stop edxapp_worker:lms_high_1
+   /edx/bin/supervisorctl stop insights
+   /edx/bin/supervisorctl stop analytics_api
+
+   #+END_EXAMPLE
+
