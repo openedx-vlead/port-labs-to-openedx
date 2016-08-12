@@ -329,12 +329,30 @@
     },
 
 	#+END_EXAMPLE
-    + To access rabbitmq service which could be running from remote
-      machine (VM0), We need to change the following parameter value
-      in =/edx/app/edxapp/lms.env.json= 
-      #+BEGIN_EXAMPLE
-      "CELERY_BROKER_HOSTNAME": "<VM0's IP>",
-      #+END_EXAMPLE
+    + Celery :: In order to use remote machine's celery,just change
+         the =CELERY_BROKER_HOSTNAME= parameter value    
+	 #+BEGIN_EXAMPLE
+	 sudo vim /edx/app/edxapp/lms.env.json
+	 "CELERY_BROKER_HOSTNAME": "<VM0's IP>",	 
+	 #+END_EXAMPLE
+    + XQueue :: 
+	 XQueue, the queuing server that uses `RabbitMQ`_ for external graders.
+	 - RabbitMQ :: To access RabbitMQ server which could be
+              running from remote machine (VM0), We need to change the
+              following parameter value in
+              =/edx/app/xqueue/xqueue.env.json=
+              #+BEGIN_EXAMPLE
+	      sudo vim /edx/app/xqueue/xqueue.env.json
+	      "RABBIT_HOST": "<VM0 IP>",   
+             #+END_EXAMPLE
+          - Xqueue databases :: 
+	       #+BEGIN_EXAMPLE
+	       sudo vim /edx/app/xqueue/xqueu.auth.json
+	       #+END_EXAMPLE
+	       and update =HOST= parameter
+	       #+BEGIN_EXAMPLE
+	       "HOST": "<VM0-IP>"
+	       #+END_EXAMPLE
 
     + Restart edx services 
       #+BEGIN_EXAMPLE
@@ -385,7 +403,9 @@
     - A user to register
     - LMS machine
 *** Procedure
-    - 
+    - Browse VM1 ip or domain name of VM1 if there is any
+    - After loading the VM1 page (LMS)
+    - Click on 
 * Troubleshooting 
 ** Check whether login is happening or not from LMS1
    - Log into lms1 machine as staff user and also see the logs for
