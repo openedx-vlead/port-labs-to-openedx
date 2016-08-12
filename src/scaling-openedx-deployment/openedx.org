@@ -1,6 +1,6 @@
 #+TITLE: Scaling of Open edX platform
 #+AUTHOR: Siva Shanker Narimalla
-
+#+OPTIONS: ^:nil
 
 * Introduction
   This documents describes the scaling of the OpenedX platform. In
@@ -333,7 +333,7 @@
       machine (VM0), We need to change the following parameter value
       in =/edx/app/edxapp/lms.env.json= 
       #+BEGIN_EXAMPLE
-      "BROKER_HOST_NAME": "<VM0's IP>",
+      "CELERY_BROKER_HOSTNAME": "<VM0's IP>",
       #+END_EXAMPLE
 
     + Restart edx services 
@@ -344,36 +344,78 @@
     + OPTIONAL :: We can stop mysql and mongod services too, to
          minimize load on the machine.
 
-*** Test Cases
-**** Check whether login is happening or not from LMS1
-     - Log into lms1 machine as staff user and also see the logs for
-       troubleshooting if anything goes wrong
-     #+BEGIN_EXAMPLE
-     sudo tail -f /edx/var/log/lms/edx.log
-     #+END_EXAMPLE
-     Output
-     #+BEGIN_EXAMPLE
-     Aug 11 07:07:57 ip-172-31-17-157 [service_variant=lms][celery.worker.consumer][env:sandbox] ERROR [ip-172-31-17-157  3463] [consumer.py:364] - consumer: Cannot connect to amqp://celery:**@127.0.0.1:5672//: [Errno 104] Connection reset by peer.
-     #+END_EXAMPLE
-     - You will be able to log into LMS1 machine even if you get above
-       issue.
-     - To solve the above problem, just run 
-       + See if celery user exist.
-       #+BEGIN_EXAMPLE
-       sudo rabbitmqctl list_users 
-       #+END_EXAMPLE
-       + If celery user not exist/created, create it using
-	 #+BEGIN_EXAMPLE
-	 sudo rabbitmqctl add_user celery celery
-	 #+END_EXAMPLE
-       + Set permissions to celery user, by running
-	 #+BEGIN_EXAMPLE
-	 sudo rabbitmqctl set_permissions celery ".*" ".*" ".*"
-	 #+END_EXAMPLE
-       + Restart rabbitmq service
-	 #+BEGIN_EXAMPLE
-	 sudo service rabbitmq-server restart
-	 #+END_EXAMPLE
+* Test Cases
+** Test Case ID ::  Test login from VM1 using VM0 databases
+*** Objective
+    Test to check the sighn in from VM1 to VM0
+*** Apparatus
+    - VM0 - Open edX platform with all the services running
+    - VM1 - Instll Open edX platform and activate LMS only
+*** Procedure
+    - Configure VM0 machine sudh that it should be able to allow
+      access to the databases from specified remote machines. See the
+      section [[Configure mysql on VM0]]
+    - Configure LMS (VM1) machine such that it should be able to talk
+      to VM0 databases (mysql and mongodb). See the section [[Install OpenedX platform for
+      LMS only]]
+    - Open any browser and type VM1 IP (or domain name if you have
+      any) on the addressbar and then enter. LMS will be opened
+    - Sign into VM1 with the default user staff@example.com and by
+      provide password
+    - Now you will be able to log into and you can see the courses on LMS
+*** Experiments     
+    - Configured VM0 as per procedure
+    - Configured VM1 as per procedure
+    - Signed into VM1 with default use staff@example.com and by
+      providing password
+    - Then I am able to sign in and also see the courses.
+*** Observation
+    - As we expected, registered user is able to log into VM1 by
+      accessing the VM0 databases
+*** Result
+    - User is able to log into VM1
+*** Conclusion 
+    - Configured VM0 and VM1 properly and registered user is able to
+      log into VM1 using VM0 databases
+** Test Case ID ::  User registration
+*** Objective   
+    Test to check whether user getting registered or not through the
+    activation link
+*** Apparatus    
+    - A user to register
+    - LMS machine
+*** Procedure
+    - 
+* Troubleshooting 
+** Check whether login is happening or not from LMS1
+   - Log into lms1 machine as staff user and also see the logs for
+     troubleshooting if anything goes wrong
+    #+BEGIN_EXAMPLE
+    sudo tail -f /edx/var/log/lms/edx.log
+    #+END_EXAMPLE
+    Output
+    #+BEGIN_EXAMPLE
+    Aug 11 07:07:57 ip-172-31-17-157 [service_variant=lms][celery.worker.consumer][env:sandbox] ERROR [ip-172-31-17-157  3463] [consumer.py:364] - consumer: Cannot connect to amqp://celery:**@127.0.0.1:5672//: [Errno 104] Connection reset by peer.
+    #+END_EXAMPLE
+    - You will be able to log into LMS1 machine even if you get above
+      issue.
+    - To solve the above problem, just run 
+      + See if celery user exist.
+      #+BEGIN_EXAMPLE
+      sudo rabbitmqctl list_users 
+      #+END_EXAMPLE
+      + If celery user not exist/created, create it using
+	#+BEGIN_EXAMPLE
+	sudo rabbitmqctl add_user celery celery
+	#+END_EXAMPLE
+      + Set permissions to celery user, by running
+	#+BEGIN_EXAMPLE
+	sudo rabbitmqctl set_permissions celery ".*" ".*" ".*"
+	#+END_EXAMPLE
+      + Restart rabbitmq service
+	#+BEGIN_EXAMPLE
+	sudo service rabbitmq-server restart
+	#+END_EXAMPLE
 
 * OPTIONAL ::  EdX services 
   + All edx services
