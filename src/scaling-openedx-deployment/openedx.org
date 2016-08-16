@@ -114,7 +114,9 @@
 
 
 ** Install Openedx platform VM0
-   - Install complete OpenedX platform using [[Manual steps for Installing Open edX platform][Manual installation]]
+   - Create a VM with ubunt-14.04 LTS on aws
+   - Install complete OpenedX platform using *Manual steps for
+     Installing Open edX platform*
    - Keep all services running
    - Update =SITE_NAME= for registration links in =[lms|cms].env.json=
      files
@@ -225,8 +227,8 @@
 	 #+BEGIN_EXAMPLE
 	 mysql -h <LMS and CMS machine IP> -uxqueue001 -p
 	 #+END_EXAMPLE
-*** Configure Rabbitmq 
-    Configure rabbitmq server in order to accept connections from
+*** Configure RabbitMQ
+    Configure RabbitMQ server in order to accept connections from
     remote machines(clients:here, VM1). For this open the file 
     #+BEGIN_EXAMPLE
     sudo vim /etc/rabbitmq-env.conf
@@ -239,9 +241,27 @@
     #+BEGIN_EXAMPLE
     sudo service rabbitmq-server restart
     #+END_EXAMPLE
+*** Configure Memcached service
+    Configure memcached service to accept the connections from
+    client/remote machines. For this
+    #+BEGIN_EXAMPLE
+    sudo vim /etc/memcached.conf
+    #+END_EXAMPLE
+    #+BEGIN_EXAMPLE
+    Replace 
+    -l 127.0.0.1
+    with 
+   -l 0.0.0.0
+    #+END_EXAMPLE
+    + Restart memcached service
+      #+BEGIN_EXAMPLE
+      sudo service memcached restart
+      #+END_EXAMPLE
+    
 ** Install OpenedX platform for LMS only
    - Create a VM with ubunt-14.04 LTS on aws
-   - Use the [[Manual steps for Installing Open edX platform][manual installation]] steps for installation.
+   - Use the *Manual steps for Installing Open edX platform* steps for
+     installation.
 *** Edit the configuration files
     - =lms.env.json= 
       #+BEGIN_EXAMPLE
@@ -268,6 +288,7 @@
       #+BEGIN_EXAMPLE
       sudo vim /edx/app/edxapp/lms.auth.json
       #+END_EXAMPLE
+*** To fetch database information from VM0
       + For *mongo* databases
       #+BEGIN_EXAMPLE
       "CONTENTSTORE": {
@@ -329,14 +350,16 @@
     },
 
 	#+END_EXAMPLE
+*** Celery 
     + Celery :: In order to use remote machine's celery,just change
          the =CELERY_BROKER_HOSTNAME= parameter value    
 	 #+BEGIN_EXAMPLE
 	 sudo vim /edx/app/edxapp/lms.env.json
 	 "CELERY_BROKER_HOSTNAME": "<VM0's IP>",	 
 	 #+END_EXAMPLE
+*** XQueue and RabbitMQ
     + XQueue :: 
-	 XQueue, the queuing server that uses `RabbitMQ`_ for external graders.
+	 XQueue, the queuing server that uses `RabbitMQ` 
 	 - RabbitMQ :: To access RabbitMQ server which could be
               running from remote machine (VM0), We need to change the
               following parameter value in
@@ -345,22 +368,122 @@
 	      sudo vim /edx/app/xqueue/xqueue.env.json
 	      "RABBIT_HOST": "<VM0 IP>",   
              #+END_EXAMPLE
-          - Xqueue databases :: 
+              + RabbitMQ Admin console :: RabbitMQ service runs on
+                   port number 5672. But, to see the RabbitMQ on the
+                   web-browser it runs on 15672 ,so just type
+                   http://<rabbitmq-server-ip>:15672 in address bar.
+                   Default user and password are : User Name: edx
+                   Password: password
+                 
+          - XQueue databases :: 
 	       #+BEGIN_EXAMPLE
-	       sudo vim /edx/app/xqueue/xqueu.auth.json
+	       sudo vim /edx/app/xqueue/xqueue.auth.json
 	       #+END_EXAMPLE
 	       and update =HOST= parameter
 	       #+BEGIN_EXAMPLE
 	       "HOST": "<VM0-IP>"
 	       #+END_EXAMPLE
+         
 
     + Restart edx services 
       #+BEGIN_EXAMPLE
       /edx/bin/supervisorctl restart all
       #+END_EXAMPLE
 
+
+*** Memcached 
+    + MemCached :: To use Memcached service which is running on
+         remote(VM0) machine.
+	 #+BEGIN_EXAMPLE
+	 sudo vim /edx/app/edxapp/lms.auth.json
+	 #+END_EXAMPLE
+	 #+BEGIN_EXAMPLE
+	  "CACHES": {
+        "celery": {
+            "BACKEND": "django.core.cache.backends.memcached.MemcachedCache", 
+            "KEY_FUNCTION": "util.memcache.safe_key", 
+            "KEY_PREFIX": "celery", 
+            "LOCATION": [
+                "172.31.25.197:11211"
+            ], 
+            "TIMEOUT": "7200"
+        }, 
+        "configuration": {
+            "BACKEND": "django.core.cache.backends.memcached.MemcachedCache", 
+            "KEY_FUNCTION": "util.memcache.safe_key", 
+            "KEY_PREFIX": "ip-172-31-25-197", 
+            "LOCATION": [
+                "172.31.25.197:11211"
+            ]
+        }, 
+        "course_structure_cache": {
+            "BACKEND": "django.core.cache.backends.memcached.MemcachedCache", 
+            "KEY_FUNCTION": "util.memcache.safe_key", 
+            "KEY_PREFIX": "course_structure", 
+            "LOCATION": [
+                "172.31.25.197:11211"
+            ], 
+            "TIMEOUT": "7200"
+        }, 
+        "default": {
+            "BACKEND": "django.core.cache.backends.memcached.MemcachedCache", 
+            "KEY_FUNCTION": "util.memcache.safe_key", 
+            "KEY_PREFIX": "default", 
+            "LOCATION": [
+                "172.31.25.197:11211"
+            ], 
+            "VERSION": "1"
+        }, 
+        "general": {
+            "BACKEND": "django.core.cache.backends.memcached.MemcachedCache", 
+            "KEY_FUNCTION": "util.memcache.safe_key", 
+            "KEY_PREFIX": "general", 
+            "LOCATION": [
+                "172.31.25.197:11211"
+            ]
+        }, 
+        "mongo_metadata_inheritance": {
+            "BACKEND": "django.core.cache.backends.memcached.MemcachedCache", 
+            "KEY_FUNCTION": "util.memcache.safe_key", 
+            "KEY_PREFIX": "mongo_metadata_inheritance", 
+            "LOCATION": [
+                "172.31.25.197:11211"
+            ], 
+            "TIMEOUT": 300
+        }, 
+        "staticfiles": {
+            "BACKEND": "django.core.cache.backends.memcached.MemcachedCache", 
+            "KEY_FUNCTION": "util.memcache.safe_key", 
+            "KEY_PREFIX": "ip-172-31-25-197_general", 
+            "LOCATION": [
+                "172.31.25.197:11211"
+            ]
+        }
+    }, 
+
+	 #+END_EXAMPLE
+**** Trouble shoot
+     We may get the following error if memcahed service not configured
+     on memcached server
+     #+BEGIN_EXAMPLE
+     ubuntu@ip-172-31-17-157:~$ sudo tail -f /edx/var/log/lms/edx.log
+    response = middleware_method(request, response)
+  File "/edx/app/edxapp/edx-platform/openedx/core/djangoapps/safe_sessions/middleware.py", line 317, in process_response
+    response = super(SafeSessionMiddleware, self).process_response(request, response)  # Step 1
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/contrib/sessions/middleware.py", line 50, in process_response
+    request.session.save()
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/contrib/sessions/backends/cache.py", line 53, in save
+    return self.create()
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/contrib/sessions/backends/cache.py", line 48, in create
+    "Unable to create a new session key. "
+RuntimeError: Unable to create a new session key. It is likely that the cache is unavailable.
+     #+END_EXAMPLE
+     
+	 
+
     + OPTIONAL :: We can stop mysql and mongod services too, to
          minimize load on the machine.
+
 
 * Test Cases
 ** Test Case ID ::  Test login from VM1 using VM0 databases
@@ -396,16 +519,45 @@
     - Configured VM0 and VM1 properly and registered user is able to
       log into VM1 using VM0 databases
 ** Test Case ID ::  User registration
+
 *** Objective   
     Test to check whether user getting registered or not through the
     activation link
 *** Apparatus    
     - A user to register
-    - LMS machine
+    - LMS machine VM1
+    - VM0 
 *** Procedure
     - Browse VM1 ip or domain name of VM1 if there is any
     - After loading the VM1 page (LMS)
-    - Click on 
+    - Click on REGISTER button to user registration
+    - Fill up the form by providing all necessary details and click
+      on * Create Your Account*
+    - LMS machine should send verification link
+    - Check your email and clink on given link for the verification
+      and then activate user account
+    - Later user registered user can enroll in courses.
+    - See the mysql =edxapp.auth_uer= database in VM0 for registered user
+      details
+    - If user entry is updated in the database then the configuration
+      is correct in =lms.env.json= and =lms.auth.json= 
+*** Experiment
+    - Opened browser
+    - Provided LMS VM1 machine IP or Domain name 
+    - Clicked on REGISTER button
+    - Provided my details in the registration form and submitted
+    - I got a verification mail for account activation
+    - Clicked on verification link and activated my account
+    - Checked VM0 edxapp.auth_user database for my details. My details
+      got updated in the database.
+*** Result
+    User registration is successfully happened.
+*** Conclusion    
+    - Configured lms.env.json and lms.auth.json files for user
+      registration
+    - User is able to get correct verification link 
+    - User is getting updated in respective database.
+
 * Troubleshooting 
 ** Check whether login is happening or not from LMS1
    - Log into lms1 machine as staff user and also see the logs for
