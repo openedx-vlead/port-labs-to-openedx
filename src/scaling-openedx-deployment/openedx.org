@@ -165,6 +165,9 @@
        that users can be able to access the respective databases from
        localhost as well as from 172.31.17.157(remote machine IP).
      #+BEGIN_EXAMPLE
+     mysql> GRANT ALL PRIVILEGES ON *.* TO 'edxapp001'@'172.31.17.157' IDENTIFIED BY 'password';
+     Query OK, 0 rows affected (0.01 sec)
+
      mysql> GRANT ALL PRIVILEGES ON *.* TO 'admin'@'172.31.17.157' IDENTIFIED BY 'password';
      Query OK, 0 rows affected (0.01 sec)
 
