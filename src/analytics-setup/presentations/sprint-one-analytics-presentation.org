@@ -1,0 +1,141 @@
+#+Title: Presentation - Sprint 1, Analytics 
+#+Author: Systems team
+#+Date: August 30, 2016
+
+* Introduction
+  This document lists the points to be demonstrated and for sprint 1.
+* Objective
+  Lab Usage Analytics with ELK stack. 
+
+
+* Steps
+** Test bed with OpenEdX 
+  Capture clicks on a Lab, and send the data to the Lab Usage Service API.
+
+** ELK stack configuration
+  
+   |-----------------+-----------------------+------------+-------------------------|
+   | Stack Component | FQDN                  | IP Address | Configuration           |
+   |-----------------+-----------------------+------------+-------------------------|
+   | Elasticsearch   | elk-stack.vlabs.ac.in |            | Port 9200, host 0.0.0.0 |
+   |-----------------+-----------------------+------------+-------------------------|
+   | Kibana          | elk-stack.vlabs.ac.in |            | host 0.0.0.0            |
+   |-----------------+-----------------------+------------+-------------------------|
+   | Logstash        | elk-stack.vlabs.ac.in |            | Port 8080, host 0.0.0.0 |
+   |-----------------+-----------------------+------------+-------------------------|
+
+
+** Javacscript and Ajax added to each experiment 
+   #+BEGIN_SRC command
+
+   
+   #+END_SRC 
+
+** Usage server 
+   #+BEGIN_SRC command
+import os
+import json
+from flask import Flask
+from flask import send_from_directory
+from flask import request
+from elasticsearch import Elasticsearch
+
+app = Flask(__name__)
+# app.config.from_object(os.environ['APP_SETTINGS'])
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
+@app.route('/')
+def hello():
+    return "Hello World!"
+
+@app.route('/<name>',methods= ['GET'])
+def hello_name(name):
+    	data = request.data
+    	fetch_data = name
+    	data_list = fetch_data.split(",") 
+    	data_dict = {}
+
+    	data_dict["STUDENT_LONG_ID"] = data_list[0]
+    	data_dict["COURSE_ID"] = data_list[1]
+    	data_dict["DATE_OF_EXPERIMENT"] = data_list[2]	   
+    	data_dict["TIME_OF_EXPERIMENT"] = data_list[3]
+	data_dict["EXPERIMENT_NAME"] = data_list[4]
+	data_dict["LAB_NAME"] = data_list[5]
+	data_dict["IP_ADDRESS"] = request.environ.get('HTTP_X_REAL_IP',request.remote_addr)
+
+    	#json_data = json.dumps(data_dict)
+	try:
+		es = Elasticsearch([{'host':'elk-stack.vlabs.ac.in', 'port':9200}])
+		es.index(index="vlabs", doc_type="usage", body=data_dict)
+	except Exception as e:
+		print e
+	
+	#try:
+  	#	fp = open("/home/ubuntu/vlabs-tracking/filename.json","a")
+        # 	fp.write(json_data)
+    	# 	fp.write("\n")
+	#	fp.close()
+    	#except Exception as e:
+	#	return e
+
+	return "Hello {}!".format(name) 
+
+if __name__ == '__main__':
+    app.run()
+
+   #+END_SRC
+
+** Sample JSON designed for capturing the lab usage
+   #+BEGIN_SRC command
+       "STUDENT_LONG_ID" : "qnfVx1vcmZkUSbn1fjR2BSlwBgkRONjo",
+        "DATE_OF_EXPERIMENT" : "30-8-2016",
+        "LAB_NAME" : "ProblemSolving",
+        "EXPERIMENT_NAME" : "BeautyofNumbers",
+        "TIME_OF_EXPERIMENT" : "22:52",
+        "COURSE_ID" : "coursev1IIITHyderabadCSE04Anytime",
+        "IP_ADDRESS" : "14.139.82.6"
+   #+END_SRC
+
+** Caling elasticsearch API 
+   #+BEGIN_SRC command
+        data_dict["STUDENT_LONG_ID"] = data_list[0]
+        data_dict["COURSE_ID"] = data_list[1]
+        data_dict["DATE_OF_EXPERIMENT"] = data_list[2]
+        data_dict["TIME_OF_EXPERIMENT"] = data_list[3]
+        data_dict["EXPERIMENT_NAME"] = data_list[4]
+        data_dict["LAB_NAME"] = data_list[5]
+        data_dict["IP_ADDRESS"] = request.environ.get('HTTP_X_REAL_IP',request.remote_addr)
+
+        #json_data = json.dumps(data_dict)
+        try:
+                es = Elasticsearch([{'host':'elk-stack.vlabs.ac.in', 'port':9200}])
+                es.index(index="vlabs", doc_type="usage", body=data_dict)
+        except Exception as e:
+                print e
+
+   #+END_SRC
+
+** Sample record in elasticsearch
+   #+BEGIN_SRC command
+   curl -XGET "http://localhost:9200/vlabs/_search?size=50&pretty" 
+   {
+      "_index" : "vlabs",
+      "_type" : "usage",
+      "_id" : "AVbcnNhSWJEj-iw4NHDp",
+      "_score" : 1.0,
+      "_source" : {
+        "STUDENT_LONG_ID" : "qnfVx1vcmZkUSbn1fjR2BSlwBgkRONjo",
+        "DATE_OF_EXPERIMENT" : "30-8-2016",
+        "LAB_NAME" : "ProblemSolving\n",
+        "EXPERIMENT_NAME" : "BeautyofNumbers",
+        "TIME_OF_EXPERIMENT" : "22:52",
+        "COURSE_ID" : "coursev1IIITHyderabadCSE04Anytime",
+        "IP_ADDRESS" : "14.139.82.6"
+      }
+   
+   #+END_SRC
+   
