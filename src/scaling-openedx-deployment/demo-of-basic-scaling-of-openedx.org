@@ -28,7 +28,8 @@
       - Other services: RabbitMQ, Memcached, forum
     + LMS machine
       - Activated LMS 
-      - Deactivated other services
+      - Stopped CMS 
+      - Deactivated/Stopped other services
         + MySql
 	+ MongoDB
         + Memcached 
