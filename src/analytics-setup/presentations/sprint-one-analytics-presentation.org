@@ -168,3 +168,10 @@ if __name__ == '__main__':
    
    #+END_SRC
    
+* Work in progress for sprint 2
+  + Change logo of Kibana if needed
+  + Prepare a document on ELK for Lab Usage Analytics
+  + Test for different data
+  + Currently, the ELK is running in the VPC.
+  + Apply string analyzer in elasticsearch 
+  + We have not attempted to scale for TB of data. But the current system is good enough for initial roll out.
