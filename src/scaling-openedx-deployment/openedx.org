@@ -547,10 +547,6 @@
     "Unable to create a new session key. "
 RuntimeError: Unable to create a new session key. It is likely that the cache is unavailable.
      #+END_EXAMPLE
-	 
-
-    + OPTIONAL :: We can stop mysql and mongod services too, to
-         minimize load on the machine.
 
 * GitHub Issue
   Please go through the [[https://github.com/openedx-vlead/port-labs-to-openedx/issues/37][github]] issue for step by step procedure.
