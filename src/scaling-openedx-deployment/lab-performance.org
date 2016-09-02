@@ -1,4 +1,4 @@
-#+TITLE: Load/Performance test on Open edX platform 
+#+TITLE: Load/Performance test on lab VMs
 
 * Introduction
   This documnets tells how to test load on web server using siege tool.
