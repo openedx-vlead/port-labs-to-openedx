@@ -1,0 +1,42 @@
+#+TITLE: Features provided by Open edX analytics 
+#+Date: July 14, 2016
+#+Author: Ashay Maheshwari
+
+* Introduction 
+This document lists the features provided by Open edX analytics. 
+
+* Analytics features 
+** How many students are there in my course ?
+   + Status :: Acheived. Analytics for specific courses was visible.
+   
+** How old are my students ?
+   + Status :: 
+    - This was acheived in previous installation of Analytics.
+    - Analytics is not visible after tryining installation of Data Analytics API
+    - Not Acheived 
+
+** What level of education do my students have ?
+   + Status ::
+    - This was acheived in previous installation of Analytics.
+    - Analytics is not visible after tryining installation of Data Analytics API
+    - Not Acheived
+** What is the student gender breakdown ?
+    + Status ::
+    - This was acheived in previous installation of Analytics.
+    - Analytics is not visible after tryining installation of Data Analytics API
+    - Not Acheived
+** Where are my students ?
+   + Status :: Never Achived 
+
+** How many students are interacting with my course ?
+   + Status ::
+    - 500 errors was resolved
+    - Data was not visible.
+    
+   
+
+
+** Students progress
+   + Status :: 
+    - Progress of a student was visible on Analytics machine.
+    

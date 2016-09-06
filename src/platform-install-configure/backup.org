@@ -3,7 +3,7 @@
 #+Date: [2016-02-23 Tue]
 #+PROPERTY: results output
 #+PROPERTY: exports code
-#+SETUPFILE: ../org-templates/level-0.org
+#+SETUPFILE: ../org-templates/level-1.org
 
 
 * Introduction
@@ -20,8 +20,8 @@
   The Open edX platform is having two databases, they are:
   1. Mysql (LMS) 
   2. Mogodb (CMS)
-** Taking backup of LMS machine
-   - SSH to LMS machine 
+** Take backup of LMS/CMS machine
+   - SSH to LMS/CMS machine 
    - Take backup of existing databases with following commands
      #+BEGIN_SRC 
      sudo mongodump -o ./mongo-backup
@@ -35,8 +35,22 @@
      sudo mongorestore -drop ./mongo-backup     
      sudo mysql -u root -p < ./backup.sql
      #+END_SRC
+* File Level backup 
+  File level backup also done by database backup.Since, as per
+  [[https://groups.google.com/forum/#!topic/edx-code/Zdx8T6YY3IU][google-groups]] suggestions, File level backup is taken care by
+  databases(MySql and MongoDB) backup.  That means, uploaded files(assets)
+  are storing/saving in the form of metadata and bytes into the
+  databases.  So all those assets are stored in MongoDB using GridFS.
+  If you connect to your mongo instance and use the edxapp database,
+  you'll see the fs.files and fs.chunks collections. The asset file
+  metadata is stored in fs.files and the actual bytes are in
+  fs.chunks.
+
+** Open Issues on GitHub 
+   - [[https://github.com/vlead/port-labs-to-openedx/issues/6][Backup and Restore]]
 ** Reference 
-   https://github.com/edx/configuration/wiki/Preparation-For-Production-Launch
+   - [[https://github.com/edx/configuration/wiki/Preparation-For-Production-Launch][Preparation for Production launch]]
+   - [[https://groups.google.com/forum/#!topic/edx-code/Zdx8T6YY3IU][Google groups - Location of uploaded files ]]
 
 * TODO Take database backup of Open edX analytics VM and restore it 
 ** Taking backup of Analytics/Insiguts

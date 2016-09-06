@@ -1,7 +1,6 @@
 #SHELL := /bin/bash
-BUILD_DEST=build
+BUILD_DIR=build
 
-CODE_DEST="${BUILD_DEST}/code"
 VER_BRANCH=build-release
 VER_FILE=VERSION
 
@@ -11,17 +10,15 @@ ELISP_DIR=elisp
 ORG_DIR=org-templates
 STYLE_DIR=style
 CODE_DIR=build/code
-PWD=$(shell pwd)
-LINT_FILE=${PWD}/${CODE_DIR}/lint_output
-EXIT_FILE=${PWD}/exit.txt
-STATUS=0
+DOC_DIR=build/docs
+SRC_DIR=src
 
-all:  build-with-lint
+PWD=$(shell pwd)
+
+all:  build
 
 clean-literate:
 	rm -rf ${ELISP_DIR}
-	rm -rf ${ORG_DIR}
-	rm -rf ${STYLE_DIR}
 	rm -rf src/${ORG_DIR}
 	rm -rf src/${STYLE_DIR}
 
@@ -33,35 +30,30 @@ ifeq ($(wildcard elisp),)
 	echo $$http_proxy
 	git clone ${LITERATE_TOOLS}
 	mv ${LITERATE_DIR}/${ELISP_DIR} .
-	mv ${LITERATE_DIR}/${ORG_DIR} .
-	mv ${LITERATE_DIR}/${STYLE_DIR} .
-	ln -s ${PWD}/${ORG_DIR}/ ${PWD}/src/${ORG_DIR}
-	ln -s ${PWD}/${STYLE_DIR}/ ${PWD}/src/${STYLE_DIR}
+	mv ${LITERATE_DIR}/${ORG_DIR} ${SRC_DIR}
+	mv ${LITERATE_DIR}/${STYLE_DIR} ${SRC_DIR}
 	rm -rf ${LITERATE_DIR}
 else
 	@echo "Literate support code already present"
 endif
 
 init: pull-literate-tools
-	rm -rf ${BUILD_DEST}
-	mkdir -p ${BUILD_DEST} ${CODE_DEST}
+	rm -rf ${BUILD_DIR}
+	mkdir -p ${BUILD_DIR} ${CODE_DIR}
 
 build: init write-version
 	emacs  --script elisp/publish.el
-	rm -f ${BUILD_DEST}/docs/*.html~
+	rsync -a ${SRC_DIR}/${ORG_DIR} ${BUILD_DIR}/docs
+	rsync -a ${SRC_DIR}/${STYLE_DIR} ${BUILD_DIR}/docs
+	rm -f ${BUILD_DIR}/docs/*.html~
 
 # get the latest commit hash and its subject line
 # and write that to the VERSION file
 write-version:
-	echo -n "Built from commit: " > ${CODE_DEST}/${VER_FILE}
-	echo `git rev-parse HEAD` >> ${CODE_DEST}/${VER_FILE}
-	echo `git log --pretty=format:'%s' -n 1` >> ${CODE_DEST}/${VER_FILE}
+	echo -n "Built from commit: " > ${CODE_DIR}/${VER_FILE}
+	echo `git rev-parse HEAD` >> ${CODE_DIR}/${VER_FILE}
+	echo `git log --pretty=format:'%s' -n 1` >> ${CODE_DIR}/${VER_FILE}
 
-lint:
-	pep8 --ignore=E302 ${PWD}/${CODE_DIR} > ${LINT_FILE};
-
-build-with-lint: build lint
-
-clean:  clean-literate
-	rm -rf ${BUILD_DEST}
+clean:	clean-literate
+	rm -rf ${BUILD_DIR}
 

@@ -1,0 +1,142 @@
+#+Title: Test data transport between edX and redis server 
+#+Author: VLEAD Systems 
+#+Date: August 17, 2016
+
+* Introduction
+  This document demonstrates a simple data sharing (set and get)
+  between edX and redis server using python programming.
+
+* Installations 
+** Install and configure redis-server in ubuntu 14.04 
+   + Install redis server ::
+      #+BEGIN_SRC command
+      sudo apt-get update 
+      sudo apt-get upgrade
+      sudo apt-get install tcl8.5
+      sudo apt-get -y install redis-server
+      #+END_SRC
+   + Start redis-server services  ::
+      #+BEGIN_SRC command
+      sudo service redis-server start
+      #+END_SRC
+   + Access redis-cli ::
+      #+BEGIN_SRC command
+      redis-cli
+      redis 127.0.0.1:6379>
+      #+END_SRC
+   + Configuring redis ::
+      Allow redis to listen on all network interfaces rather than localhost. 
+      #+BEGIN_SRC command
+      vim /etc/redis/redis.conf
+      Replace bind 127.0.0.1 to bind 0.0.0.0
+      sudo service redis-server restart
+      #+END_SRC
+    + References ::
+      https://hostpresto.com/community/tutorials/how-to-install-and-configure-redis-on-ubuntu-14-04/
+      https://www.digitalocean.com/community/tutorials/how-to-install-and-use-redis
+
+
+     
+
+  
+
+** Install python package for redis 
+   + Install redis package for python2.7  
+   #+BEGIN_SRC command
+   sudo pip install redis 
+   #+END_SRC
+
+
+* Simple test Architecture 
+  Redis server accepting connections from 0.0.0.0 is running to accept
+  connections.  Another server will try to SET and GET data to and
+  from redis server using python redis module.  Instructions and
+  reference for the same are given below in the next section.
+** Check cross connections between redis servers 
+  
+  + Install redis-server on two different server ::
+    Server A - 10.4.15.220 - redis-server1.example.com
+    Server B - 10.4.15.221 - redis-server2.example.com
+     
+  + Try accessing redis-cli of each server locally ::
+    Fire the command given below to on each server 
+    #+BEGIN_SRC command
+    redis-cli
+    #+END_SRC 
+    Above command should take you to cli prompt.
+  + Check connection from one server to other ::
+    One must receive PONG as response to the below commands.
+    #+BEGIN_SRC command
+    From Server A
+      $ redis-cli -h redis-server2.example.com ping 
+    #+END_SRC
+    
+    #+BEGIN_SRC command
+    From Server B
+      $ redis-cli -h redis-server1.exmaple.com ping 
+    #+END_SRC
+   + Access redis cli of one server from another ::
+     #+BEGIN_SRC command
+     From Server A to Server B
+        $ redis-cli -h redis-server2.example.com 
+     #+END_SRC 
+
+     #+BEGIN_SRC command
+     From Server B to Server A
+        $ redis-cli -h redis-server1.exmaple.com
+     #+END_SRC
+         
+** Use python redis module to send data to local server 
+   Once the connection establishemnt is checked, you can 
+   + Create a key value pair using redis-cli and access it ::
+     #+BEGIN_SRC command
+     redis-cli
+     127.0.0.1:6379> set name aashay
+     127.0.0.1:6379> 
+     127.0.0.1:6379> 
+     127.0.0.1:6379> 
+     127.0.0.1:6379> get name
+     "aashay"
+     #+END_SRC
+
+    + Access the key value pair using python redis ::
+      #+BEGIN_SRC command
+      $ python
+      >>> import redis
+      >>> r = redis.StrictRedis()
+      >>> r.get("name")
+      'aashay'   #output
+      #+END_SRC
+
+    + Set a new key value pait using python redis ::
+     #+BEGIN_SRC command
+     >>> r.set("age", "22")
+     True       #output
+     #+END_SRC
+    + Access the newly crated key using redis-cli ::
+     #+BEGIN_SRC command
+     127.0.0.1:6379> get age
+     "22"
+     #+END_SRC
+    + Read more in detail ::
+      http://agiliq.com/blog/2015/03/getting-started-with-redis-py/
+ 
+** Use python redis module to send data from one server to other 
+   #+BEGIN_SRC command
+   import redis
+   POOL = redis.ConnectionPool(host='10.0.0.1', port=6379, db=0)
+   def getVariable(variable_name):
+       my_server = redis.Redis(connection_pool=POOL)
+       response = my_server.get(variable_name)
+       return response
+
+   def setVariable(variable_name, variable_value):
+       my_server = redis.Redis(connection_pool=POOL)
+       my_server.set(variable_name, variable_value)
+
+   #+END_SRC
+
+
+* References
+  https://www.digitalocean.com/community/tutorials/how-to-configure-a-redis-cluster-on-ubuntu-14-04
+  http://agiliq.com/blog/2015/03/getting-started-with-redis-py/ 

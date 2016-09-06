@@ -1,0 +1,51 @@
+#+TITLE:  Demo on Basic sacling of Open edX 
+#+AUTHOR: Siva Shanker
+
+* Before Scaling of Open edX
+  - VM with
+    + Ubuntu 14.04
+    + 8GB RAM
+    + t2.large
+  - Setup complete Open edX platform in one machine
+  - All edx Services are running in machine
+    + LMS and CMS
+    + MongoDB for CMS
+    + MySql for LMS and analytics
+    + and all other services such as forum, memcached and RabbitMQ.
+** Performance
+   + Consumed lot system resources (RAM, Cpus, etc) as it was running with
+     all edx service in it.
+   + Reduced system performance because of system resources
+     consumption.
+
+* Basic scaling of Open edX platform
+  Because of the above performance issues, Basic scaling came into
+  picture.
+  - Basic scaling of Open edX platform with two VMs
+    + Core machine : EdX platform with all the services
+      - LMS and CMS
+      - Databases: MySql and MongoDB
+      - Other services: RabbitMQ, Memcached, forum
+    + LMS machine
+      - Activated LMS 
+      - Stopped CMS 
+      - Deactivated/Stopped other services
+        + MySql
+	+ MongoDB
+        + Memcached 
+        + RabbitMQ
+ 
+* Load/Performance Test on Basic Open edX platform
+  - siege :: Load/Stress tester on web server
+  - System can allow *500 - 750* users to login
+    - Average Transaction rate:       ~50 trans/sec
+  - After login, *125-175* users can use the system simultaneously
+
+** GitHub Issue 
+   - [[https://github.com/openedx-vlead/port-labs-to-openedx/issues/39][Load test on Open edX platform]]
+
+* Load/performance test on each production lab 
+  - Easily, System can allow 300-500 users concurrently
+** GitHub Issue
+   [[https://github.com/openedx-vlead/port-labs-to-openedx/issues/40][Load/Performance test]]
+
