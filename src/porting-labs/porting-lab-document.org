@@ -59,7 +59,8 @@
     + Run =python automation.py <Lab-Directory-Path>= (Give the absolute
       path of the locally created lab directory which could be seen
       using =pwd= command).
-    + Compress the lab directory into a tar.gz file.
+    + Compress the lab directory into a tar.gz file using command :
+      =tar -cvzf name-of-archive.tar.gz /path/to/directory-or-file=
 *** Creation of a course
     + Go to [[http://edx-courses.vlabs.ac.in:18010/][Open Edx studio]] and sign in if already registered
       and have permissions for creating a course, otherwise register and
@@ -96,6 +97,24 @@
     + Difference between published and released content and different
       views with staff and student views in LMS could be learnt in
       greater details from : [[https://www.edx.org/course/creating-course-edx-studio-edx-studiox][Creating a course with Open edX Studio]]
+**** Including the simulations as iframes
+     The simulations of an experiment of a lab should be included as
+     Iframes using the iframes tool of HTML component. Include the
+     below code in the HTML source code editor. The src field would
+     include the https simulation URL which could be found from the
+     hosted labs in vlabs.ac.in page.
+
+#+BEGIN_EXAMPLE
+    <p><button onclick="popup()">Full Screen</button></p>
+<p></p>
+<p><iframe src="https://...." height="602" width="802"> </iframe></p>
+<script>// <![CDATA[
+function popup(){
+  window.open('https://....', '_blank', 'toolbar=0,location=0,menubar=0');
+ }
+// ]]></script>
+#+END_EXAMPLE
+
   + Click on =Tools= dropdown menu option from top. Click on =export= option.
   + Choose the =Export Course Content= option and save the tar.gz file
     of the created lab in the local machine which could be pushed as
