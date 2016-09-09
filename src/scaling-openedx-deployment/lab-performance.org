@@ -1,0 +1,190 @@
+#+TITLE: Load/Performance test on lab VMs
+
+* Introduction
+  This documnets describes how to test load on web server using siege tool.
+  *siege* is a load/stress tester on web server.
+
+  Performance test will be done on home page of each lab.
+
+* Requirements
+  - Capture the threshold value, so that lab can handle
+    up to the threshold value requests.
+  - Capture the RAM usage when number of concurrent users hitting the server
+  - Capture the CPU utilization when number concurrent users hitting
+    the server
+* Implementation   
+  Install siege. We can also use ab(apache benchmark) and locust.io.
+  #+BEGIN_EXAMPLE
+  yum/apt-get install siege
+  #+END_EXAMPLE
+** Collect the lab urls 
+   Collect the lab urls and put them in one file called urls.txt
+   #+BEGIN_EXAMPLE
+   cse02-iiith.vlabs.ac.in
+   cse15-iiith.vlabs.ac.in
+   cse19-iiith.vlabs.ac.in
+   cse18-iiith.vlabs.ac.in
+   cse20-iiith.vlabs.ac.in
+   emt-iiith.vlabs.ac.in
+   cse29-iiith.vlabs.ac.in
+   cse22-iiith.vlabs.ac.in
+   cse11-iiith.vlabs.ac.in
+   #+END_EXAMPLE
+
+** Shell script
+   Put the following lines in load-test.sh
+   #+BEGIN_EXAMPLE
+   #!/bin/sh
+   touch c100-r1.txt
+   touch c200-r1.txt
+   touch c300-r1.txt
+   while read line
+   do
+   echo "100 hits for $line" >> c100-r1.txt
+   siege -c 100 -r 1 $line 2>> c100-r1.txt
+   
+   echo "200 hitt for $line" >> c200-r1.txt
+   siege -c 200 -r 1 $line 2>> c200-r1.txt
+   
+   echo "300-hits for $line" >> c300-r1.txt
+   siege -c 300 -r 1 $line 2>> c300-r1.txt
+   done < urls.txt
+
+ #  where 
+ #  -c num - CONCURRENT, allows you to set the concurrent number
+ #  of simulated users to num. The number of simulated users is limited
+ #  to the resources on the computer running siege. 
+
+#   -r NUM - allows you to run the siege for NUM repetitions
+
+
+
+
+   #+END_EXAMPLE
+   Above script does the following
+   - Takes one url from urls.txt file at a time
+   - Executes siege command with 100,200 and 300 concurrent user
+     requests
+   - puts the output of each siege command into associated file
+   - It does the same for all other urls
+
+  + Execute the script
+    #+BEGIN_EXAMPLE
+    sh load-test.sh
+    #+END_EXAMPLE
+  + Now, Need to monitor RAM and CPU utilization simultaneously (means,
+    while the script is running for accurate results)
+
+** RAM utilization when 300 simultaneous user requests
+   |-------------------------+--------|
+   | Lab Name                | RAM    |
+   |-------------------------+--------|
+   | cse02-iiith.vlabs.ac.in | 778 MB |
+   |-------------------------+--------|
+   | cse15-iiith.vlabs.ac.in | 780 MB |
+   |-------------------------+--------|
+   | cse19-iiith.vlabs.ac.in | 754 MB |
+   |-------------------------+--------|
+   | cse18-iiith.vlabs.ac.in | 741 MB |
+   |-------------------------+--------|
+   | cse20-iiith.vlabs.ac.in | 717 MB |
+   |-------------------------+--------|
+   | emt-iiith.vlabs.ac.in   | 790 MB |
+   |-------------------------+--------|
+   | cse29-iiith.vlabs.ac.in | 742 MB |
+   |-------------------------+--------|
+   | cse22-iiith.vlabs.ac.in | 851 MB |
+   |-------------------------+--------|
+   | cse11-iiith.vlabs.ac.in | 811 MB |
+   |-------------------------+--------|
+
+   Once Cpu is reached to 100% it fluctuates the CPU utilization based
+   on in coming requests 
+
+** Summary
+   - Easily, System can allow 200-300 users simultaneously
+
+** GitHub Issue
+   [[https://github.com/openedx-vlead/port-labs-to-openedx/issues/40][Performance Test on labs]]
+** Sample Performance test with 100 concurrent users and 1 repetition
+   #+BEGIN_EXAMPLE
+   siege -c 100 -r 1 http://cse01.vlabs.ac.in/
+
+   where 
+   -c num - CONCURRENT, allows you to set the concurrent number of simulated users to num. The number of simulated users is limited to the resources on the computer running siege.
+   -r NUM -  allows you to run the siege for NUM repetitions
+   #+END_EXAMPLE
+   sample output 
+   #+BEGIN_EXAMPLE
+   Transactions: 100 hits
+   Availability: 100.00 %
+   Elapsed time: 1.23 secs
+   Data transferred: 0.29 MB
+   Response time: 0.12 secs
+   Transaction rate: 81.30 trans/sec
+   Throughput: 0.24 MB/sec
+   Concurrency: 9.45
+   Successful transactions: 100
+   Failed transactions: 0
+   Longest transaction: 0.20
+   Shortest transaction: 0.07
+   #+END_EXAMPLE
+   Definition of fields
+   #+BEGIN_EXAMPLE
+    Transactions
+          The number of server hits.  In the example, 1000 simulated users [ -c100 ] each hit the server 1 times
+          [ -r1 ], a total of 1000 transactions. It is possible for the number of transactions to  exceed  the
+          number  of  hits that were scheduled. Siege counts every server hit a transaction, which means redi‐
+          rections and authentication challenges count as two hits, not one. With this regard,  siege  follows
+          the HTTP specification and it mimics browser behavior.
+
+   Availability
+          This is the percentage of socket connections successfully handled by the server. It is the result of
+          socket failures (including timeouts) divided by the sum of all connection attempts. This number does
+          not  include  400  and 500 level server errors which are recorded in "Failed transactions" described
+          below.
+
+   Elapsed time
+         The duration of the entire siege test.  This is measured from the time the user invokes siege  until
+          the  last  simulated  user  completes its transactions.  Shown above, the test took  1.28 secs to complete.
+
+   Data transferred
+          The sum of data transferred to every siege simulated user.  It includes the  header  information  as
+          well  as  content.   Because  it  includes  header information, the number reported by siege will be
+          larger then the number reported by the server. In internet mode, which hits random URLs in a config‐
+          uration file, this number is expected to vary from run to run.
+
+   Response time
+          The average time it took to respond to each simulated user's requests.
+
+   Transaction rate
+          The average number of transactions the server was able to handle per second, in a nutshell: transac‐
+          tions divided by elapsed time.
+
+   Throughput
+          The average number of bytes transferred every second from the server to all the simulated users.
+
+   Concurrency
+          The average number  of  simultaneous  connections,  a  number  which  rises  as  server  performance
+          decreases.
+
+   Successful transactions
+          The number of times the server responded with a return code < 400.
+
+   Failed transactions
+          The number of times the server responded with a return code >= 400 plus the sum of all failed socket
+          transactions which includes socket timeouts.
+
+   Longest transaction
+          The greatest amount of time that any single transaction took, out of all transactions.
+
+   #+END_EXAMPLE
+   
+   
+
+  
+
+
+
+
+
