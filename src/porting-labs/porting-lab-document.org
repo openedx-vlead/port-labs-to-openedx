@@ -22,7 +22,7 @@
 *** Creation of labspec.json file
     Follow the below steps to create the structure of the lab which
     you wish to port and put in the labspec.json file : 
-    + Use this example [[https://github.com/vlead/port-labs-to-openedx/blob/develop/src/porting-labs/lab-spec.json][labspec.json]] file for creating the Open edX
+    + Use this example [[https://github.com/openedx-vlead/port-labs-to-openedx/blob/develop/src/porting-labs/labspec.json][labspec.json]] file for creating the Open edX
       structure of your lab.
     + Edit this example file to replicate the lab structure you want
       to convert.
