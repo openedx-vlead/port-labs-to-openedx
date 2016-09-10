@@ -61,6 +61,7 @@
       using =pwd= command).
     + Compress the lab directory into a tar.gz file using command :
       =tar -cvzf name-of-archive.tar.gz /path/to/directory-or-file=
+      Note: Before compressing the directory, change your directory path using =cd ..= command. 
 *** Creation of a course
     + Go to [[http://edx-courses.vlabs.ac.in:18010/][Open Edx studio]] and sign in if already registered
       and have permissions for creating a course, otherwise register and
