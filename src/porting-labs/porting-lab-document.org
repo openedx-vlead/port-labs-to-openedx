@@ -43,7 +43,7 @@
       filled with the names of the subsections of the the various
       experiments of this lab.
     + Care needs to be taken while creating the labspec.json file. For
-      verifying the correctness of the json file, [[http://json.parser.online.fr/][json parser]] could be
+      verifying the correctness of the json file, [[http://jsonparseronline.com/][json parser]] could be
       used.
 *** Use of automation script
     + Once the labspec.json file is ready, automation.py script has to
