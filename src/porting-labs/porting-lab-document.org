@@ -189,6 +189,27 @@ function popup(){
    Analytics code should be included in each simulation code in order
    to capture the usage for each experiment perfromed by a
    student. The analytics code is given below :
+   #+BEGIN_SRC command
+   <p><button onclick="popup()">Full Screen</button></p>
+   <p><iframe src="https://ial-coep.vlabs.ac.in/Expt2/AnalogDigital.html" height="602" width="802"> </iframe></p>
+   <script>// <![CDATA[
+   function popup(){
+    window.open('https://ial-coep.vlabs.ac.in/Expt2/AnalogDigital.html', '_blank', 'toolbar=0,location=0,menubar=0');
+    }
+   //  ]]></script>
+
+   <script type="text/javascript">
+    // ****** ALSO MODIFY THE URLS GIVEN ABOVE **************
+   // ********MODIFY THIS SECTION **************************
+
+   var courseid = "blockv1UniversityYPS01Anytime";
+   var experiment_name = "Optimal Foraging Pollinators"
+   var lab_name = "Population Ecology II"
+    
+   // *******DO NOT MODIFY THIS SECTION AGAIN **************
+   </script>
+   <script src="https://github.com/openedx-vlead/lab-usage-tracker/blob/master/src/common.js"></script>
+   #+END_SRC
 ** Theming
    The porting process does not include any specifics for including
    any theme. By default the themes would be applied.
