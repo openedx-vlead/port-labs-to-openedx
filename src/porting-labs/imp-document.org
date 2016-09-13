@@ -1,4 +1,5 @@
 
+* Labs Observed
 
 |---------------------------------------+--------------------+-------------------------+--------------------------------|
 | Lab Name (Ported for April meeting 9) | Does Static folder | LAB URL on edX          | course static folder on github |
@@ -21,4 +22,5 @@
 |---------------------------------------+--------------------+-------------------------+--------------------------------|
 
 
++ Note :: 4 other labs were ported but are not observed.
 
