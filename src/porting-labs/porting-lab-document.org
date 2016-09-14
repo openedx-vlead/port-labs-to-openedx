@@ -22,7 +22,7 @@
 *** Creation of labspec.json file
     Follow the below steps to create the structure of the lab which
     you wish to port and put in the labspec.json file : 
-    + Use this example [[https://github.com/vlead/port-labs-to-openedx/blob/develop/src/porting-labs/lab-spec.json][labspec.json]] file for creating the Open edX
+    + Use this example [[https://github.com/openedx-vlead/port-labs-to-openedx/blob/develop/src/porting-labs/labspec.json][labspec.json]] file for creating the Open edX
       structure of your lab.
     + Edit this example file to replicate the lab structure you want
       to convert.
@@ -43,7 +43,7 @@
       filled with the names of the subsections of the the various
       experiments of this lab.
     + Care needs to be taken while creating the labspec.json file. For
-      verifying the correctness of the json file, [[http://json.parser.online.fr/][json parser]] could be
+      verifying the correctness of the json file, [[http://jsonparseronline.com][json parser]] could be
       used.
 *** Use of automation script
     + Once the labspec.json file is ready, automation.py script has to
@@ -61,6 +61,8 @@
       using =pwd= command).
     + Compress the lab directory into a tar.gz file using command :
       =tar -cvzf name-of-archive.tar.gz /path/to/directory-or-file=
+      Before compressing the directory, change your directory path
+      using =cd ..= command.
 *** Creation of a course
     + Go to [[http://open-edx.vlabs.ac.in:18010/][Open edX studio]] and sign in if already registered
       and have permissions for creating a course, otherwise register and
