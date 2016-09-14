@@ -1,7 +1,6 @@
 #+TITLE: Portable Media - Personal Edition
 #+DATE: <2016-09-14 Wed>
 
-
 * Introduction
   This document describes building a *Personal Edition* with the labs
   that are ported onto Open edX platform.
@@ -24,13 +23,13 @@
    - Hard Drive : 250 GB for SSD or 400-500 for Magnetic.
 
 * Design
-** Design of Linux box in a Hard drive
+** Linux box in a Hard drive
    A Hard disk will have Open edX platform setup, once the setup is
    ready, take the labs from github and host/deploy them in
    local(Localhost). So that hosted labs can be accessible from edx
    platform without depending on the internet.
    
-** Design of Vagrant Box
+** Vagrant Box
    A Vagrant Box will have Open edX platform setup, once the setup is
    ready, take the labs from github and host/deploy them in
    local(Localhost). So that hosted labs can be accessible from edx
