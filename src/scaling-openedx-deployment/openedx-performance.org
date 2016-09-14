@@ -1,8 +1,8 @@
 #+TITLE: Load/Performance test on Open edX platform 
 
 * Introduction
-  This documnets tells how to test load on web server using siege tool.
-  *siege* is load/stress tester on web server.
+  This documnets describes how to test load on web server using siege tool.
+  *siege* is a load/stress tester on web server.
 
   Performance test will be done on home page of Open edX platform.
 

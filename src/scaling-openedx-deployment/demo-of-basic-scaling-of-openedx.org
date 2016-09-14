@@ -1,4 +1,4 @@
-#+TITLE:  Demo on Basic sacling of Open edX 
+#+TITLE:  Demo on Basic scaling of Open edX 
 #+AUTHOR: Siva Shanker
 
 * Before Scaling of Open edX

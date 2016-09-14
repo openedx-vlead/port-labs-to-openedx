@@ -1,0 +1,215 @@
+* Porting of a lab to Open edX platform
+** Introduction
+   This document demonstrates creation of a skeletal structure for a
+   lab in the format expected by Open edX studio from a specification
+   import and addition of content to the skeletal structure
+   configuration changes to publish a lab.
+** Motivation
+   This document is driven by the commitment of delivering Virtual
+   Labs on Open edX platform which can be accomplished by following an
+   efficient porting process. This workshop ensures that all the labs
+   start running on Open edX platform for the end users. The entire
+   workflow starting from the creation of a new course to porting an
+   existing lab is detailed in the followings sections.
+** Steps to port a new lab to Open edX
+- This document defines porting of a lab in Open edX and
+  the difference between porting an existing lab and a new lab.
+- To port a new lab, below are the elaborate steps - 
+  + First create a directory in your local machine with the lab name
+    (all letters in lower-case with hyphens) which you wish to port to
+    Open edX.
+  + Create a file named labspec.json inside that lab directory.
+*** Creation of labspec.json file
+    Follow the below steps to create the structure of the lab which
+    you wish to port and put in the labspec.json file : 
+    + Use this example [[https://github.com/vlead/port-labs-to-openedx/blob/develop/src/porting-labs/lab-spec.json][labspec.json]] file for creating the Open edX
+      structure of your lab.
+    + Edit this example file to replicate the lab structure you want
+      to convert.
+    + Inside the "course" field, replace the values of "org", "id",
+      "display_name" and "overview" with Organization Name, Lab Id,
+      Name of the lab and Description of the lab respectively. Lab Ids
+      could be obtained from [[https://docs.google.com/spreadsheets/d/1qIU42qaMVtwpP_6eV3YXjJs8CJb6wnPPclFgqbGdlCM/edit?usp=sharing][here]]. Lab Ids should be given in capital
+      letters for uniformity and avoid including white spaces or
+      special characters.
+    + Inside the "experiments" field, enter the list of all the
+      experiments for the particular lab. 
+    + If your lab also includes fields like Target Audience, Courses
+      Aligned, Feedback etc, they have to be created as separate
+      sections in labspec.json file.
+    + Inside the "experiments" field, leave the first two fields
+      called =name= and =subsections= unchanged as =Introduction=
+    + The rest of the =name= and =subsections= fields below would be
+      filled with the names of the subsections of the the various
+      experiments of this lab.
+    + Care needs to be taken while creating the labspec.json file. For
+      verifying the correctness of the json file, [[http://json.parser.online.fr/][json parser]] could be
+      used.
+*** Use of automation script
+    + Once the labspec.json file is ready, automation.py script has to
+      be run to convert this lab into an open edx course structure.
+    + [[https://github.com/vlead/port-labs-to-openedx][port labs to Open Edx]] repo has to be cloned in local machine,
+      change directory to port-labs-to-openedx and switch to develop
+      branch by doing =git checkout develop=
+    + First do git pull, run =make clean= and then run =make= . If this
+      is second or third attempt, =make= could be run directly. 
+    + If no build errors are faced and =make= runs successfully,
+      change directory to /build/code/src . There would be a
+      automation.py file inside /build/code/src.
+    + Run =python automation.py <Lab-Directory-Path>= (Give the absolute
+      path of the locally created lab directory which could be seen
+      using =pwd= command).
+    + Compress the lab directory into a tar.gz file using command :
+      =tar -cvzf name-of-archive.tar.gz /path/to/directory-or-file=
+*** Creation of a course
+    + Go to [[http://edx-courses.vlabs.ac.in:18010/][Open Edx studio]] and sign in if already registered
+      and have permissions for creating a course, otherwise register and
+      start creating a course.
+    + Click on =New Course= button on top right corner to create the
+      new course.
+    + Fill the Course Name, Organisation, Course Number and Course Run. 
+      as =Anytime= and click on =Create Course=.
+      + Course Name would be the name of the lab which is being ported
+        here. For Example : Molecular Absorption Spectroscopy Lab
+      + Organisation would be the name of the institute owning the
+        lab. For Example : IIIT-Hyderabad
+      + Course Number would be the lab id of the lab. For Example :
+        CCNSB03 (do not include white spaces or special characters
+        here). Lab Ids could be obtained [[https://docs.google.com/spreadsheets/d/1qIU42qaMVtwpP_6eV3YXjJs8CJb6wnPPclFgqbGdlCM/edit?usp=sharing][here]].
+      + Course Run should be filled as =anytime=
+    + Click on =Tools= dropdown menu option from top. Select =import= option.
+    + Click on =Choose a file to Import= and choose the tar.gz file of
+      the lab. Click on =Replace course content with file= and select
+      =View Updated Outline= to view the newly created course.
+    + The automation script would create all the sections and subsections
+      in the course. Sections and subsections would be named according
+      to the details provided in the labspec.json file.
+    + Under each sub-section, the content
+      (HTML/text/images/simulations) would be placed in the
+      units. Follow the link for better insight : [[https://www.edx.org/course/creating-course-edx-studio-edx-studiox][Creating a course
+      with Open edX Studio]]. Following the given link is strongly
+      recommended as it would enhance the understanding of Open edX
+      terminologies and their usage.
+  + Click on =New section= and copy paste the contents of different
+    experiments into appropriate sections and subsections.
+    + If there are multiple simulators for a single experiment, those
+      would be created in different units.
+    + Difference between published and released content and different
+      views with staff and student views in LMS could be learnt in
+      greater details from : [[https://www.edx.org/course/creating-course-edx-studio-edx-studiox][Creating a course with Open edX Studio]]
+**** Including the simulations as iframes
+     The simulations of an experiment of a lab should be included as
+     Iframes using the iframes tool of HTML component. Include the
+     below code in the HTML source code editor. The src field would
+     include the https simulation URL which could be found from the
+     hosted labs in vlabs.ac.in page.
+
+#+BEGIN_EXAMPLE
+    <p><button onclick="popup()">Full Screen</button></p>
+<p></p>
+<p><iframe src="https://...." height="602" width="802"> </iframe></p>
+<script>// <![CDATA[
+function popup(){
+  window.open('https://....', '_blank', 'toolbar=0,location=0,menubar=0');
+ }
+// ]]></script>
+#+END_EXAMPLE
+
+  + Click on =Tools= dropdown menu option from top. Click on =export= option.
+  + Choose the =Export Course Content= option and save the tar.gz file
+    of the created lab in the local machine which could be pushed as
+    sources to GitHub.
+*** Miscellanious modifications
+    Few more steps to make other modifications are listed below : 
+**** Modification of course date to Anytime
+      + Click on Course name which you own.
+      + Go to settings drop down, and click Advanced settings.
+      + Change field “Course Advertised Start Date” from null to “Anytime”
+      + Save your changes
+**** Modification of the default course preview and uploading the course image
+      + Click on Course name.
+      + Go to =schedule and details= in settings drop down.
+      + Leave all the fields in course schedule empty except for the
+        first field which should be any date previous to current date.
+      + In “Introducing your Course” section edit the “Course
+        Overview” as per the requirement.
+      + Add a course image by clicking on Upload image button.
+      + Save the changes.
+*** Creation of a repository on GitHub 
+    + Export the lab from =Tools= dropdown menu on the top of the
+      Studio. A zipped file is downloaded. Unzip and untar the
+      exported file to produce a directory.
+      + Command =tar zxvf testlab.tar.gz= forms a tar.gz file.      
+    + Create a repository in the github in =openedx-vlead=
+      organisation with the same name as that of the lab preceeded by
+      term =open-edx=
+    + Clone the newly created repository.
+    + Copy the entire contents of the directory created in step 1 to the
+      directory created in step 3.
+    + Add, commit and push all the changes to the git repository.
+** Steps to port an existing lab to Open EdX
+   We need not create a new course, instead the already created
+   courses would be imported from GitHub.
+** Troubleshooting 
+*** Error while running automation script
+    + The most probable reason for errors faced during running of
+      automation script is error in the labspec.json file. Please
+      cross-check the file using [[http://json.parser.online.fr/][json parser]].
+    + If the automation script throws error or doesnt create the
+      sections automatically, please go ahead and create the sections
+      manually. For few labs the script is found to be erroneous and
+      not behaving as per expectations.
+*** Methods to include an image
+    + Direct copy pasting the image works sometimes and sometimes
+      doesnt. In that case, images can be uploaded from =Content= tab
+      above and =Files and Uploads= option. Upload the image and
+      provide the URL given to render the image.
+*** Methods to include a quiz
+    + Select the =Problem= component for creating different quizzes.
+** Porting of a lab with database
+   Right now we are not porting any lab which comes with database.
+** What comes with porting and what doesn't
+   When a course is exported, edX CMS/studio creates a tar.gz file that
+   includes the following course data.
+   + Course content (all Sections, Subsections, and Units)
+   + Course structure
+   + Individual problems
+   + Pages
+   + Course assets
+   + Course settings
+   The following data is not exported with the course.
+   + User data
+   + Course team data
+   + Discussion data
+   + Certificates
+
+** Resolving the link integrity issue
+   To ensure link integrity, always include the =https= URL in the iframes of simulations. 
+** Analytics
+   Analytics code should be included in each simulation code in order
+   to capture the usage for each experiment perfromed by a
+   student. The analytics code is given below :
+   #+BEGIN_SRC command
+   <p><button onclick="popup()">Full Screen</button></p>
+   <p><iframe src="https://ial-coep.vlabs.ac.in/Expt2/AnalogDigital.html" height="602" width="802"> </iframe></p>
+   <script>// <![CDATA[
+   function popup(){
+    window.open('https://ial-coep.vlabs.ac.in/Expt2/AnalogDigital.html', '_blank', 'toolbar=0,location=0,menubar=0');
+    }
+   //  ]]></script>
+
+   <script type="text/javascript">
+    // ****** ALSO MODIFY THE URLS GIVEN ABOVE **************
+   // ********MODIFY THIS SECTION **************************
+
+   var courseid = "blockv1UniversityYPS01Anytime";
+   var experiment_name = "Optimal Foraging Pollinators"
+   var lab_name = "Population Ecology II"
+    
+   // *******DO NOT MODIFY THIS SECTION AGAIN **************
+   </script>
+   <script src="https://github.com/openedx-vlead/lab-usage-tracker/blob/master/src/common.js"></script>
+   #+END_SRC
+** Theming
+   The porting process does not include any specifics for including
+   any theme. By default the themes would be applied.
