@@ -62,9 +62,9 @@
     + Compress the lab directory into a tar.gz file using command :
       =tar -cvzf name-of-archive.tar.gz /path/to/directory-or-file=
 *** Creation of a course
-    + Go to [[http://edx-courses.vlabs.ac.in:18010/][Open Edx studio]] and sign in if already registered
+    + Go to [[http://open-edx.vlabs.ac.in:18010/][Open edX studio]] and sign in if already registered
       and have permissions for creating a course, otherwise register and
-      start creating a course.
+      start creating a course. To view the course in LMS, visit [[http://open-edx.vlabs.ac.in][Open edX LMS]].
     + Click on =New Course= button on top right corner to create the
       new course.
     + Fill the Course Name, Organisation, Course Number and Course Run. 
