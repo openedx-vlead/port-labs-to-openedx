@@ -67,4 +67,4 @@ for key, value in user_data.items():
 	analytics_dict[key] = result_set
 
 
-connect_elastic("52.53.205.142", "9200", "counters", "counts", analytics_dict)
+connect_elastic("x.x.x.x", "9200", "counters", "counts", analytics_dict)
