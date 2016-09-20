@@ -13,12 +13,9 @@ def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
-@app.route('/')
-def hello():
-    return "Hello World!"
 
-@app.route('/<name>',methods= ['GET'])
-def hello_name(name):
+@app.route('/<analytics>',methods= ['GET'])
+def fetch_analytics(analytics):
     	data = request.data
     	fetch_data = name
     	data_list = fetch_data.split(",") 
@@ -47,7 +44,7 @@ def hello_name(name):
     	#except Exception as e:
 	#	return e
 
-	return "Hello {}!".format(name) 
+	return "Hello {}!".format(analytics) 
 
 if __name__ == '__main__':
     app.run()
