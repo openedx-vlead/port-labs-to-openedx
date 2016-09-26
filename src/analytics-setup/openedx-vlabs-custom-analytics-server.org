@@ -1,0 +1,343 @@
+#+Title: Vlabs Analytics Server for Open edX
+#+Date: Tuesday, September 20, 2016 
+#+Author: VLEAD Systems team
+
+* Introduction 
+  This document reveals the concept, technologies used, architecture
+  and flow diagram and installing and configuring analytics server.
+
+* Architecture diagram
+  Refer the diagram given below - 
+  
+
+* Technologies used
+  + ELK Stack (Elasticsearch Logstash Kibana)
+  + Python Flask 
+  + Nginx web server 
+  + Supervisor - A process control system 
+  + Redis server 
+
+
+* Steps to install and configure Vlabs-analytics server 
+** Installing server components 
+*** Install required packages, libraries 
+   #+BEGIN_SRC command
+   sudo apt-get update
+   sudo apt-get -y install build-essential
+   sudo apt-get -y install binutils 
+   sudo apt-get -y install binutils-doc 
+   sudo apt-get -y install python-dev python3-dev
+   sudo apt-get -y install python-pip
+   sudo apt-get -y intall git emacs 
+   #+END_SRC
+*** Install ELK Stack 
+  + Install java8 ::
+    #+BEGIN_SRC command
+    sudo add-apt-repository -y ppa:webupd8team/java
+    sudo apt-get update
+    sudo apt-get -y install oracle-java8-installer
+    #+END_SRC
+  + Install Elasticsearch ::
+    #+BEGIN_SRC command
+    wget -qO - https://packages.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+    echo "deb http://packages.elastic.co/elasticsearch/2.x/debian stable main" | sudo tee -a /etc/apt/sources.list.d/elasticsearch-2.x.list
+    sudo apt-get update
+    sudo apt-get -y install elasticsearch
+    sudo update-rc.d elasticsearch defaults 95 10
+    sudo service elasticsearch restart
+    #+END_SRC
+  + Install Kibana ::
+    #+BEGIN_SRC command
+    echo "deb http://packages.elastic.co/kibana/4.4/debian stable main" | sudo tee -a /etc/apt/sources.list.d/kibana-4.4.x.list
+    sudo apt-get update 
+    sudo apt-get -y install kibana
+    sudo update-rc.d kibana defaults 96 9
+    sudo service kibana start
+    #+END_SRC
+  + Install Logstash ::
+    #+BEGIN_SRC command
+    echo 'deb http://packages.elastic.co/logstash/2.2/debian stable main' | sudo tee /etc/apt/sources.list.d/logstash-2.2.x.list
+    sudo apt-get update
+    sudo apt-get install logstash
+    sudo service logstash restart
+    sudo update-rc.d logstash defaults 96 9   
+    #+END_SRC
+
+*** Install Nginx
+   #+BEGIN_SRC command
+   sudo apt-get install nginx apache2-utils
+   sudo service nginx restart
+   #+END_SRC
+
+*** Install Python flask and flask CORS
+   #+BEGIN_SRC command
+   pip install Flask
+   pip install -U flask-cors
+   #+END_SRC
+
+*** Install Redis server 
+   #+BEGIN_SRC command
+   sudo apt-get update $ sudo apt-get upgrade
+   sudo apt-get -y install redis-server
+   sudo service redis-server start
+   #+END_SRC
+
+*** Install Redis-python client
+   #+BEGIN_SRC command
+   sudo apt-get udpate
+   sudo pip install redis
+   #+END_SRC
+
+*** Install Elasticsearch-python client
+   #+BEGIN_SRC command
+   sudo apt-get update
+   pip install elasticsearch
+   #+END_SRC
+
+*** Install supervisor
+   #+BEGIN_SRC command
+   sudo apt-get update
+   sudo apt-get install supervisor
+   sudo service supervisor start
+   #+END_SRC
+
+** Configuring server components
+*** Configure Elasticsearch 
+   Elasticsearch must be configured to allow access from remote
+   machines. Follow the instructions to make this configuration
+   change.
+   + Open file /etc/elasticsearch/elasticsearch.yml ::
+   #+BEGIN_SRC command
+   vim /etc/elasticsearch/elasticsearch.yml
+   #+END_SRC
+   + Add/edit following keys in the file ::
+   #+BEGIN_SRC command
+   network.host: 0.0.0.0
+   http.port: 9200
+   #+END_SRC 
+   + Restart elasticsearch services ::
+   #+BEGIN_SRC command
+   sudo service elasticsearch restart
+   #+END_SRC
+
+
+*** Configure Nginx
+   + Configure Nginx for Flask API and ELK ::
+     Open file /etc/nginx/sites-enabled/default and add below given lines
+     #+BEGIN_SRC command
+     server {
+
+	listen 4000;
+        server_name some-server.vlabs.ac.in;
+
+        location / {
+            proxy_pass http://127.0.0.1:5000/;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header Host $host;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-NginX-Proxy true;
+            add_header 'Access-Control-Allow-Origin' '*';
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+        } #end location block
+      } #end server block
+
+   server {
+	server_name some-server.vlabs.ac.in;
+	location / {
+            proxy_pass http://127.0.0.1:8000/;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header Host $host;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-NginX-Proxy true;  
+            add_header 'Access-Control-Allow-Origin' '*';
+            # proxy_pass  http://picominer-backend;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+	} # end location block
+     } #end server block
+   
+   server {
+     listen 80;
+
+     server_name example.com;
+
+     auth_basic "Restricted Access";
+     auth_basic_user_file /etc/nginx/htpasswd.users;
+
+    location / {
+        proxy_pass http://localhost:5601;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+  }
+
+     #+END_SRC
+   + Restart Nginx server ::
+     #+BEGIN_SRC command
+     sudo service nginx restart
+     #+END_SRC
+
+** Clone the lab-usage-tracker repository
+   + Clone lab-usage-tracker repository in home directory of server ::
+     #+BEGIN_SRC command
+     git clone https://github.com/openedx-vlead/lab-usage-tracker.git
+     #+END_SRC
+   + Copy supervisor configuration file in /etc/supervisor/conf.d/ ::
+     #+BEGIN_SRC command
+     sudo cp /home/ubuntu/vlabs-tracking/vlabs-tracking-supervisor.conf /etc/suepervisor/conf.d/
+     #+END_SRC
+   + Restart supervisor service ::
+     #+BEGIN_SRC command
+     sudo service supervisor restart
+     #+END_SRC
+  
+
+
+* Source code 
+  + Flask API for capturing analytics from openedx ::
+    #+BEGIN_SRC python
+import os
+import json
+from flask import Flask
+from flask import send_from_directory
+from flask import request
+from elasticsearch import Elasticsearch
+
+app = Flask(__name__)
+# app.config.from_object(os.environ['APP_SETTINGS'])
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
+
+@app.route('/<analytics>',methods= ['GET'])
+def fetch_analytics(analytics):
+    	data = request.data
+    	fetch_data = name
+    	data_list = fetch_data.split(",") 
+    	data_dict = {}
+
+    	data_dict["STUDENT_LONG_ID"] = data_list[0]
+    	data_dict["COURSE_ID"] = data_list[1]
+    	data_dict["DATE_OF_EXPERIMENT"] = data_list[2]	   
+    	data_dict["TIME_OF_EXPERIMENT"] = data_list[3]
+	data_dict["EXPERIMENT_NAME"] = data_list[4]
+	data_dict["LAB_NAME"] = data_list[5]
+	data_dict["IP_ADDRESS"] = request.environ.get('HTTP_X_REAL_IP',request.remote_addr)
+
+	try:
+		es = Elasticsearch([{'host':'elk-stack.vlabs.ac.in', 'port':9200}])
+		es.index(index="vlabs", doc_type="usage", body=data_dict)
+	except Exception as e:
+		print e
+	
+
+	return "Hello {}!".format(analytics) 
+
+if __name__ == '__main__':
+    app.run()
+
+    #+END_SRC
+  + Javascript/Ajax posting values to analytics API ::
+    #+BEGIN_SRC python
+//This javascript should not be edited. Just use it.
+//Nothing in this must be edited 
+//
+ var today = new Date();
+ var dd = today.getDate();
+ var mm = today.getMonth() + 1;
+ var yy = today.getFullYear()
+
+
+ var hours = today.getHours();
+ var minutes = today.getMinutes();
+ var date_today = dd + "-" + mm + "-" + yy
+ var time_now = hours + ":" + minutes
+ var long_usrid = "%%USER_ID%%"; //get the User ID as a string  
+
+ var server_url = "http://vlabs-analytics.vlabs.ac.in:4000/"
+
+ var xhttp = new XMLHttpRequest();
+ var urlstr = server_url + long_usrid + "," + courseid + "," + date_today + "," + time_now + "," + experiment_name + "," + lab_name
+ xhttp.open("GET", urlstr, true);
+ xhttp.send();
+
+    #+END_SRC
+  + Javascript to set values of paramaters ::
+    #+BEGIN_SRC command
+    <script type="text/javascript">
+    var courseid = "blockv1UniversityYPS01Anytime";
+    var experiment_name = "Optimal Foraging Pollinators"
+    var lab_name = "Population Ecology II"
+    </script>
+    #+END_SRC
+  + Sample javascript code with Iframe in openedx ::
+    #+BEGIN_SRC command
+<p><button onclick="popup()">Full Screen</button></p>
+<p><iframe src="https://ial-coep.vlabs.ac.in/Expt2/AnalogDigital.html" height="602" width="802"> </iframe></p>
+<script>// <![CDATA[
+function popup(){
+  window.open('https://ial-coep.vlabs.ac.in/Expt2/AnalogDigital.html', '_blank', 'toolbar=0,location=0,menubar=0');
+ }
+// ]]></script>
+
+ <script type="text/javascript">
+  var courseid = "blockv1UniversityYPS01Anytime";
+  var experiment_name = "Optimal Foraging Pollinators"
+  var lab_name = "Population Ecology II"
+  
+ </script>
+<script src="https://github.com/openedx-vlead/lab-usage-tracker/blob/master/src/common.js"></script>
+
+
+    #+END_SRC
+
+* JSON formed to be written in elasticsearch 
+  #+BEGIN_SRC command
+  {
+    "DATE_OF_EXPERIMENT": "30-8-2016",
+    "LAB_NAME": "PopulationEcologyII",
+    "EXPERIMENT_NAME": "OptimalforagingSitAndWaitPredators",
+    "TIME_OF_EXPERIMENT": "19:49",
+    "COURSE_ID": "blockv1UniversityYPS01Anytime",
+    "IP_ADDRESS": "196.12.53.130"
+  }
+  #+END_SRC
+* Sample analytics obtained in elasticsearch database 
+  #+BEGIN_SRC command
+  {
+  "_index": "vlabs",
+  "_type": "usage",
+  "_id": "AVbb0iWtWJEj-iw4NHBA",
+  "_score": 1,
+  "_source": {
+    "STUDENT_LONG_ID": "85e628b9a69e69bf2ed9360f397dde90",
+    "DATE_OF_EXPERIMENT": "30-8-2016",
+    "LAB_NAME": "PopulationEcologyII",
+    "EXPERIMENT_NAME": "OptimalforagingSitAndWaitPredators",
+    "TIME_OF_EXPERIMENT": "19:49",
+    "COURSE_ID": "blockv1UniversityYPS01Anytime",
+    "IP_ADDRESS": "196.12.53.130"
+   }
+ }
+  #+END_SRC 
+
+* Sample visalizations
+
+
+
+* References
+  + Install Redis - https://hostpresto.com/community/tutorials/how-to-install-and-configure-redis-on-ubuntu-14-04/
+  + Install ELK and Nginx - https://www.digitalocean.com/community/tutorials/how-to-install-elasticsearch-logstash-and-kibana-elk-stack-on-ubuntu-14-04
+  + Install Flask CORS - https://flask-cors.readthedocs.io/en/latest/
+  + Install Flask - http://flask.pocoo.org/docs/0.11/installation/
+  + Learn ELK - https://www.elastic.co/products
+   
