@@ -36,12 +36,14 @@
     + Analytics for Old usage ::
       + [[https://docs.google.com/presentation/d/1c-NGJfelIVdvk028SkCbDOpEH9Rh5WOtx-dVZlWCRmY/edit?ts=57e523b1#slide=id.g17e844a44d_1_0][Top 10 popular labs from March 31, 2015 to October 10, 2016(say)]]
     + Analytics for Existing usage from Open edX ::
-      +  
+      + [[./images/top-5-labs.jpg][Top 5 labs]]
+      + [[./images/top-5-experiments.png][Top 5 experiments]]
     + Live Demo of analytics ::  
        
     + [[https://github.com/openedx-vlead/port-labs-to-openedx/blob/develop/src/analytics-setup/openedx-vlabs-custom-analytics-server.org][Document Link]]
-    + Script Link 
-    + [[open-edx.vlabs.ac.in][Demo Link]]
+    + [[https://bitbucket.org/vlead/vlead/src/f6f498c54b1f6bd37584e467e83f71bc4d949c18/presentations/2016-10-21-iitd/demo-scripts/open-edx/analytics-usages.org?at=master&fileviewer=file-view-default][Script Link]]
+    + [[http://open-edx.vlabs.ac.in/courses/course-v1:NITK+UOREPC+Anytime/info][Demo Link]]
+    + [[http://vlabs-analytics.vlabs.ac.in/app/kibana#/dashboard/pie-dashboard?_g=(refreshInterval:(display:Off,pause:!f,value:0),time:(from:now-15m,mode:quick,to:now))&_a=(filters:!(),options:(darkTheme:!f),panels:!((col:7,id:experiment-usage-breakdown-pie,panelIndex:1,row:1,size_x:6,size_y:6,type:visualization),(col:1,id:request-codes,panelIndex:2,row:17,size_x:3,size_y:3,type:visualization),(col:1,id:popular-lab-pie,panelIndex:3,row:1,size_x:6,size_y:6,type:visualization),(col:7,id:most-popular-gateways,panelIndex:4,row:12,size_x:6,size_y:5,type:visualization),(col:1,id:most-active-students,panelIndex:5,row:7,size_x:6,size_y:5,type:visualization),(col:1,id:area-chart-for-status-code,panelIndex:6,row:12,size_x:6,size_y:5,type:visualization),(col:7,id:top-15-date-and-time-of-access-pie,panelIndex:8,row:7,size_x:6,size_y:5,type:visualization),(col:4,id:top-5-labs,panelIndex:9,row:29,size_x:9,size_y:6,type:visualization),(col:1,id:top-5-experiments,panelIndex:10,row:20,size_x:12,size_y:9,type:visualization)),query:(query_string:(analyze_wildcard:!t,query:'*')),title:pie-dashboard,uiState:(P-8:(spy:(mode:(fill:!f,name:!n)))))][Data Dource Link]]
       
 *** Feedback 
     + Document Link
