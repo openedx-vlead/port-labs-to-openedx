@@ -9,6 +9,13 @@
 * Architecture diagram
   Refer the diagram given below - 
   
+* Definations 
+  + Usages ::
+    + A student performing an experiments of a lab is considered to be
+      a single usage.  This is captured by capturing a click on the
+      Experiment section of Open edX.
+    + If there are 3 experiments in a lab, A lab will have 3 usages
+      and experiment will have 1 usage.
 
 * Technologies used
   + ELK Stack (Elasticsearch Logstash Kibana)
@@ -16,7 +23,6 @@
   + Nginx web server 
   + Supervisor - A process control system 
   + Redis server 
-
 
 * Steps to install and configure Vlabs-analytics server 
 ** Installing server components 
@@ -198,7 +204,6 @@
      #+END_SRC
   
 
-
 * Source code 
   + Flask API for capturing analytics from openedx ::
     #+BEGIN_SRC python
@@ -299,7 +304,7 @@ function popup(){
 
 
     #+END_SRC
-
+       
 * JSON formed to be written in elasticsearch 
   #+BEGIN_SRC command
   {
