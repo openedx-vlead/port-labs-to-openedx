@@ -1,0 +1,66 @@
+#+Title: Demonstration for Open edX
+#+Date: September 26, 2016
+#+Author: VLEAD 
+
+
+* Purpose 
+  This document has end-to-end demo for Vlabs Open edX.
+
+* Vlabs Open edX 
+** Features
+*** Single Sign-on 
+    + [[https://bitbucket.org/vlead/vlead/src/192c4f0cac91855a48c39a867cea402e87099364/presentations/2016-07-29-vlead-status-report/src/index.org?at=master&fileviewer=file-view-default][Defination]] :: 
+      There must be a central system to register and login into the system for accessing course.
+    + Document Link
+    + [[https://bitbucket.org/vlead/vlead/src/192c4f0cac91855a48c39a867cea402e87099364/presentations/2016-10-21-iitd/demo-scripts/open-edx/single-singnon.org?at=master][Demo Script Link]]
+    + Demo Link 
+
+*** Uniform and Responsive UI 
+    Look and feel of all the labs must be same.
+    [[https://en.wikipedia.org/wiki/Responsive_web_design][/Responsive web design/]] (RWD) is an approach to web design aimed at allowing
+     desktop webpages to be viewed in response to the size of the device one is
+     viewing with.
+
+    + [[https://github.com/openedx-vlead/port-labs-to-openedx/blob/develop/src/comparison_between_different_mooc_platforms.org][Document Link]]
+    + [[https://bitbucket.org/vlead/vlead/src/f6f498c54b1f6bd37584e467e83f71bc4d949c18/presentations/2016-10-21-iitd/demo-scripts/open-edx/uniform-ui.org?at=master][Demo Script Link ]]
+    + Demo Link 
+       
+*** Persistance and State
+    + [[https://bitbucket.org/vlead/vlead/src/f6f498c54b1f6bd37584e467e83f71bc4d949c18/presentations/2016-07-29-vlead-status-report/src/index.org?at=master&fileviewer=file-view-default][Definations]] :: 
+      The ability of a lab to save it's state during user interaction with the lab.
+
+    + [[https://bitbucket.org/vlead/vlead/src/f6f498c54b1f6bd37584e467e83f71bc4d949c18/presentations/2016-10-21-iitd/demo-scripts/open-edx/persistance-and-state.org?at=master&fileviewer=file-view-default][Script Link]]
+    + Demo Link 
+
+*** Analytics
+    + Analytics for Old usage ::
+      + [[https://docs.google.com/presentation/d/1c-NGJfelIVdvk028SkCbDOpEH9Rh5WOtx-dVZlWCRmY/edit?ts=57e523b1#slide=id.g17e844a44d_1_0][Top 10 popular labs from March 31, 2015 to October 10, 2016(say)]]
+    + Analytics for Existing usage from Open edX ::
+      + 
+    + Live Demo of analytics ::  
+       
+    + [[https://github.com/openedx-vlead/port-labs-to-openedx/blob/develop/src/analytics-setup/openedx-vlabs-custom-analytics-server.org][Document Link]]
+    + Script Link 
+    + Demo Link 
+
+*** Feedback 
+    + Document Link
+    + Script Link 
+    + Demo Link 
+
+*** Portable Media 
+    + Document Link
+    + Script Link 
+    + Demo Link 
+
+*** Authoring of Lab 
+    + Document Link
+    + Script Link 
+    + Demo Link 
+
+
+    
+
+
+    
+   
