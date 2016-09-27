@@ -1,0 +1,181 @@
+#+title:  Comparison between different MOOC platforms
+#+author:  VLEAD
+#+email:  engg@vlabs.ac.in
+#+date: [2015-12-23 Wed]
+#+SETUPFILE: ./org-templates/level-0.org
+#+OPTIONS:   H:3 num:nil toc:nil \n:nil @:t ::t |:t ^:t -:t f:t *:t <:t
+#+BIND: org-html-postamble nil
+#+BIND: org-html-preamble nil
+
+* Introduction
+  The future of learning is very much hitched to the MOOC format.  The success
+  depends on the quality and ease of creation of content.  Therefore it is
+  imperative that we compare all the available MOOC platforms while allowing us
+  to choose the right MOOC platform in context of India.
+  #+begin_html
+  <iframe width="900" height="315" src="http://www.technologyreview.com/news/539131/india-loves-moocs/" frameborder="1" allowfullscreen></iframe>
+  #+end_html
+* Different MOOC platforms
+
+  What each one says about themselves:
+
+  - [[https://open.edx.org/][Open edX]] :: Open edX is the open source platform that powers edX courses.
+                edX code is freely available to the community.  Institutions
+                can host their own instances of Open edX and offer their own
+                classes.  Educators can extend the platform to build learning
+                tools that precisely meet their needs.  And developers can
+                contribute new features to the Open edX platform.
+
+  - [[https://code.google.com/p/course-builder/][GCB]] :: Google Course Builder Course Builder is an Open Source online
+           education platform.  It is used to create online courses.  It runs
+           on Google infrastructure
+
+  - [[https://moodle.org/][Moodle]] :: Moodle is a free, online Learning Management system enabling
+              educators to create their own private website filled with dynamic
+              courses that extend learning, any time, anywhere.
+
+  - [[https://sakaiproject.org/][Sakai]] :: A vibrant, international community that collaborates to create
+             technology that enhances teaching, learning and research.  Our
+             member organizations include large universities and small
+             colleges, K-12 systems, hospitals, government organizations,
+             research societies and political parties.
+
+* Feature Matrix
+
+     |---------------------+----------+-------------+------------+---------|
+     | Service             | Open Edx | Google      | Sakai      |         |
+     |                     |          | Course      |            | Moodle  |
+     |                     |          | Builder     |            |         |
+     |---------------------+----------+-------------+------------+---------|
+     | Open Source         | Yes      | Yes         | Yes        | Yes     |
+     |---------------------+----------+-------------+------------+---------|
+     | Authoring           | Studio   | Studio      | Studio     | Studio  |
+     |---------------------+----------+-------------+------------+---------|
+     | Interactive Content | Yes      | No          | No         | No      |
+     |---------------------+----------+-------------+------------+---------|
+     | [[https://www.imsglobal.org/activity/learning-tools-interoperability][Learning Tool]]       |          |             |            |         |
+     | [[https://www.imsglobal.org/activity/learning-tools-interoperability][Interoperability]]    | Yes      | Yes         | Yes        | Yes     |
+     |---------------------+----------+-------------+------------+---------|
+     | Platform to Host    | Yes      | Yes         | Yes        | Yes     |
+     |---------------------+----------+-------------+------------+---------|
+     | Analytics           | Yes      | Yes         | Yes        | Yes     |
+     |---------------------+----------+-------------+------------+---------|
+     | LMS                 | Yes      | Not a full  | Yes        | Yes     |
+     |                     |          | blown LMS   |            |         |
+     |---------------------+----------+-------------+------------+---------|
+     | Persistence         | Yes      | Yes         | Yes        | Yes     |
+     |---------------------+----------+-------------+------------+---------|
+     | Field Deployments   | Edx      | NPTEL Moocs | Pepperdine | Several |
+     |                     |          |             | University |         |
+     |---------------------+----------+-------------+------------+---------|
+     
+* Authoring a Course
+  
+     |-----------+----------+---------------+--------+-------|
+     |           | Open Edx | Google Course | Moodle | Sakai |
+     |           |          | Builder       |        |       |
+     |-----------+----------+---------------+--------+-------|
+     | Authoring | Yes      | Yes           | Yes    | Yes   |
+     | Platform  |          |               |        |       |
+     |-----------+----------+---------------+--------+-------|
+   
+   - All the platforms provide a way to author the content of a course.  The
+     'content' that can be developed for a course is always text and media -
+     either video or audio in all the frameworks except Open edX.
+
+   - Open edX authoring platform provides more than putting text and media
+     together to form the content of a course.  It allows to build rich and
+     engaging content by a slew of web applications - all having access to the
+     course content and data.  The access to course content and data by these
+     web applications is achieved by incorporating components using [[https://open.edx.org/xblocks][XBlocks]]
+     component architecture.
+   
+   - Google Course Builder provides a [[https://github.com/google/coursebuilder_xblock_module][plugin]] for XBlocks.
+
+   - Sakai provides a [[https://sakai.rutgers.edu/helpdocs/webcontent.html]['web content tool']] - a feature that allows external web
+     content browsing as part of the course.  The external web content will not
+     have access to the course content or data.
+
+* Hosting
+    
+     |----------+----------+---------------+--------+-------|
+     |          | Open Edx | Google Course | Moodle | Sakai |
+     |          |          | Builder       |        |       |
+     |----------+----------+---------------+--------+-------|
+     | Hosting  | Yes      | Yes           | Yes    | Yes   |
+     | Platform |          |               |        |       |
+     |----------+----------+---------------+--------+-------|
+
+     - Open edX :: Ability to host the courses either on AWS cloud or on a
+                   private instance.  If the course is hosted on a private
+                   cloud, the private cloud is responsible for scaling.
+
+     - GCB ::  The GCB is tightly coupled with google's app engine (hosting
+               platform) and google's PAAS cloud offering. The scaling is taken
+               care by the Google cloud.  This [[http://blog.tfd.co.uk/2012/09/15/google-coursebuilder-a-scalable-course-delivery-platform/][blog]] captures more information.
+
+     - Sakai :: Sakai provides a hosting platform.  The course can be hosted on
+                VMs running the sakai platform.  There are also [[https://sakaiproject.org/try-sakai][private players]]
+                who can host sakai courses.
+
+     - Moodle :: Moodle's hosting environment can be created and hosted on a
+                 private cloud.
+
+* Licensing
+
+     |-----------+----------+---------------+--------+----------|
+     |           | Open Edx | Google Course | Moodle | Sakai    |
+     |           |          | Builder       |        |          |
+     |-----------+----------+---------------+--------+----------|
+     | Licensing | [[http://www.gnu.org/licenses/agpl-3.0.en.html][AGPL 3]]   | [[http://www.apache.org/licenses/LICENSE-2.0][Apache 2]]      | [[http://www.gnu.org/licenses/gpl-3.0.en.html][GPL]]    | [[http://www.apache.org/licenses/LICENSE-2.0][Apache 2]] |
+     |           |          |               |        |          |
+     |-----------+----------+---------------+--------+----------|
+
+     - A quick [[http://stackoverflow.com/questions/6999004/affero-gpl-version-3-vs-apache-licence-2-0][overview]] of AGPL V3 and Apache V2
+       
+       The AGPLv3 is more copyleft than Apache 2.0. It requires that all
+       modifications, derived works and more must be distributed in source form
+       if the work is distributed, or hosted as a publicly-accessible service
+       (eg, a web application). The AGPLv3 license must be retained in all
+       these derived works.
+
+       Apache 2.0 license doesn't have many restrictions at all. You can distribute
+       modified or derived Apache 2.0 works under other licenses, even
+       proprietary ones. There is no requirement for you to release the source
+       for a hosted service, or even an application distributed to others.
+
+* Learning Tools Interoperability
+  |-----+----------+---------------+--------+-------|
+  |     | Open Edx | Google Course | Moodle | Sakai |
+  |     |          | Builder       |        |       |
+  |-----+----------+---------------+--------+-------|
+  | LTI | Yes      | Yes           | Yes    | Yes   |
+  |     |          |               |        |       |
+  |-----+----------+---------------+--------+-------|
+
+  [[https://www.imsglobal.org/activity/learning-tools-interoperability][LTI]] allows a course developed in one learning tool to be incorporated in
+  another.  All the above platforms are working towards this end. 
+
+* Other Features
+  All the platforms support user authentication, analytics, persistence, LMS in
+  some form or the other.
+
+  A good [[https://open.edx.org/blog/what-makes-open-edx-platform-unique-see-these-cases][read]] on what makes Open edX unique.
+
+* Conclusion
+  - GCB, Sakai, Moodle are course builders that support authoring content made
+    up of text and media (video and audio).  Only Open edX supports creating
+    interactive content using XBlocks and JsInput.   
+
+  - Google has started [[http://google-opensource.blogspot.in/2013/09/we-are-joining-open-edx-platform.html][contributing]] to open edX platform.  The view of Google
+    is to kick start mooc.org to provide a hosting platform for courses
+    developed on Open edX platform.
+
+  - GCB tightly couples hosting to Google's PAAS cloud offering.  While all
+    other MOOC platforms do not tightly bind hosting to a specific cloud.
+
+  - Courses on edx.org are built on Open edX platform and edx.org is one of the
+    most popular MOOC offerings along with Coursera and Udacity.
+
+  - The largest deployment of MOOCs on an open platform is Open edX platform. 
+
