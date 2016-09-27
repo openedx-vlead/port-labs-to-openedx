@@ -8,7 +8,7 @@
 
 * Architecture diagram
   Refer the diagram given below - 
-  
+  [[https://github.com/openedx-vlead/port-labs-to-openedx/blob/develop/src/analytics-setup/presentations/sprint2/images/VLABS%20Open%20edx%20Architecture%20Diagram.jpg][VLABS architecture diagram]]
 * Definations 
   + Usages ::
     + A student performing an experiments of a lab is considered to be
