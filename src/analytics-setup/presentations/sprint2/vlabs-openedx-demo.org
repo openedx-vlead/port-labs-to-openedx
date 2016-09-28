@@ -85,6 +85,9 @@
 + [[https://docs.google.com/spreadsheets/d/1N79-GWEOAAtktxiQodG1Vh0JKt_ZaUCXqbKfy5LnxfE/edit?ts=57ea69d2#gid=0][Details]]
   
 
+* [[https://bitbucket.org/vlead/vlead/src/f6f498c54b1f6bd37584e467e83f71bc4d949c18/presentations/2016-04-09-iitd/src/index.org?at=master&fileviewer=file-view-default
+ ][Skeleton of the Presentation for Oct 21st meeting]]
+
 
 
 
