@@ -1,14 +1,13 @@
-#+Title: Demonstration of VLABS Open edX
+#+Title: Demonstration of Virtual Labs on Open edX
 #+Date: September 26, 2016
 #+Author: VLEAD 
 
 
 * Purpose 
-  This document has end-to-end demo for Vlabs Open edX.
+  This document has end-to-end demo for Virtual Labs Open edX features.
 
-* Vlabs Open edX 
+* Virtual Labs on Open edX 
 ** Features
-
 
 *** Uniform and Responsive UI 
     Look and feel of all the labs must be same.
@@ -64,10 +63,6 @@
     + Demo Link 
 
 
-    
-
-
-    
     
 * VLEAD showcase 
    
