@@ -36,10 +36,10 @@
 
 *** Analytics
     + Analytics for Old usage ::
-      + [[https://docs.google.com/presentation/d/1c-NGJfelIVdvk028SkCbDOpEH9Rh5WOtx-dVZlWCRmY/edit?ts=57e523b1#slide=id.g17e844a44d_1_0][Top 10 popular labs from March 31, 2015 to October 10, 2016(say)]]
+      + [[https://docs.google.com/presentation/d/1c-NGJfelIVdvk028SkCbDOpEH9Rh5WOtx-dVZlWCRmY/edit?ts=57e523b1#slide=id.g17e844a44d_1_0][Top 10 popular labs from March 31, 2015 to Till date]]
     + Analytics for Existing usage from Open edX ::
-      + [[./images/top-5-Labs.jpg][Top 5 labs]]
-      + [[./images/top-5-experiments.png][Top 5 experiments]]
+      + [[./images/top-5-Labs.jpg][Top 5 labs (say from the date of edx in production]]
+      + [[./images/top-5-experiments.png][Top 5 experiments (say from the date of edx in production) ]]
     + Live Demo of analytics ::  
        
     + [[https://github.com/openedx-vlead/port-labs-to-openedx/blob/develop/src/analytics-setup/openedx-vlabs-custom-analytics-server.org][Document Link]]
