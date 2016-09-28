@@ -23,7 +23,7 @@
 
     + [[https://github.com/openedx-vlead/port-labs-to-openedx/blob/develop/src/comparison_between_different_mooc_platforms.org][Document Link]]
     + [[https://bitbucket.org/vlead/vlead/src/f6f498c54b1f6bd37584e467e83f71bc4d949c18/presentations/2016-10-21-iitd/demo-scripts/open-edx/uniform-ui.org?at=master][Demo Script Link ]]
-    + [[open-edx.vlabs.ac.in][Demo Link]]
+    + [[http://52.53.156.84/][Demo Link]]
        
 *** Persistance and State
     + [[https://bitbucket.org/vlead/vlead/src/f6f498c54b1f6bd37584e467e83f71bc4d949c18/presentations/2016-07-29-vlead-status-report/src/index.org?at=master&fileviewer=file-view-default][Definations]] :: 
