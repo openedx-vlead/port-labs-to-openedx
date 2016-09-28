@@ -6,6 +6,7 @@
   This document lists all the TO-DO items in theming VLABS openedx platform.
 
 * Priya's List of To-Do's  (September 27, 2016, 8:28PM ) 
+  + Lab icons are collected. To be applied to each and every ported lab on edX.
   + Registration and Login page 
     + Background clor to be white, foregroud black
     + Font size to be increased.
