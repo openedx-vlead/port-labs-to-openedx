@@ -91,5 +91,8 @@
 
 
 
-
+* To Do list 
+  + https://github.com/openedx-vlead/port-labs-to-openedx/blob/develop/src/analytics-setup/presentations/sprint2/theming-to-dos.org
+  + Expected efforts - 3 person 4 days (by end of this week)
+  
 
