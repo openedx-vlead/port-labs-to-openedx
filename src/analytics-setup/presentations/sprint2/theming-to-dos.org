@@ -20,4 +20,5 @@
   + Marquee must be in a loop
   + Also add in topic to be discussed : Disciplines and domain will not be clickable.
   
-
+* Check status 
+   [[https://github.com/openedx-vlead/port-labs-to-openedx/blob/develop/src/analytics-setup/presentations/sprint2/images/theming-status.jpg][Status diagram]]
