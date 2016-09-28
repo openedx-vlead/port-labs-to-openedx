@@ -82,9 +82,8 @@
 | No. of commits in all VLEAD repos                 |       |
 |---------------------------------------------------+-------|
 
-
-
-
++ [[https://docs.google.com/spreadsheets/d/1N79-GWEOAAtktxiQodG1Vh0JKt_ZaUCXqbKfy5LnxfE/edit?ts=57ea69d2#gid=0][Details]]
+  
 
 
 
