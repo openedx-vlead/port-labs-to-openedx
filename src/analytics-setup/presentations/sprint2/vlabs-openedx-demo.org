@@ -1,4 +1,4 @@
-#+Title: Demonstration for Open edX
+#+Title: Demonstration of VLABS Open edX
 #+Date: September 26, 2016
 #+Author: VLEAD 
 
