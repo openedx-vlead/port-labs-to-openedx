@@ -1,0 +1,18 @@
+#+Title: Actions items for VLABS edX platform theming 
+#+Date: September 27, 2016
+#+Author: VLEAD
+
+* Introduction
+  This document lists all the TO-DO items in theming VLABS openedx platform.
+
+* List of To-Do's
+  + Domain and discipline : Change
+  + Parner institute : narrower.
+  + Header menu change 
+  + Footer : reformat
+  + Powered by : to be added
+  + Links on images whereever possible.
+  + Font and colour uniformity
+  + This is my list from the top of my head.8:28 PM
+  + Also add in topic to be discussed : Disciplines and domain will not be clickable.
+
