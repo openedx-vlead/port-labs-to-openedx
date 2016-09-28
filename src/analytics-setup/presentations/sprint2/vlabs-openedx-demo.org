@@ -36,7 +36,7 @@
     + Analytics for Old usage ::
       + [[https://docs.google.com/presentation/d/1c-NGJfelIVdvk028SkCbDOpEH9Rh5WOtx-dVZlWCRmY/edit?ts=57e523b1#slide=id.g17e844a44d_1_0][Top 10 popular labs from March 31, 2015 to October 10, 2016(say)]]
     + Analytics for Existing usage from Open edX ::
-      + [[./images/top-5-labs.jpg][Top 5 labs]]
+      + [[./images/top-5-Labs.jpg][Top 5 labs]]
       + [[./images/top-5-experiments.png][Top 5 experiments]]
     + Live Demo of analytics ::  
        
