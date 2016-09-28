@@ -6,6 +6,9 @@
   This document lists all the TO-DO items in theming VLABS openedx platform.
 
 * Priya's List of To-Do's  (September 27, 2016, 8:28PM ) 
+  + Ported Labs to be moved the themed instance.
+  + All ported labs to carry script for feedback and analytics
+  + Final dashboard for analytics and feeback 
   + Lab icons are collected. To be applied to each and every ported lab on edX.
   + Registration and Login page 
     + Background clor to be white, foregroud black
@@ -20,6 +23,7 @@
   + Font and colour uniformity
   + Marquee must be in a loop
   + Also add in topic to be discussed : Disciplines and domain will not be clickable.
+  
   
 * Check status 
    [[https://github.com/openedx-vlead/port-labs-to-openedx/blob/develop/src/analytics-setup/presentations/sprint2/images/theming-status.jpg][Status diagram]]
