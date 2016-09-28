@@ -87,8 +87,7 @@
 
 * Skeleton of the Presentation for Oct 21st meeting
 
-   https://bitbucket.org/vlead/vlead/src/f6f498c54b1f6bd37584e467e83f71bc4d949c18/presentations/2016-04-09-iitd/src/index.org?at=master&fileviewer=file-view-default
- 
+   https://bitbucket.org/vlead/vlead/src/f6f498c54b1f6bd37584e467e83f71bc4d949c18/presentations/2016-10-21-iitd/src/index.org?at=master&fileviewer=file-view-default
 
 
 
