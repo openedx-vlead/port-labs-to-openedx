@@ -51,7 +51,7 @@
     + Demo Link 
 
 *** Portable Media 
-    + Document Link
+    + [[https://github.com/openedx-vlead/portable-media/blob/master/src/index.org][Document Link]]
     + Script Link 
     + Demo Link 
 
