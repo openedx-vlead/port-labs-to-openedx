@@ -8,9 +8,7 @@
    following an efficient authoring process. The entire workflow
    starting from the creation of a new course/lab to publishing it for
    the end user lab is detailed in the followings sections.
-** Steps to create a new lab in Open edX
-- This document defines creation of a lab in Open edX.
-*** Protocol to request for authoring a new lab
+** Protocol to request for authoring a new lab
     + A new lab request should be raised as an issue in
       Virtual-Labs engineers-forum in GitHub.
     + VLEAD would create the labspec.json and put it in the [[https://github.com/openedx-vlead/lab-specifications][GitHub repo]].
@@ -31,56 +29,42 @@
       verification of all the course credentials as per the labspec
       specifications.Now the course/lab would be available to all the
       users.
-*** Creation of labspec.json file
-    Follow the below steps to create the structure of the lab which
-    you wish to port and put in the labspec.json file : 
-    + Use this example [[https://github.com/openedx-vlead/port-labs-to-openedx/blob/develop/src/porting-labs/labspec.json][labspec.json]] file for creating the Open edX
-      structure of your lab.
-    + Edit this example file to replicate the lab structure you want
-      to convert.
-    + Inside the "course" field, replace the values of "org", "id",
-      "display_name" and "overview" with Organization Name, Lab Id,
-      Name of the lab and Description of the lab respectively. Lab Ids
-      could be obtained from [[https://docs.google.com/spreadsheets/d/1qIU42qaMVtwpP_6eV3YXjJs8CJb6wnPPclFgqbGdlCM/edit?usp=sharing][here]]. Lab Ids should be given in capital
-      letters for uniformity and avoid including white spaces or
-      special characters.
-    + Inside the "experiments" field, enter the list of all the
-      experiments for the particular lab. 
-    + If your lab also includes fields like Target Audience, Courses
+** Steps to create a new lab in Open edX
+*** Creation of labspec.json file by VLEAD
+    The below steps would be followed to create the structure of the lab which
+    is required to be created as a new course in Open edX : 
+    + The example [[https://github.com/openedx-vlead/port-labs-to-openedx/blob/develop/src/porting-labs/labspec.json][labspec.json]] file could be used for creating the
+      Open edX structure of the lab.
+    + This example file could be edited to replicate the desired lab
+      structure.
+    + The "course" field must be filled with the values of "org",
+      "id", "display_name" and "overview" as Organization Name, Lab
+      Id, Name of the lab and Description of the lab respectively. Lab
+      Ids could be obtained from [[https://docs.google.com/spreadsheets/d/1qIU42qaMVtwpP_6eV3YXjJs8CJb6wnPPclFgqbGdlCM/edit?usp=sharing][here]]. Lab Ids should be given in
+      capital letters for uniformity and white spaces or special
+      characters must be avoided in the same.
+    + The "experiments" field must be entered with the list of all
+      the experiments for the particular lab.
+    + If the lab also includes fields like Target Audience, Courses
       Aligned, Feedback etc, they have to be created as separate
       sections in labspec.json file.
-    + Inside the "experiments" field, leave the first two fields
-      called =name= and =subsections= unchanged as =Introduction=
-    + The rest of the =name= and =subsections= fields below would be
+    + For the "experiments" field, the first two fields called =name=
+      and =subsections= must be left unchanged as =Introduction=.
+    + The rest of the =name= and =subsections= fields below should be
       filled with the names of the subsections of the the various
-      experiments of this lab.
+      experiments of the lab.
     + Care needs to be taken while creating the labspec.json file. For
-      verifying the correctness of the json file, [[http://jsonparseronline.com][json parser]] could be
-      used.
-*** Use of automation script
-    + Once the labspec.json file is ready, automation.py script has to
-      be run to convert this lab into an open edx course structure.
-    + [[https://github.com/vlead/port-labs-to-openedx][port labs to Open Edx]] repo has to be cloned in local machine,
-      change directory to port-labs-to-openedx and switch to develop
-      branch by doing =git checkout develop=
-    + First do git pull, run =make clean= and then run =make= . If this
-      is second or third attempt, =make= could be run directly. 
-    + If no build errors are faced and =make= runs successfully,
-      change directory to /build/code/src . There would be a
-      automation.py file inside /build/code/src.
-    + Run =python automation.py <Lab-Directory-Path>= (Give the absolute
-      path of the locally created lab directory which could be seen
-      using =pwd= command).
-    + Compress the lab directory into a tar.gz file using command :
-      =tar -cvzf name-of-archive.tar.gz /path/to/directory-or-file=
-      Before compressing the directory, change your directory path
-      using =cd ..= command.
-*** Creation of a course
-    + Go to [[http://open-edx.vlabs.ac.in:18010/][Open edX studio]] and sign in if already registered
-      and have permissions for creating a course, otherwise register and
-      start creating a course. To view the course in LMS, visit [[http://open-edx.vlabs.ac.in][Open edX LMS]].
-    + Click on =New Course= button on top right corner to create the
-      new course.
+      verifying the correctness of the json file and avoid any errors,
+      [[http://jsonparseronline.com][json parser]] could be used.
+    + The created labspec.json file would be provided to the course
+      requester for creating the course.
+*** Creation of a course by the author
+    + Signin on [[http://open-edx.vlabs.ac.in:18010/][Open edX studio]] and start creating the course. For the
+      first time users, they have to register to create a course. In
+      order to view the course in Open edX LMS (Learning Management
+      System), [[http://open-edx.vlabs.ac.in][Open edX LMS]] should be visited.
+    + Click on =New Course= button on top right corner to start
+      creating the new course.
     + Fill the Course Name, Organisation, Course Number and Course Run. 
       as per the labspec.json provided by VLEAD and click on =Create
       Course=.
@@ -119,22 +103,10 @@
         rendering the simulations.
       + If there are multiple simulators for a single experiment,
         those would be created in different units.
-**** Including the videos
-    + Similarly for including a *Video* :
-       + Click on =+ New Unit= to create a unit named *Video*
-       + Choose the =Video= component from Add New Component.
-       + Include the URL of the video to be added.
-    + Click on =Tools= dropdown menu option from top. Select =import= option.
-    + Click on =Choose a file to Import= and choose the tar.gz file of
-      the lab. Click on =Replace course content with file= and select
-      =View Updated Outline= to view the newly created course.
-  
-**** Including the simulations as iframes
-     The simulations of an experiment of a lab should be included as
-     Iframes using the iframes tool of HTML component. Include the
-     below code in the HTML source code editor. The src field would
-     include the https simulation URL which could be found from the
-     hosted labs in vlabs.ac.in page.
+      + For capturing the analytics at experiment level, include the
+        below code in the HTML source code editor. The src field would
+        include the https simulation URL if it is already hosted on
+        some server.
 
 #+BEGIN_EXAMPLE
     <p><button onclick="popup()">Full Screen</button></p>
@@ -147,6 +119,19 @@ function popup(){
 // ]]></script>
 #+END_EXAMPLE
 
+**** Including the videos
+    + Similarly for including a *Video* :
+       + Click on =+ New Unit= to create a unit named *Video*
+       + Choose the =Video= component from Add New Component.
+       + Include the URL of the video to be added.
+    + Click on =Tools= dropdown menu option from top. Select =import= option.
+    + Click on =Choose a file to Import= and choose the tar.gz file of
+      the lab. Click on =Replace course content with file= and select
+      =View Updated Outline= to view the newly created course.
+**** Publishing the course content
+     Click on the upward arrow icon in each section for publishing all
+     the contents of a section.
+**** Exporting the course
   + Click on =Tools= dropdown menu option from top. Click on =export= option.
   + Choose the =Export Course Content= option and save the tar.gz file
     of the created lab in the local machine which could be pushed as
