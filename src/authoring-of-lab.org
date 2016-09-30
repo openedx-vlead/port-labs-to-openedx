@@ -1,4 +1,4 @@
-#+Title: Authoring of a lab in Open edX Platform
+#+Title: Authoring of Virtual Lab in Open edX Platform
 #+Author: VLEAD
 #+Email: engg@vlabs.ac.in
 #+DATE: [2016-09-29 Thurs]
@@ -181,7 +181,7 @@ function popup(){
 *** Publishing the course content
      Click on the upward arrow icon in each section for publishing all
      the contents of a section.
-** Miscellanious modifications in the course by the author
+** Miscellaneous modifications in the course by the author
      Few more steps to make other modifications are listed below :
 *** Modification of course date to Anytime
      + Click on Course name which you own.
@@ -257,4 +257,3 @@ function popup(){
   source platform - Open edX. This streamlined process would help in our
   strive for excellence in delivering high standard labs.
 * Glossary
-  
