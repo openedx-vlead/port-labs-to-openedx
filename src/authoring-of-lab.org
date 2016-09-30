@@ -217,7 +217,7 @@ function popup(){
     verification of all the course credentials as per the labspec
     specifications. The course/lab would now be available for all the
     users.
-*** Creation of a repository on GitHub 
+**** Creation of a repository on GitHub 
     + Export the lab from =Tools= dropdown menu on the top of the
       Studio. A zipped file is downloaded. Unzip and untar the
       exported file to produce a directory.
