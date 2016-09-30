@@ -17,7 +17,7 @@
    following an efficient authoring process. The entire workflow
    starting from the creation of a new course/lab to publishing it for
    the end user lab is detailed in the followings sections.
-* Protocol to request for authoring a new lab
+* Protocol for authoring a new lab
     + A new lab request should be raised as an issue in
       Virtual-Labs engineers-forum in GitHub.
     + VLEAD would create the labspec.json and put it in the [[https://github.com/openedx-vlead/lab-specifications][GitHub repo]].
@@ -38,7 +38,7 @@
       verification of all the course credentials as per the labspec
       specifications.Now the course/lab would be available to all the
       users.
-* Steps to create a new lab in Open edX
+* Steps to create a lab/course on Open edX
 ** Creation of labspec.json file by VLEAD
     The below steps would be followed to create the structure of the lab which
     is required to be created as a new course in Open edX : 
@@ -67,7 +67,7 @@
       [[http://jsonparseronline.com][json parser]] could be used.
     + The created labspec.json file would be provided to the course
       requester for creating the course.
-** Creation of a course by the author
+** Creation of course by the author
     + Signin on [[http://open-edx.vlabs.ac.in:18010/][Open edX studio]] and start creating the course. For the
       first time users, they have to register to create a course. In
       order to view the course in Open edX LMS (Learning Management
@@ -181,7 +181,7 @@ function popup(){
 *** Publishing the course content
      Click on the upward arrow icon in each section for publishing all
      the contents of a section.
-** Miscellaneous modifications in the course by the author
+** Miscellaneous modifications by the author
      Few more steps to make other modifications are listed below :
 *** Modification of course date to Anytime
      + Click on Course name which you own.
