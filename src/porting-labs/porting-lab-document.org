@@ -121,7 +121,7 @@ function popup(){
   + Choose the =Export Course Content= option and save the tar.gz file
     of the created lab in the local machine which could be pushed as
     sources to GitHub.
-*** Miscellanious modifications
+*** Miscellaneous modifications
     Few more steps to make other modifications are listed below : 
 **** Modification of course date to Anytime
       + Click on Course name which you own.
