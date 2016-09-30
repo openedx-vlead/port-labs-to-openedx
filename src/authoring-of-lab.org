@@ -1,4 +1,4 @@
-#+Title: Authoring of Virtual Lab in Open edX Platform
+#+Title: Authoring of Virtual Labs in Open edX Platform
 #+Author: VLEAD
 #+Email: engg@vlabs.ac.in
 #+DATE: [2016-09-29 Thurs]
@@ -9,89 +9,92 @@
 #+OPTIONS: ^:nil
 
 * Introduction
-   This document demonstrates creation of a new lab in the format
-   expected by Open edX studio and publish a lab. 
+  Virtual Labs is a mission mode project initiated by the Ministry of
+  Human Resources and Development (MHRD). The objective of this
+  project is to provide laboratory learning experience to the students
+  who do not have access to adequate laboratory infrastructure.
+  Currently there are around 150 labs which have been developed by
+  various institutes.The authoring of Virtual Labs in Open edX
+  platform described here defines the creation and hosting of a new
+  lab in the Open edX platform. It aims at delivering responsive,
+  open-source and device-independent labs, helping us in our strive
+  for excellence.
 * Motivation
-   This document is driven by the commitment of delivering a new
-   lab/course on Open edX platform which can be accomplished by
-   following an efficient authoring process. The entire workflow
-   starting from the creation of a new course/lab to publishing it for
-   the end user lab is detailed in the followings sections.
-* Protocol for authoring a new lab
-    + A new lab request should be raised as an issue in
-      Virtual-Labs engineers-forum in GitHub.
-    + VLEAD would create the labspec.json and put it in the [[https://github.com/openedx-vlead/lab-specifications][GitHub repo]].
-    + This labspec.json link would be provided to the lab requester and
-      he/she would create the course referring to the given values in
-      the labspec :
-      + Course Name
-      + Organisation
-      + Course ID
-      + Course Start Date : This has to be =Anytime=
-    + The course creator would be given the stagging instance of Open edX (not the
-    production instance to control the unnecessary modifications), to
-    create the course.
-    + The author/creator would attach the tar.gz file of the course with all the
-      contents in the same issue where the course creation was request
-      (Engineers-Forum).
-    + VLEAD will import it on the production machine after
-      verification of all the course credentials as per the labspec
-      specifications.Now the course/lab would be available to all the
-      users.
-* Steps to create a lab/course on Open edX
-** Creation of labspec.json file by VLEAD
-    The below steps would be followed to create the structure of the lab which
-    is required to be created as a new course in Open edX : 
-    + The example [[https://github.com/openedx-vlead/port-labs-to-openedx/blob/develop/src/porting-labs/labspec.json][labspec.json]] file could be used for creating the
-      Open edX structure of the lab.
-    + This example file could be edited to replicate the desired lab
-      structure.
-    + The "course" field must be filled with the values of "org",
-      "id", "display_name" and "overview" as Organization Name, Lab
-      Id, Name of the lab and Description of the lab respectively. Lab
-      Ids could be obtained from [[https://docs.google.com/spreadsheets/d/1qIU42qaMVtwpP_6eV3YXjJs8CJb6wnPPclFgqbGdlCM/edit?usp=sharing][here]]. Lab Ids should be given in
-      capital letters for uniformity and white spaces or special
-      characters must be avoided in the same.
-    + The "experiments" field must be entered with the list of all
-      the experiments for the particular lab.
-    + If the lab also includes fields like Target Audience, Courses
-      Aligned, Feedback etc, they have to be created as separate
-      sections in labspec.json file.
-    + For the "experiments" field, the first two fields called =name=
-      and =subsections= must be left unchanged as =Introduction=.
-    + The rest of the =name= and =subsections= fields below should be
-      filled with the names of the subsections of the the various
-      experiments of the lab.
-    + Care needs to be taken while creating the labspec.json file. For
-      verifying the correctness of the json file and avoid any errors,
-      [[http://jsonparseronline.com][json parser]] could be used.
-    + The created labspec.json file would be provided to the course
-      requester for creating the course.
-** Creation of course by the author
-    + Signin on [[http://open-edx.vlabs.ac.in:18010/][Open edX studio]] and start creating the course. For the
-      first time users, they have to register to create a course. In
-      order to view the course in Open edX LMS (Learning Management
-      System), [[http://open-edx.vlabs.ac.in][Open edX LMS]] should be visited.
-    + Click on =New Course= button on top right corner to start
+  This document is driven by the commitment of delivering a new
+  lab on Open edX platform which can be accomplished by
+  following an efficient authoring process. The entire workflow
+  starting from the creation of a new lab to publishing it for
+  the end user is detailed in the followings sections.
+* Process of creating a new lab
+** Request of a new lab
+   + A new lab request should be raised as an issue in Virtual-Labs
+     engineers-forum in GitHub.
+** Creation of lab specifications
+   Central Team would create the lab specifications in the json format
+   and push in the [[https://github.com/openedx-vlead/lab-specifications][GitHub repo]]. The below steps would be followed by
+   them to create the required structure of the lab for Open edX :
+   + The example [[https://github.com/openedx-vlead/port-labs-to-openedx/blob/develop/src/porting-labs/labspec.json][labspec.json]] file could be used for creating the Open
+     edX structure of the lab.
+   + This example file could be edited to replicate the desired lab
+     structure.
+   + The "course" field must be filled with the values of "org", "id",
+     "display_name" and "overview" as Organization Name, Lab Id, Name
+     of the lab and Description of the lab respectively. Lab Ids could
+     be obtained from [[https://docs.google.com/spreadsheets/d/1qIU42qaMVtwpP_6eV3YXjJs8CJb6wnPPclFgqbGdlCM/edit?usp=sharing][here]]. Lab Ids should be given in capital letters
+     for uniformity and white spaces or special characters must be
+     avoided in the same.
+   + The "experiments" field must be entered with the list of all the
+     experiments for the particular lab.
+   + If the lab also includes fields like Target Audience, Courses
+     Aligned, Feedback etc, they have to be created as separate
+     sections in labspec.json file.
+   + For the "experiments" field, the first two fields called =name=
+     and =subsections= must be left unchanged as =Introduction=.
+   + The rest of the =name= and =subsections= fields below should be
+     filled with the names of the subsections of the the various
+     experiments of the lab.
+   + Care needs to be taken while creating the labspec.json file. For
+     verifying the correctness of the json file and avoid any errors,
+     [[http://jsonparseronline.com][json parser]] could be used.
+   + The created labspec.json file would be provided to the course
+     requester for creating the course.
+** Creation of lab by the author
+   + [[Lab contents ?? A virtual Lab has generally following sections,
+     links]] ...
+   + The lab specification file link would be provided to the lab
+     author and he/she would create the course referring to the given
+     values :
+     + Course Name
+     + Organisation Name
+     + Course ID
+     + Course Start Date
+   + The course creator would be given the staging instance of Open
+     edX platform to create the lab.
+   + [[http://open-edx.vlabs.ac.in:18010/][Open edX Studio]] have to be signed in to create the lab which is
+     analogous to a course in edX terminologies. First time users
+     would have to register to create a lab. In order to view the
+     created lab in, [[http://open-edx.vlabs.ac.in][Open edX LMS]] (Learning Management System)
+     should be visited.
+   + Click on =New Course= button on top right corner to start
       creating the new course.
-    + Fill the Course Name, Organisation, Course Number and Course Run. 
+   + Fill the Course Name, Organisation, Course Number and Course Run. 
       as per the labspec.json provided by VLEAD and click on =Create
       Course=.
-    + The content of the course (HTML/text/images/simulations) would
+   + The content of the course (HTML/text/images/simulations) would
       be placed in the units. Follow the link for better insight :
       [[https://www.edx.org/course/creating-course-edx-studio-edx-studiox][Creating a course with Open edX Studio]]. Following the given link
       is strongly recommended as it would enhance the understanding of
       Open edX terminologies and their usage.
-    + Difference between published and released content and different
+   + Difference between published and released content and different
       views with staff and student views in LMS could be learnt in
       greater details from : [[https://www.edx.org/course/creating-course-edx-studio-edx-studiox][Creating a course with Open edX Studio]]
 *** Including the text content
-     + Click on =+ New Section= to create a new section for an
+    + Click on =+ New Section= to create a new section for an
       experiment in the course and hit Enter to save it.
-     + Click on =+ New Subsection= to create new subsections named
+    + Click on =+ New Subsection= to create new subsections named
       *Aim* , *Theory* , *Simulation* , *Video* etc based on the
       labspec details and hit Enter to save it.
-     + For Example : For *Aim* subsection, click on =+ New Unit= to
+    + For Example : For *Aim* subsection, click on =+ New Unit= to
        create a unit and name as *Aim*.
        + Click on =HTML= from Add New Component and select =Text= field.
        + Click on =EDIT= tab at top right corner of editor, write
@@ -170,26 +173,27 @@ function popup(){
        select =View Updated Outline= to view the newly created course.
 *** Including the images
      + Direct copy pasting the image works sometimes and sometimes
-       doesnt. In that case, images can be uploaded from =Content= tab
+       doesn't. In that case, images can be uploaded from =Content= tab
        above and =Files and Uploads= option. Upload the image and
        provide the URL given to render the image.
 *** Including the quiz
      + Select the =Problem= component for creating different quizzes.
-*** Creating the course with database
+*** Creating the lab with database
      Right now we are creating any lab/course which comes with
      database.
-*** Publishing the course content
+*** Publishing the lab content
      Click on the upward arrow icon in each section for publishing all
      the contents of a section.
-** Miscellaneous modifications by the author
-     Few more steps to make other modifications are listed below :
-*** Modification of course date to Anytime
+** Miscellaneous modifications
+   Few more steps to make other modifications by the author are listed
+   below :
+*** Modification of lab date to =Anytime=
      + Click on Course name which you own.
      + Go to settings drop down, and click Advanced settings.
      + Change field “Course Advertised Start Date” from null to
        “Anytime”
      + Save your changes
-*** Modification of the default course preview and uploading the course image
+*** Modification of the default lab preview and lab image
      + Click on Course name.
      + Go to =schedule and details= in settings drop down.
      + Leave all the fields in course schedule empty except for the
@@ -198,7 +202,7 @@ function popup(){
        as per the requirement.
      + Add a course image by clicking on Upload image button.
      + Save the changes.
-** Exporting the course
+** Exporting the lab
      + Click on =Tools= dropdown menu option from top. Click on
        =export= option.
      + Choose the =Export Course Content= option and save the tar.gz
@@ -207,7 +211,7 @@ function popup(){
      + The author/creator would attach the tar.gz file of the course
        with all the contents in the same issue where the course
        creation was request (Engineers-Forum).
-*** Course content included after exporting
+*** Lab content after exporting
      When a course is exported, edX CMS/studio creates a tar.gz file
      that includes the following course data.
      + Course content (all Sections, Subsections, and Units)
@@ -221,11 +225,10 @@ function popup(){
      + Course team data
      + Discussion data
      + Certificates   
-** Hosting of course on production by VLEAD
-    VLEAD would import it on the production edX machine after
-    verification of all the course credentials as per the labspec
-    specifications. The course/lab would now be available for all the
-    users.
+** Hosting of lab
+   Central Team would import it on the production edX machine after
+   verification of all the course credentials as per the lab
+   specifications. The lab would now be available for all the users.
 *** Creation of a repository on GitHub 
     + Export the lab from =Tools= dropdown menu on the top of the
       Studio. A zipped file is downloaded. Unzip and untar the
@@ -257,3 +260,28 @@ function popup(){
   source platform - Open edX. This streamlined process would help in our
   strive for excellence in delivering high standard labs.
 * Glossary
+ - *Git* : Git is a free and open source distributed version control
+    system designed to handle everything from small to very large
+    projects with speed and efficiency.
+  - *GitHub* : /[[https://github.com/][GitHub]]/ is a web-based Git repository hosting service,
+    which offers all of the distributed revision control and source
+    code management (SCM) functionality of Git as well as adding its
+    own features.
+  - *Central Team* :
+  - *Repository* : The distributed version control system - git is
+    used here. Every time the term repository or repo is used, it
+    refers to a git repository. A repository is an on-disk data
+    structure which stores metadata for a set of files and/or
+    directory structure. The whole set of information in the
+    repository may be duplicated on every user's system or may be
+    maintained on a single server.
+  - *Virtual Labs* : Virtual Labs is an initiative by MHRD under
+    NMEICT. The objective is to make engineering education engaging,
+    enjoyable, immersive and online.
+  - *VLEAD* : Virtual Labs Engineering and Architecture Division is
+    the central engineering team of Virtual Labs that takes cares of
+    both the research and development needs of the laboratory.
+  - *Open edX Platform* :   
+  - *Staging Instance* : 
+  - *Author* : 
+  - *Production* :
