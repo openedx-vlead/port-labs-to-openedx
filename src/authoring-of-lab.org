@@ -1,14 +1,23 @@
-* Authoring of a lab to Open edX platform
-** Introduction
+#+Title: Authoring of a lab in Open edX Platform
+#+Author: VLEAD
+#+Email: engg@vlabs.ac.in
+#+DATE: [2016-09-29 Thurs]
+#+PROPERTY: results output
+#+PROPERTY: exports code
+#+SETUPFILE: ./org-templates/level-0.org
+#+LANGUAGE: en
+#+OPTIONS: ^:nil
+
+* Introduction
    This document demonstrates creation of a new lab in the format
    expected by Open edX studio and publish a lab. 
-** Motivation
+* Motivation
    This document is driven by the commitment of delivering a new
    lab/course on Open edX platform which can be accomplished by
    following an efficient authoring process. The entire workflow
    starting from the creation of a new course/lab to publishing it for
    the end user lab is detailed in the followings sections.
-** Protocol to request for authoring a new lab
+* Protocol to request for authoring a new lab
     + A new lab request should be raised as an issue in
       Virtual-Labs engineers-forum in GitHub.
     + VLEAD would create the labspec.json and put it in the [[https://github.com/openedx-vlead/lab-specifications][GitHub repo]].
@@ -29,8 +38,8 @@
       verification of all the course credentials as per the labspec
       specifications.Now the course/lab would be available to all the
       users.
-** Steps to create a new lab in Open edX
-*** Creation of labspec.json file by VLEAD
+* Steps to create a new lab in Open edX
+** Creation of labspec.json file by VLEAD
     The below steps would be followed to create the structure of the lab which
     is required to be created as a new course in Open edX : 
     + The example [[https://github.com/openedx-vlead/port-labs-to-openedx/blob/develop/src/porting-labs/labspec.json][labspec.json]] file could be used for creating the
@@ -58,7 +67,7 @@
       [[http://jsonparseronline.com][json parser]] could be used.
     + The created labspec.json file would be provided to the course
       requester for creating the course.
-*** Creation of a course by the author
+** Creation of a course by the author
     + Signin on [[http://open-edx.vlabs.ac.in:18010/][Open edX studio]] and start creating the course. For the
       first time users, they have to register to create a course. In
       order to view the course in Open edX LMS (Learning Management
@@ -76,7 +85,7 @@
     + Difference between published and released content and different
       views with staff and student views in LMS could be learnt in
       greater details from : [[https://www.edx.org/course/creating-course-edx-studio-edx-studiox][Creating a course with Open edX Studio]]
-**** Including the text content
+*** Including the text content
      + Click on =+ New Section= to create a new section for an
       experiment in the course and hit Enter to save it.
      + Click on =+ New Subsection= to create new subsections named
@@ -91,7 +100,7 @@
         units if required.
      + Create another subsection named *Theory*, follow the same
        process as that of *Aim* and write the required content.
-**** Including the simulations
+*** Including the simulations
      + For including *Simulation* and *Video*
        + Click on =+ New Unit= to create a unit named *Simulation*
        + Click on =HTML= from Add New Component and select =IFrame
@@ -121,7 +130,7 @@ function popup(){
  }
 // ]]></script>
 #+END_EXAMPLE
-**** Including the analytics
+*** Including the analytics
      + Analytics code should be included in each simulation code in
        order to capture the usage for each experiment perfromed by a
        student. The analytics code is given below :
@@ -148,8 +157,8 @@ function popup(){
    <script src="https://github.com/openedx-vlead/lab-usage-tracker/blob/master/src/common.js"></script>
    #+END_SRC
 
-**** Including the feedback
-**** Including the videos
+*** Including the feedback
+*** Including the videos
      + Similarly for including a *Video* :
        + Click on =+ New Unit= to create a unit named *Video*
        + Choose the =Video= component from Add New Component.
@@ -159,28 +168,28 @@ function popup(){
      + Click on =Choose a file to Import= and choose the tar.gz file
        of the lab. Click on =Replace course content with file= and
        select =View Updated Outline= to view the newly created course.
-**** Including the images
+*** Including the images
      + Direct copy pasting the image works sometimes and sometimes
        doesnt. In that case, images can be uploaded from =Content= tab
        above and =Files and Uploads= option. Upload the image and
        provide the URL given to render the image.
-**** Including the quiz
+*** Including the quiz
      + Select the =Problem= component for creating different quizzes.
-**** Creating the course with database
+*** Creating the course with database
      Right now we are creating any lab/course which comes with
      database.
-**** Publishing the course content
+*** Publishing the course content
      Click on the upward arrow icon in each section for publishing all
      the contents of a section.
-*** Miscellanious modifications in the course by the author
+** Miscellanious modifications in the course by the author
      Few more steps to make other modifications are listed below :
-**** Modification of course date to Anytime
+*** Modification of course date to Anytime
      + Click on Course name which you own.
      + Go to settings drop down, and click Advanced settings.
      + Change field “Course Advertised Start Date” from null to
        “Anytime”
      + Save your changes
-**** Modification of the default course preview and uploading the course image
+*** Modification of the default course preview and uploading the course image
      + Click on Course name.
      + Go to =schedule and details= in settings drop down.
      + Leave all the fields in course schedule empty except for the
@@ -189,7 +198,7 @@ function popup(){
        as per the requirement.
      + Add a course image by clicking on Upload image button.
      + Save the changes.
-*** Exporting the course
+** Exporting the course
      + Click on =Tools= dropdown menu option from top. Click on
        =export= option.
      + Choose the =Export Course Content= option and save the tar.gz
@@ -198,7 +207,7 @@ function popup(){
      + The author/creator would attach the tar.gz file of the course
        with all the contents in the same issue where the course
        creation was request (Engineers-Forum).
-**** Course content included after exporting
+*** Course content included after exporting
      When a course is exported, edX CMS/studio creates a tar.gz file
      that includes the following course data.
      + Course content (all Sections, Subsections, and Units)
@@ -212,12 +221,12 @@ function popup(){
      + Course team data
      + Discussion data
      + Certificates   
-*** Hosting of course on production by VLEAD
+** Hosting of course on production by VLEAD
     VLEAD would import it on the production edX machine after
     verification of all the course credentials as per the labspec
     specifications. The course/lab would now be available for all the
     users.
-**** Creation of a repository on GitHub 
+*** Creation of a repository on GitHub 
     + Export the lab from =Tools= dropdown menu on the top of the
       Studio. A zipped file is downloaded. Unzip and untar the
       exported file to produce a directory.
@@ -229,3 +238,23 @@ function popup(){
     + Copy the entire contents of the directory created in step 1 to the
       directory created in step 3.
     + Add, commit and push all the changes to the git repository.
+* Disclaimer
+  VLEAD team at IIIT-H would be only responsible for the creation of
+  lab speicifications called labspec.json files. They would provide
+  the labspecs and the information provided must be adhered by the lab
+  author while creating a course on Open edX. Subsequent to the
+  availability of labspecs, each author would be responsible for the
+  content of a course. Also subsequent to the course creation on the
+  staging instance by the author, the hosting request for the course
+  on production edX environment should be raised in the
+  engineers-forum after the initial credentials of a course are as per
+  the lab specifications.
+* Summary
+  This document highlights the authoring of a new course from course
+  creation to hosting. It focusses on the process to contribute
+  towards Open edX courses and deliver high quality labs. It also aims
+  at collaborating contributions of the developers across the open
+  source platform - Open edX. This streamlined process would help in our
+  strive for excellence in delivering high standard labs.
+* Glossary
+  
