@@ -78,7 +78,7 @@
       + Course Number would be the lab id of the lab. For Example :
         CCNSB03 (do not include white spaces or special characters
         here). Lab Ids could be obtained [[https://docs.google.com/spreadsheets/d/1qIU42qaMVtwpP_6eV3YXjJs8CJb6wnPPclFgqbGdlCM/edit?usp=sharing][here]].
-      + Course Run should be filled as =anytime=
+      + Course Run should be filled as =Anytime=
     + Click on =Tools= dropdown menu option from top. Select =import= option.
     + Click on =Choose a file to Import= and choose the tar.gz file of
       the lab. Click on =Replace course content with file= and select
@@ -121,7 +121,7 @@ function popup(){
   + Choose the =Export Course Content= option and save the tar.gz file
     of the created lab in the local machine which could be pushed as
     sources to GitHub.
-*** Miscellanious modifications
+*** Miscellaneous modifications
     Few more steps to make other modifications are listed below : 
 **** Modification of course date to Anytime
       + Click on Course name which you own.
