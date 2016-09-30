@@ -121,7 +121,34 @@ function popup(){
  }
 // ]]></script>
 #+END_EXAMPLE
+**** Including the analytics
+     + Analytics code should be included in each simulation code in
+       order to capture the usage for each experiment perfromed by a
+       student. The analytics code is given below :
 
+   #+BEGIN_SRC command
+   <p><button onclick="popup()">Full Screen</button></p>
+   <p><iframe src="https://ial-coep.vlabs.ac.in/Expt2/AnalogDigital.html" height="602" width="802"> </iframe></p>
+   <script>// <![CDATA[
+   function popup(){
+    window.open('https://ial-coep.vlabs.ac.in/Expt2/AnalogDigital.html', '_blank', 'toolbar=0,location=0,menubar=0');
+    }
+   //  ]]></script>
+
+   <script type="text/javascript">
+    // ****** ALSO MODIFY THE URLS GIVEN ABOVE **************
+   // ********MODIFY THIS SECTION **************************
+
+   var courseid = "blockv1UniversityYPS01Anytime";
+   var experiment_name = "Optimal Foraging Pollinators"
+   var lab_name = "Population Ecology II"
+    
+   // *******DO NOT MODIFY THIS SECTION AGAIN **************
+   </script>
+   <script src="https://github.com/openedx-vlead/lab-usage-tracker/blob/master/src/common.js"></script>
+   #+END_SRC
+
+**** Including the feedback
 **** Including the videos
      + Similarly for including a *Video* :
        + Click on =+ New Unit= to create a unit named *Video*
@@ -145,12 +172,32 @@ function popup(){
 **** Publishing the course content
      Click on the upward arrow icon in each section for publishing all
      the contents of a section.
-**** Exporting the course
+*** Miscellanious modifications in the course by the author
+     Few more steps to make other modifications are listed below :
+**** Modification of course date to Anytime
+     + Click on Course name which you own.
+     + Go to settings drop down, and click Advanced settings.
+     + Change field “Course Advertised Start Date” from null to
+       “Anytime”
+     + Save your changes
+**** Modification of the default course preview and uploading the course image
+     + Click on Course name.
+     + Go to =schedule and details= in settings drop down.
+     + Leave all the fields in course schedule empty except for the
+       first field which should be any date previous to current date.
+     + In “Introducing your Course” section edit the “Course Overview”
+       as per the requirement.
+     + Add a course image by clicking on Upload image button.
+     + Save the changes.
+*** Exporting the course
      + Click on =Tools= dropdown menu option from top. Click on
        =export= option.
      + Choose the =Export Course Content= option and save the tar.gz
        file of the created lab in the local machine which could be
        pushed as sources to GitHub.
+     + The author/creator would attach the tar.gz file of the course
+       with all the contents in the same issue where the course
+       creation was request (Engineers-Forum).
 **** Course content included after exporting
      When a course is exported, edX CMS/studio creates a tar.gz file
      that includes the following course data.
@@ -165,22 +212,11 @@ function popup(){
      + Course team data
      + Discussion data
      + Certificates   
-**** Miscellanious modifications in the course
-     Few more steps to make other modifications are listed below :
-***** Modification of course date to Anytime
-      + Click on Course name which you own.
-      + Go to settings drop down, and click Advanced settings.
-      + Change field “Course Advertised Start Date” from null to “Anytime”
-      + Save your changes
-***** Modification of the default course preview and uploading the course image
-      + Click on Course name.
-      + Go to =schedule and details= in settings drop down.
-      + Leave all the fields in course schedule empty except for the
-        first field which should be any date previous to current date.
-      + In “Introducing your Course” section edit the “Course
-        Overview” as per the requirement.
-      + Add a course image by clicking on Upload image button.
-      + Save the changes.
+*** Hosting of course on production by VLEAD
+    VLEAD would import it on the production edX machine after
+    verification of all the course credentials as per the labspec
+    specifications. The course/lab would now be available for all the
+    users.
 *** Creation of a repository on GitHub 
     + Export the lab from =Tools= dropdown menu on the top of the
       Studio. A zipped file is downloaded. Unzip and untar the
@@ -193,30 +229,3 @@ function popup(){
     + Copy the entire contents of the directory created in step 1 to the
       directory created in step 3.
     + Add, commit and push all the changes to the git repository.
-** Analytics
-   Analytics code should be included in each simulation code in order
-   to capture the usage for each experiment perfromed by a
-   student. The analytics code is given below :
-   #+BEGIN_SRC command
-   <p><button onclick="popup()">Full Screen</button></p>
-   <p><iframe src="https://ial-coep.vlabs.ac.in/Expt2/AnalogDigital.html" height="602" width="802"> </iframe></p>
-   <script>// <![CDATA[
-   function popup(){
-    window.open('https://ial-coep.vlabs.ac.in/Expt2/AnalogDigital.html', '_blank', 'toolbar=0,location=0,menubar=0');
-    }
-   //  ]]></script>
-
-   <script type="text/javascript">
-    // ****** ALSO MODIFY THE URLS GIVEN ABOVE **************
-   // ********MODIFY THIS SECTION **************************
-
-   var courseid = "blockv1UniversityYPS01Anytime";
-   var experiment_name = "Optimal Foraging Pollinators"
-   var lab_name = "Population Ecology II"
-    
-   // *******DO NOT MODIFY THIS SECTION AGAIN **************
-   </script>
-   <script src="https://github.com/openedx-vlead/lab-usage-tracker/blob/master/src/common.js"></script>
-   #+END_SRC
-
-** Feedback
