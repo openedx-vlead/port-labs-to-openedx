@@ -103,10 +103,11 @@
         rendering the simulations.
       + If there are multiple simulators for a single experiment,
         those would be created in different units.
-      + For capturing the analytics at experiment level, include the
-        below code in the HTML source code editor. The src field would
-        include the https simulation URL if it is already hosted on
-        some server.
+      + The below code should be included in the HTML source code
+        editor. The src field would include the https simulation URL
+        if it is already hosted on some server. There would be a full
+        screen button also included to open the simulator in a new
+        full screen.
 
 #+BEGIN_EXAMPLE
     <p><button onclick="popup()">Full Screen</button></p>
@@ -128,6 +129,13 @@ function popup(){
     + Click on =Choose a file to Import= and choose the tar.gz file of
       the lab. Click on =Replace course content with file= and select
       =View Updated Outline= to view the newly created course.
+**** Including the images
+    + Direct copy pasting the image works sometimes and sometimes
+      doesnt. In that case, images can be uploaded from =Content= tab
+      above and =Files and Uploads= option. Upload the image and
+      provide the URL given to render the image.
+**** Including the quiz
+    + Select the =Problem= component for creating different quizzes.
 **** Publishing the course content
      Click on the upward arrow icon in each section for publishing all
      the contents of a section.
@@ -136,14 +144,14 @@ function popup(){
   + Choose the =Export Course Content= option and save the tar.gz file
     of the created lab in the local machine which could be pushed as
     sources to GitHub.
-*** Miscellanious modifications
+**** Miscellanious modifications in the course
     Few more steps to make other modifications are listed below : 
-**** Modification of course date to Anytime
+***** Modification of course date to Anytime
       + Click on Course name which you own.
       + Go to settings drop down, and click Advanced settings.
       + Change field “Course Advertised Start Date” from null to “Anytime”
       + Save your changes
-**** Modification of the default course preview and uploading the course image
+***** Modification of the default course preview and uploading the course image
       + Click on Course name.
       + Go to =schedule and details= in settings drop down.
       + Leave all the fields in course schedule empty except for the
@@ -168,21 +176,7 @@ function popup(){
    We need not create a new course, instead the already created
    courses would be imported from GitHub.
 ** Troubleshooting 
-*** Error while running automation script
-    + The most probable reason for errors faced during running of
-      automation script is error in the labspec.json file. Please
-      cross-check the file using [[http://json.parser.online.fr/][json parser]].
-    + If the automation script throws error or doesnt create the
-      sections automatically, please go ahead and create the sections
-      manually. For few labs the script is found to be erroneous and
-      not behaving as per expectations.
-*** Methods to include an image
-    + Direct copy pasting the image works sometimes and sometimes
-      doesnt. In that case, images can be uploaded from =Content= tab
-      above and =Files and Uploads= option. Upload the image and
-      provide the URL given to render the image.
-*** Methods to include a quiz
-    + Select the =Problem= component for creating different quizzes.
+
 ** Porting of a lab with database
    Right now we are not porting any lab which comes with database.
 ** What comes with porting and what doesn't
