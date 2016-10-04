@@ -10,15 +10,15 @@
 
 * Introduction
   Virtual Labs is a mission mode project initiated by the Ministry of
-  Human Resources and Development (MHRD). The objective of this
+  Human Resources and Development (MHRD), India. The objective of this
   project is to provide laboratory learning experience to the students
   who do not have access to adequate laboratory infrastructure.
-  Currently there are around 150 labs which have been developed by
-  various institutes.The authoring of Virtual Labs in Open edX
-  platform described here defines the creation and hosting of a new
-  lab in the Open edX platform. It aims at delivering responsive,
-  open-source and device-independent labs, helping us in our strive
-  for excellence.
+  Currently there are around more than 100 labs which have been
+  developed by various institutes.The authoring of Virtual Labs in
+  Open edX platform described in this document defines the creation
+  and hosting of a new lab in the Open edX platform. It aims at
+  delivering responsive, open-source and device-independent labs,
+  helping us in our strive for excellence.
 * Motivation
   This document is driven by the commitment of delivering a new
   lab on Open edX platform which can be accomplished by
@@ -27,15 +27,15 @@
   the end user is detailed in the followings sections.
 * Process of creating a new lab
 ** Request of a new lab
-   + A new lab request should be raised as an issue in Virtual-Labs
-     engineers-forum in GitHub.
+   + A new lab request should be raised as an issue in [[https://github.com/Virtual-Labs/engineers-forum/issues][engineers-forum]]
+     in virtual-labs organisation in GitHub.
 ** Creation of lab specifications
-   Central Team would create the lab specifications in the json format
-   and push in the [[https://github.com/openedx-vlead/lab-specifications][GitHub repo]]. The below steps would be followed by
-   them to create the required structure of the lab for Open edX :
+   The Central Team would create the lab specifications in the [[http://www.json.org/][json]]
+   format and push in the [[https://github.com/openedx-vlead/lab-specifications][GitHub repo]]. They would follow the below
+   steps to create the required structure of the lab for Open edX :
    + The example [[https://github.com/openedx-vlead/port-labs-to-openedx/blob/develop/src/porting-labs/labspec.json][labspec.json]] file could be used for creating the Open
-     edX structure of the lab.
-   + This example file could be edited to replicate the desired lab
+     edX structure of the requested lab.
+   + This [[https://github.com/openedx-vlead/port-labs-to-openedx/blob/develop/src/porting-labs/labspec.json][example file]] could be edited to replicate the desired lab
      structure.
    + The "course" field must be filled with the values of "org", "id",
      "display_name" and "overview" as Organization Name, Lab Id, Name
@@ -55,74 +55,98 @@
      experiments of the lab.
    + Care needs to be taken while creating the labspec.json file. For
      verifying the correctness of the json file and avoid any errors,
-     [[http://jsonparseronline.com][json parser]] could be used.
-   + The created labspec.json file would be provided to the course
-     requester for creating the course.
+     checking the file with [[http://jsonparseronline.com][json parser]] is strongly recommended.
+   + The created labspec.json file would be provided to the lab author
+     for creating the course.
 ** Creation of lab by the author
-   + [[Lab contents ?? A virtual Lab has generally following sections,
-     links]] ...
-   + The lab specification file link would be provided to the lab
-     author and he/she would create the course referring to the given
-     values :
-     + Course Name
-     + Organisation Name
-     + Course ID
-     + Course Start Date
-   + The course creator would be given the staging instance of Open
-     edX platform to create the lab.
-   + [[http://open-edx.vlabs.ac.in:18010/][Open edX Studio]] have to be signed in to create the lab which is
-     analogous to a course in edX terminologies. First time users
-     would have to register to create a lab. In order to view the
-     created lab in, [[http://open-edx.vlabs.ac.in][Open edX LMS]] (Learning Management System)
-     should be visited.
-   + Click on =New Course= button on top right corner to start
-      creating the new course.
-   + Fill the Course Name, Organisation, Course Number and Course Run. 
-      as per the labspec.json provided by VLEAD and click on =Create
-      Course=.
-   + The content of the course (HTML/text/images/simulations) would
-      be placed in the units. Follow the link for better insight :
-      [[https://www.edx.org/course/creating-course-edx-studio-edx-studiox][Creating a course with Open edX Studio]]. Following the given link
-      is strongly recommended as it would enhance the understanding of
-      Open edX terminologies and their usage.
-   + Difference between published and released content and different
+*** Lab structure of Virtual-Labs
+  + A Virtual-Lab is structured with following sections :
+    + Introduction
+    + List of Experiments
+    + Target Audience
+    + Courses
+    + Pre-requisites
+    + Feedback
+  + Within list of experiments, several experiments are listed with
+    possible following sections (sections could vary from one
+    experiment to other) :
+    + Introduction
+    + Theory
+    + Objective
+    + Experiment
+    + Manual
+    + Quizzes
+    + Procedure
+    + References
+    + Feedback
+*** Lab structure of Open edX lab
+    + The lab specification file created by the Central Team would be
+      provided to the lab author and he/she would create the lab
+      referring to the given values :
+      + Course Name
+      + Organisation Name
+      + Course ID
+      + Course Start Date
+    + The lab author would be given the staging instance of Open edX
+      platform to create the lab.
+    + [[http://open-edx.vlabs.ac.in:18010/][Open edX Studio]] have to be signed in to create the lab which is
+      analogous to a course in edX terminologies. First time users
+      would have to register to create a lab. In order to view the
+      created lab, [[http://open-edx.vlabs.ac.in][Open edX LMS]] (Learning Management System) should be
+      visited.
+    + Click on =New Course= button on top right corner to start
+      creating the new lab.
+    + Fill the Course Name, Organisation, Course Number and Course Run
+      as per the labspec.json and click on =Create Course=.
+    + The content of the lab (HTML/text/images/simulations) would be
+      placed in the units. For a better insight, referring the link :
+      [[https://www.edx.org/course/creating-course-edx-studio-edx-studiox][Creating a course with Open edX Studio]] is strongly
+      recommended. Following the above link is highly recommended as
+      it would enhance the understanding of Open edX terminologies and
+      their usage.
+    + Difference between published and released content, different
       views with staff and student views in LMS could be learnt in
       greater details from : [[https://www.edx.org/course/creating-course-edx-studio-edx-studiox][Creating a course with Open edX Studio]]
 *** Including the text content
     + Click on =+ New Section= to create a new section for an
-      experiment in the course and hit Enter to save it.
+      experiment in the lab and hit Enter to save it.
     + Click on =+ New Subsection= to create new subsections named
       *Aim* , *Theory* , *Simulation* , *Video* etc based on the
       labspec details and hit Enter to save it.
     + For Example : For *Aim* subsection, click on =+ New Unit= to
-       create a unit and name as *Aim*.
-       + Click on =HTML= from Add New Component and select =Text= field.
-       + Click on =EDIT= tab at top right corner of editor, write
+      create a unit named *Aim*.
+      + Click on =HTML= from Add New Component and select =Text=
+        field.
+      + Click on =EDIT= tab at top right corner of editor, write/paste
         the required content and click on =Save=.
-       + Go back to *Aim* subsection on Studio Home to create more
+      + Go back to *Aim* subsection on Studio Home to create more
         units if required.
-     + Create another subsection named *Theory*, follow the same
-       process as that of *Aim* and write the required content.
+      + Create another subsection named *Theory*, follow the same
+        process as that of *Aim* and write the required content.
 *** Including the simulations
-     + For including *Simulation* and *Video*
-       + Click on =+ New Unit= to create a unit named *Simulation*
-       + Click on =HTML= from Add New Component and select =IFrame
-         Tool= field.
-       + Click on =EDIT= tab and select =HTML= tab, the last icon on
-         the editor.
-       + Include the iframe code for the simulations which might be
-         served from some other servers. In case the simulations are
-         not hosted anywhere, the entire code could be included for
-         rendering the simulations.
-       + If there are multiple simulators for a single experiment,
-         those would be created in different units.
-       + The below code should be included in the HTML source code
-         editor. The src field would include the https simulation URL
-         if it is already hosted on some server. There would be a full
-         screen button also included to open the simulator in a new
-         full screen.
-       + To ensure link integrity, the =https= URL must be included in
-         the iframes of simulations.
+    + Click on =+ New Unit= to create a unit named *Simulation*. If
+      the simulation is termed as experiment or coined as some other
+      term, that needs to be used here. It is not a mandate to use
+      simulation term only.
+    + Click on =HTML= from Add New Component and select =IFrame Tool=
+      field.
+    + Click on =EDIT= tab and select =HTML=, the last icon on the
+      editor.
+    + Include the iframe code for the simulations which might be
+      served from other servers (not from Open EdX platform). In case
+      the simulations are not hosted anywhere, the entire code could
+      be included for rendering the simulations. Click on =Save= to
+      save the changes.
+    + If there are multiple simulators for a single experiment, those
+      would be created in different units within the same subsection.
+    + The below code should be included in the HTML source code
+      editor. The =src= field would include the https simulation URL
+      if it is already hosted on a server. There would be a full
+      screen button also included to open the simulator in a new full
+      screen/window on the browser.
+    + To ensure link integrity, the =https= URL must be included in
+      the iframes of simulations. In case for any lab SSL certificates
+      are not available, =http= URL should be included.
 #+BEGIN_EXAMPLE
     <p><button onclick="popup()">Full Screen</button></p>
 <p></p>
@@ -135,15 +159,15 @@ function popup(){
 #+END_EXAMPLE
 *** Including the analytics
      + Analytics code should be included in each simulation code in
-       order to capture the usage for each experiment perfromed by a
+       order to capture the usage for each experiment performed by a
        student. The analytics code is given below :
 
    #+BEGIN_SRC command
    <p><button onclick="popup()">Full Screen</button></p>
-   <p><iframe src="https://ial-coep.vlabs.ac.in/Expt2/AnalogDigital.html" height="602" width="802"> </iframe></p>
+   <p><iframe src="http://pevii-au.virtual-labs.ac.in/index.php?exp_id=Optimal_Foraging_Pollinators" height="602" width="802"> </iframe></p>
    <script>// <![CDATA[
    function popup(){
-    window.open('https://ial-coep.vlabs.ac.in/Expt2/AnalogDigital.html', '_blank', 'toolbar=0,location=0,menubar=0');
+    window.open('http://pevii-au.virtual-labs.ac.in/index.php?exp_id=Optimal_Foraging_Pollinators', '_blank', 'toolbar=0,location=0,menubar=0');
     }
    //  ]]></script>
 
@@ -151,39 +175,57 @@ function popup(){
     // ****** ALSO MODIFY THE URLS GIVEN ABOVE **************
    // ********MODIFY THIS SECTION **************************
 
-   var courseid = "blockv1UniversityYPS01Anytime";
-   var experiment_name = "Optimal Foraging Pollinators"
+   var courseid = "pevii-au";
+   var experiment_name = "Optimal Pollinators"
    var lab_name = "Population Ecology II"
     
    // *******DO NOT MODIFY THIS SECTION AGAIN **************
    </script>
    <script src="https://github.com/openedx-vlead/lab-usage-tracker/blob/master/src/common.js"></script>
    #+END_SRC
-
+  *NOTE* : 
+  + In the above code snippet, the =src= field would include the https
+    simulation URL if it is already hosted on a server. There would be
+    a full screen button also included to open the simulator in a new
+    full screen/window on the browser. The =https= URL given above in
+    the example code snippet is only for representational
+    purposes. *Kindly refrain from giving the same https URLs as given
+    in above example*.
+  + The =var= fields should be filled with appropriate courseid,
+    experiment_name and lab_name with labid, experiment_name and
+    lab_name of the authored lab respectively.
+  + To ensure link integrity, the =https= URL must be included in the
+    iframes of simulations. In case of unavailability of lab SSL
+    certificates, =http= URL should be included.
 *** Including the feedback
 *** Including the videos
-     + Similarly for including a *Video* :
-       + Click on =+ New Unit= to create a unit named *Video*
-       + Choose the =Video= component from Add New Component.
-       + Include the URL of the video to be added.
-     + Click on =Tools= dropdown menu option from top. Select =import=
-       option.
-     + Click on =Choose a file to Import= and choose the tar.gz file
-       of the lab. Click on =Replace course content with file= and
-       select =View Updated Outline= to view the newly created course.
+    + Click on =+ New Unit= to create a unit named *Video*
+    + Choose the =Video= component from Add New Component.
+    + Click on =EDIT= tab and include the URL of the video to be added
+      in =Default Video URL= field.
+    + If the video includes timed scripts, then it should also be
+      included in the =Default Timed Transcript= field
+    + Click on =Save= to save the changes.
 *** Including the images
-     + Direct copy pasting the image works sometimes and sometimes
-       doesn't. In that case, images can be uploaded from =Content= tab
-       above and =Files and Uploads= option. Upload the image and
-       provide the URL given to render the image.
+    Direct copy pasting the images works sometimes and sometimes
+    doesn't. Other method to inlcude the images is given below : 
+    + Images can be uploaded from =Content= tab, selecting the =Files
+      and Uploads= option.
+    + Upload the image using =+ Upload New File= and provide the
+      =Studio URL= given to render the image.
 *** Including the quiz
-     + Select the =Problem= component for creating different quizzes.
-*** Creating the lab with database
-     Right now we are creating any lab/course which comes with
-     database.
+    + Select the =Problem= component from Add New Component after
+      creating a new unit named =Quiz=.
+    + Depending on the type of quiz, select the option for creating
+      different quizzes.
+*** Authoring the lab with database
+    Currently we would not support any lab authoring request with a
+    database.
 *** Publishing the lab content
-     Click on the upward arrow icon in each section for publishing all
-     the contents of a section.
+    Click on the upward arrow icon in each section for publishing all
+    the contents of a section. Without publishing the content, it
+    would not be visible on the Open edX Learning Management System
+    (LMS).
 ** Miscellaneous modifications
    Few more steps to make other modifications by the author are listed
    below :
@@ -257,17 +299,19 @@ function popup(){
   creation to hosting. It focusses on the process to contribute
   towards Open edX courses and deliver high quality labs. It also aims
   at collaborating contributions of the developers across the open
-  source platform - Open edX. This streamlined process would help in our
-  strive for excellence in delivering high standard labs.
+  source platform - Open edX. This streamlined process would help in
+  our strive for excellence in delivering high standard labs.
 * Glossary
- - *Git* : Git is a free and open source distributed version control
+  - *Git* : Git is a free and open source distributed version control
     system designed to handle everything from small to very large
     projects with speed and efficiency.
   - *GitHub* : /[[https://github.com/][GitHub]]/ is a web-based Git repository hosting service,
     which offers all of the distributed revision control and source
     code management (SCM) functionality of Git as well as adding its
     own features.
-  - *Central Team* :
+  - *Central Team* : The central team refers to VLEAD team at
+    IIIT-Hyderabad and they would be responsible for creating the lab
+    specifications and hosting the labs on production.
   - *Repository* : The distributed version control system - git is
     used here. Every time the term repository or repo is used, it
     refers to a git repository. A repository is an on-disk data
@@ -275,13 +319,33 @@ function popup(){
     directory structure. The whole set of information in the
     repository may be duplicated on every user's system or may be
     maintained on a single server.
-  - *Virtual Labs* : Virtual Labs is an initiative by MHRD under
+  - *Virtual Labs* : [[http://vlabs.ac.in/index.html#aboutus][Virtual Labs]] is an initiative by MHRD under
     NMEICT. The objective is to make engineering education engaging,
     enjoyable, immersive and online.
   - *VLEAD* : Virtual Labs Engineering and Architecture Division is
     the central engineering team of Virtual Labs that takes cares of
     both the research and development needs of the laboratory.
-  - *Open edX Platform* :   
-  - *Staging Instance* : 
-  - *Author* : 
-  - *Production* :
+  - *Open edX Platform* : [[https://open.edx.org/about-open-edx][Open edX]] is the open source platform that
+    powers edX courses. EdX offers interactive online courses and
+    MOOCs from the world’s best universities and institutions. The
+    Open edX Platform of Virtual-Labs hosts all the Virtual-Labs labs
+    on the Open edX platform just like edX courses are powered.
+  - *Learning Management System (LMS)* : The LMS is the Open edX tool
+    that learners use to access course content, including videos,
+    textbooks, and problems, and to check their progress in the
+    course. The Open edX LMS also offers a discussion forum and a wiki
+    that both learners and course team members can contribute to. We
+    use the LMS directly through a [[http://open-edx.vlabs.ac.in/][browser]]. No additional software is
+    required for this.
+  - *Staging Instance* : Staging instance refers to the server machine
+    (by Central Team) used for the hosting of the lab in an
+    environment similar to production so that control to the
+    production machine can be controlled. Both the staging instance as
+    well as production instance would be controlled by Central Team.
+  - *Author* : The author refers to the person who requests for the
+    creation of a new lab on Open edX platform and holds all the
+    authority over the lab content. The author would be the
+    responsible person for the content of the lab on the Open edX.
+  - *Production* : The production machine/server refers to the
+    production environment where the requested new labs would be
+    hosted/deployed for the end users.
