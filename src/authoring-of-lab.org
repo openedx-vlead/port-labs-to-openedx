@@ -25,10 +25,30 @@
   following an efficient authoring process. The entire workflow
   starting from the creation of a new lab to publishing it for
   the end user is detailed in the followings sections.
-* Process of creating a new lab
+* Authoring of a lab on Open edX 
+** Lab structure of a typical Virtual-Lab
+ + A typical Virtual-Lab is structured with the following sections :
+   + Introduction
+   + List of Experiments
+   + Target Audience
+   + Courses
+   + Pre-requisites
+   + Feedback
+ + Inside the above mentioned *List of Experiments*, several
+   experiments could be listed with following sections (sections could
+   vary from one experiment to other) :
+   + Introduction
+   + Theory
+   + Objective
+   + Experiment
+   + Manual
+   + Quizzes
+   + Procedure
+   + References
+   + Feedback
 ** Request of a new lab
    + A new lab request should be raised as an issue in [[https://github.com/Virtual-Labs/engineers-forum/issues][engineers-forum]]
-     in virtual-labs organisation in GitHub.
+     in Virtual-Labs organisation in GitHub.
 ** Creation of lab specifications
    The Central Team would create the lab specifications in the [[http://www.json.org/][json]]
    format and push in the [[https://github.com/openedx-vlead/lab-specifications][GitHub repo]]. They would follow the below
@@ -59,54 +79,35 @@
    + The created labspec.json file would be provided to the lab author
      for creating the course.
 ** Creation of lab by the author
-*** Lab structure of Virtual-Labs
-  + A Virtual-Lab is structured with following sections :
-    + Introduction
-    + List of Experiments
-    + Target Audience
-    + Courses
-    + Pre-requisites
-    + Feedback
-  + Within list of experiments, several experiments are listed with
-    possible following sections (sections could vary from one
-    experiment to other) :
-    + Introduction
-    + Theory
-    + Objective
-    + Experiment
-    + Manual
-    + Quizzes
-    + Procedure
-    + References
-    + Feedback
-*** Lab structure of Open edX lab
-    + The lab specification file created by the Central Team would be
-      provided to the lab author and he/she would create the lab
-      referring to the given values :
-      + Course Name
-      + Organisation Name
-      + Course ID
-      + Course Start Date
-    + The lab author would be given the staging instance of Open edX
-      platform to create the lab.
-    + [[http://open-edx.vlabs.ac.in:18010/][Open edX Studio]] have to be signed in to create the lab which is
-      analogous to a course in edX terminologies. First time users
-      would have to register to create a lab. In order to view the
-      created lab, [[http://open-edx.vlabs.ac.in][Open edX LMS]] (Learning Management System) should be
-      visited.
-    + Click on =New Course= button on top right corner to start
-      creating the new lab.
-    + Fill the Course Name, Organisation, Course Number and Course Run
-      as per the labspec.json and click on =Create Course=.
-    + The content of the lab (HTML/text/images/simulations) would be
-      placed in the units. For a better insight, referring the link :
-      [[https://www.edx.org/course/creating-course-edx-studio-edx-studiox][Creating a course with Open edX Studio]] is strongly
-      recommended. Following the above link is highly recommended as
-      it would enhance the understanding of Open edX terminologies and
-      their usage.
+   + The lab specification file created by the Central Team would be
+     provided to the lab author and he/she would create the lab
+     referring to the given values :
+     + Course Name
+     + Organisation Name
+     + Course ID
+     + Course Start Date
+   + The lab author would be given the staging instance of Open edX
+     platform to create the lab.
+   + [[http://open-edx.vlabs.ac.in:18010/][Open edX Studio]] have to be signed in to create the lab which is
+     analogous to a course in edX terminologies. First time users
+     would have to register to create a lab. In order to view the
+     created lab, [[http://open-edx.vlabs.ac.in][Open edX LMS]] (Learning Management System) should be
+     visited.
+   + Click on =New Course= button on top right corner to start
+     creating the new lab.
+   + Fill the Course Name, Organisation, Course Number and Course Run
+     as per the labspec.json and click on =Create Course=.
+   + The content of the lab (HTML/text/images/simulations) would be
+     placed in the units. For a better insight, referring the link :
+     [[https://www.edx.org/course/creating-course-edx-studio-edx-studiox][Creating a course with Open edX Studio]] is strongly
+     recommended. Following the above link is highly recommended as it
+     would enhance the understanding of Open edX terminologies and
+     their usage.
     + Difference between published and released content, different
       views with staff and student views in LMS could be learnt in
-      greater details from : [[https://www.edx.org/course/creating-course-edx-studio-edx-studiox][Creating a course with Open edX Studio]]
+      greater details from : [[https://www.edx.org/course/creating-course-edx-studio-edx-studiox][Creating a course with Open edX Studio]]\\
+ The following sections describe the methods to include the different
+ components of a lab in Open edX platform -
 *** Including the text content
     + Click on =+ New Section= to create a new section for an
       experiment in the lab and hit Enter to save it.
@@ -226,16 +227,16 @@ function popup(){
     the contents of a section. Without publishing the content, it
     would not be visible on the Open edX Learning Management System
     (LMS).
-** Miscellaneous modifications
+*** Miscellaneous modifications
    Few more steps to make other modifications by the author are listed
    below :
-*** Modification of lab date to =Anytime=
+**** Modification of lab date to =Anytime=
      + Click on Course name which you own.
      + Go to settings drop down, and click Advanced settings.
      + Change field “Course Advertised Start Date” from null to
        “Anytime”
      + Save your changes
-*** Modification of the default lab preview and lab image
+**** Modification of the default lab preview and lab image
      + Click on Course name.
      + Go to =schedule and details= in settings drop down.
      + Leave all the fields in course schedule empty except for the
