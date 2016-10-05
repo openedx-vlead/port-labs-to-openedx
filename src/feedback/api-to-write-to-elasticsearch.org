@@ -1,0 +1,59 @@
+#+Title: Write data to elasticsearch 
+#+Date: Oct 5, 2016
+#+Author: VLEAD 
+
+
+* Introduction
+  This document explains the usage of elasticseach API, which can be used to 
+  post data to elasticseach database.
+
+
+* What is Elasticsearch ?
+  + RESTful API ::
+    + Elasticsearch is API driven. 
+    + Almost any action can be performed using a simple RESTful API
+      using JSON over HTTP. 
+      
+* Elasticsearch index API
+  + Index ::
+    + Index to a No-SQL database is a database to a SQL database, i.e Index = Database
+    + To write data to elasticsearch use the API 
+      #+BEGIN_SRC command general
+      curl -X POST "http://<elastic-server:9400>/<index-name>/<doc-type>/"  -d '{
+         "key 1" : "value 1",
+         "key 2" : "value 2",
+         "Key 3" : "value 3"
+       }'
+      #+END_SRC
+      #+BEGIN_SRC command 
+      curl -X PORT "http://server-not-exposed:9400/feedbacks/feedback/" -d '{
+         "feedback_key1" : "feedback value1",
+         "feedback_key2" : "feedback value2"
+      }'
+      #+END_SRC
+
+* Write data using python 
+  As observed in the above section, we can directly talk to (POST,
+  GET, PUT) to elasticsearch using RESTful API. Hence, simple/sample
+  python snippet which can be added to post feedback data to
+  Elasticsearch is given below -
+
+  #+BEGIN_SRC command
+  import requests
+  res = requests.post("http://serve-name:9400/feedbacks/feedback/", json = {"key1":"value1"})
+  res.status_code 
+  #+END_SRC
+
+  Above snippet can be added and any valid json can be posted to
+  elasticsearh.  Please note that request module version must be
+  "2.11.1" or more.
+
+  #+BEGIN_SRC command
+  >>>import requests
+  >>>requests.__version__
+  '2.11.1'
+  #+END_SRC
+    
+* References
+  + https://www.elastic.co/products/elasticsearch
+  + https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-index_.htlm
