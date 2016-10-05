@@ -40,7 +40,7 @@
 
   #+BEGIN_SRC command
   import requests
-  res = requests.post("http://serve-name:9400/feedbacks/feedback/", json = {"key1":"value1"})
+  res = requests.post("http://server-name:9400/feedbacks/feedback/", json = {"key1":"value1"})
   res.status_code 
   #+END_SRC
 
