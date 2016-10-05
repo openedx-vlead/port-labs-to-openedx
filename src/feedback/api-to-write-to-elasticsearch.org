@@ -26,7 +26,7 @@
        }'
       #+END_SRC
       #+BEGIN_SRC command 
-      curl -X PORT "http://server-not-exposed:9400/feedbacks/feedback/" -d '{
+      curl -X POST "http://server-not-exposed:9400/feedbacks/feedback/" -d '{
          "feedback_key1" : "feedback value1",
          "feedback_key2" : "feedback value2"
       }'
