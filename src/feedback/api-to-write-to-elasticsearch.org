@@ -34,7 +34,7 @@
 
 * Write data using python 
   As observed in the above section, we can directly talk to (POST,
-  GET, PUT) to elasticsearch using RESTful API. Hence, simple/sample
+  GET, PUT) to elasticsearch using RESTful API. Simple/sample
   python snippet which can be added to post feedback data to
   Elasticsearch is given below -
 
