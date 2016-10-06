@@ -35,10 +35,13 @@
 
 *** Analytics
     + Analytics for Old usage ::
-      + [[https://docs.google.com/presentation/d/1c-NGJfelIVdvk028SkCbDOpEH9Rh5WOtx-dVZlWCRmY/edit?ts=57e523b1#slide=id.g17e844a44d_1_0][Top 10 popular labs from March 31, 2015 to Till date]]
+      + [[https://bitbucket.org/vlead/vlead/src/07c51b71cf8a4e21cda522ca0021542ba016b7aa/presentations/2016-10-21-iitd/slides/data-table.png?at=master&fileviewer=file-view-default][Top 10 Popular lab since March 31, 2015 to till date]]
     + Analytics for Existing usage from Open edX ::
-      + [[./images/top-5-Labs.jpg][Top 5 labs (say from the date of edx in production]]
-      + [[./images/top-5-experiments.png][Top 5 experiments (say from the date of edx in production) ]]
+      + [[./images/top-5-Labs.jpg][Top 5 labs (say from the date of edx in production]])
+      + [[./images/top-5-experiments.png][Top 5 experiments (say from the date of edx in production)]]
+      + Usage across dates - Top 5 dates with most usage -TBD
+      + Top 5 Gateways (from the date of edx in production till date)
+
     + Live Demo of analytics ::  
        
     + [[https://github.com/openedx-vlead/port-labs-to-openedx/blob/develop/src/analytics-setup/openedx-vlabs-custom-analytics-server.org][Document Link]]
@@ -70,6 +73,17 @@
  
 
 
+* Kibana Dashboard 
+** VLABS Dashboard
+*** Dashboard will contain the following analytics - To be displayed on Thursday, OCT 13
+    + Usage count - Top 5 Labs (from the date of edx in production to till date)
+    + Usage count - Top 5 experiments (from the date of edx in production to till date)
+    + Usage count - Top 5 popular dates of action on Virtual labs (from the date of edx in production to till date)
+    + Usage count - Top 5 popular gateway IP address (from the date of edx in production to till date)
+
+*** Feedback Dasboard 
+
+ 
 * VLEAD showcase 
    
 |---------------------------------------------------+-------|
@@ -95,7 +109,8 @@
    https://bitbucket.org/vlead/vlead/src/f6f498c54b1f6bd37584e467e83f71bc4d949c18/presentations/2016-10-21-iitd/src/index.org?at=master&fileviewer=file-view-default
 
 
-* To Do list 
+* To Do list
+  + [[http://54.153.70.190][Latest theme]]
   + https://github.com/openedx-vlead/port-labs-to-openedx/blob/develop/src/analytics-setup/presentations/sprint2/theming-to-dos.org
   + Expected efforts - 3 person 4 days (by end of this week)
   
