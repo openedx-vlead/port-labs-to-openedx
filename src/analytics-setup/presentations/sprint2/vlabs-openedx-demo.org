@@ -24,7 +24,7 @@
       There must be a central system to register and login into the system for accessing course.
     
     + [[https://bitbucket.org/vlead/vlead/src/192c4f0cac91855a48c39a867cea402e87099364/presentations/2016-10-21-iitd/demo-scripts/open-edx/single-singnon.org?at=master][Demo Script Link]]
-    + [[open-edx.vlabs.ac.in][Demo Link]]
+    + [[http://open-edx.vlabs.ac.in][Demo Link]]
 
 
 *** Persistance and State
@@ -32,7 +32,7 @@
       The ability of a lab to save it's state during user interaction with the lab.
 
     + [[https://bitbucket.org/vlead/vlead/src/f6f498c54b1f6bd37584e467e83f71bc4d949c18/presentations/2016-10-21-iitd/demo-scripts/open-edx/persistance-and-state.org?at=master&fileviewer=file-view-default][Script Link]]
-    + [[open-edx.vlabs.ac.in][Demo Link]]
+    + [[http://open-edx.vlabs.ac.in][Demo Link]]
 
 *** Analytics
     + Analytics for Old usage ::
