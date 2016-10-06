@@ -59,7 +59,7 @@
     + [[https://bitbucket.org/vlead/vlead/src/07c51b71cf8a4e21cda522ca0021542ba016b7aa/presentations/2016-10-21-iitd/demo-scripts/open-edx/search-feature.org?at=master&fileviewer=file-view-default][Script Link]]
 *** Feedback 
     + Document Link
-    + Script Link 
+    + [[https://bitbucket.org/vlead/vlead/src/07c51b71cf8a4e21cda522ca0021542ba016b7aa/presentations/2016-10-05-iitd/demo-scripts/add-feedback-and-check-usage.org?at=master&fileviewer=file-view-default][Script Link]]
     + Demo Link 
 
 *** Portable Media 
@@ -73,7 +73,7 @@
  
 
 
-* Kibana Dashboard 
+* Analytics Dashboard 
 ** VLABS Dashboard
 *** Dashboard will contain the following analytics - To be displayed on Thursday, OCT 13
     + Usage count - Top 5 Labs (from the date of edx in production to till date)
