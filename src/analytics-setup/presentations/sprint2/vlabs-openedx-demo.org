@@ -48,12 +48,12 @@
       
 *** Search facility discliplines wise
     + Document link 
-    + Demo Link 
-    + Script Link
+    + [[http://open-edx.vlabs.ac.in][Demo Link ]]
+    + [[https://bitbucket.org/vlead/vlead/src/07c51b71cf8a4e21cda522ca0021542ba016b7aa/presentations/2016-10-21-iitd/demo-scripts/open-edx/search-feature.org?at=master&fileviewer=file-view-default][Script Link]]
 *** Search facility institute wise
     + Document Link 
-    + Demo Link 
-    + Script Link 
+    + [[http://open-edx.vlabs.ac.in][Demo Link]]
+    + [[https://bitbucket.org/vlead/vlead/src/07c51b71cf8a4e21cda522ca0021542ba016b7aa/presentations/2016-10-21-iitd/demo-scripts/open-edx/search-feature.org?at=master&fileviewer=file-view-default][Script Link]]
 *** Feedback 
     + Document Link
     + Script Link 
@@ -100,3 +100,4 @@
   + Expected efforts - 3 person 4 days (by end of this week)
   
 
+  
