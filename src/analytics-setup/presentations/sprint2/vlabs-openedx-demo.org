@@ -60,7 +60,7 @@
 *** Feedback 
     + Document Link
     + [[https://bitbucket.org/vlead/vlead/src/07c51b71cf8a4e21cda522ca0021542ba016b7aa/presentations/2016-10-05-iitd/demo-scripts/add-feedback-and-check-usage.org?at=master&fileviewer=file-view-default][Script Link]]
-    + Demo Link 
+    + [[http://open-edx.vlabs.ac.in][Demo Link]]
 
 *** Portable Media 
     + [[https://github.com/openedx-vlead/portable-media/blob/master/src/index.org][Document Link]]
@@ -69,7 +69,7 @@
 
 *** Authoring of Lab 
     + Document Link
-    + [[https://bitbucket.org/vlead/vlead/src/f6f498c54b1f6bd37584e467e83f71bc4d949c18/presentations/2016-10-21-iitd/demo-scripts/open-edx/authoring-lab.org?at=master&fileviewer=file-view-default][Script Link]]
+    + [[https://bitbucket.org/vlead/vlead/src/56970aa2d76ad32c220ddb34509b54b401f5b9b2/presentations/2016-10-21-iitd/demo-scripts/open-edx/authoring-lab.org?at=master&fileviewer=file-view-default][Script Link]]
  
 
 
