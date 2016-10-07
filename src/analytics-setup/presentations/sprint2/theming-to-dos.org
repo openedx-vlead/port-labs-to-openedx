@@ -23,6 +23,7 @@
   + Font and colour uniformity - IN PROGRESS
   + Marquee must be in a loop - Replaced with slider
   + Also add in topic to be discussed : Disciplines and domain will not be clickable. - Are clickable now 
+  + More ToDo's - http://issues.vlabs.ac.in/issues/1031
   
   
 * Check status 
