@@ -37,8 +37,8 @@
     + Analytics for Old usage ::
       + [[https://bitbucket.org/vlead/vlead/src/07c51b71cf8a4e21cda522ca0021542ba016b7aa/presentations/2016-10-21-iitd/slides/data-table.png?at=master&fileviewer=file-view-default][Top 10 Popular lab since March 31, 2015 to till date]]
     + Analytics for Existing usage from Open edX ::
-      + [[./images/top-5-Labs.jpg][Top 5 labs (say from the date of edx in production]])
-      + [[./images/top-5-experiments.png][Top 5 experiments (say from the date of edx in production)]]
+      + [[https://github.com/openedx-vlead/port-labs-to-openedx/blob/develop/src/analytics-setup/presentations/sprint2/images/top-5-Labs.jpg][Top 5 labs (say from the date of edx in production]])
+      + [[https://github.com/openedx-vlead/port-labs-to-openedx/blob/develop/src/analytics-setup/presentations/sprint2/images/top-5-experiments.png][Top 5 experiments (say from the date of edx in production)]]
       + Usage across dates - Top 5 dates with most usage -TBD
       + Top 5 Gateways (from the date of edx in production till date)
 
