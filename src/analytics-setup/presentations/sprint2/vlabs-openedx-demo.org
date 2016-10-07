@@ -69,7 +69,7 @@
     + Demo Link 
 
 *** Authoring of Lab 
-    + Document Link
+    + [[https://github.com/openedx-vlead/port-labs-to-openedx/blob/develop/src/authoring-of-lab.org][Document Link]]
     + [[https://bitbucket.org/vlead/vlead/src/56970aa2d76ad32c220ddb34509b54b401f5b9b2/presentations/2016-10-21-iitd/demo-scripts/open-edx/authoring-lab.org?at=master&fileviewer=file-view-default][Script Link]]
  
 
