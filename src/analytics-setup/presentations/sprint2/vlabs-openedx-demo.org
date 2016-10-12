@@ -20,7 +20,7 @@
     + [[http://open-edx.vlabs.ac.in/][Demo Link]]
 
 *** Single Sign-on 
-    + [[https://bitbucket.org/vlead/vlead/src/192c4f0cac91855a48c39a867cea402e87099364/presentations/2016-07-29-vlead-status-report/src/index.org?at=master&fileviewer=file-view-default][Defination]] :: 
+    + [[https://bitbucket.org/vlead/vlead/src/192c4f0cac91855a48c39a867cea402e87099364/presentations/2016-07-29-vlead-status-report/src/index.org?at=master&fileviewer=file-view-default][Definition]] :: 
       There must be a central system to register and login into the system for accessing course.
     
     + [[https://drive.google.com/open?id=0ByhNY8nO_CW3SEU4LWJMY1Q2Y1E][DPR]]
@@ -58,6 +58,11 @@
     + Document Link 
     + [[http://open-edx.vlabs.ac.in][Demo Link]]
     + [[https://bitbucket.org/vlead/vlead/src/07c51b71cf8a4e21cda522ca0021542ba016b7aa/presentations/2016-10-21-iitd/demo-scripts/open-edx/search-feature.org?at=master&fileviewer=file-view-default][Script Link]]
+*** Search on keyword 
+    Currently, in https://vlabs.ac.in, there is no search facility in http://vlabs.ac.in.
+    However, students can get a list of course both discipline and institute wise. 
+    Keyword based search is under progress now. 
+
 *** Feedback 
     + [[https://github.com/vlead/feedback-portal/blob/master/feedback-model.org][Document Link]]
     + [[https://bitbucket.org/vlead/vlead/src/07c51b71cf8a4e21cda522ca0021542ba016b7aa/presentations/2016-10-05-iitd/demo-scripts/add-feedback-and-check-usage.org?at=master&fileviewer=file-view-default][Script Link]]
@@ -111,7 +116,8 @@
 
 
 * To Do list
-  + [[http://54.153.70.190][Latest theme]]
+  + Making ELK stack auto-deployable and run Open edx from cluster - Post October 21, 2016
+  + [[http://54.153.70.190][Latest theme ]]
   + https://github.com/openedx-vlead/port-labs-to-openedx/blob/develop/src/analytics-setup/presentations/sprint2/theming-to-dos.org
   + Expected efforts - 3 person 4 days (by end of this week)
   + backing up elasticsearch data  
