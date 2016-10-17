@@ -1,0 +1,33 @@
+#+Title: Fetch Analytics for portable media 
+#+Author: VLEAD
+#+Date: 17-10-2016
+
+
+* Introduction 
+  This document describes the process of fetching logs from portable media
+  version of VLABS.
+
+* Requirements 
+  + VLABS Analytics must be captured from portable version of VLABS 
+  + A utility for workshop coordinator to fetch analytics and share with 
+    central team
+  + Analytics captured must be shared to VLEAD team 
+ 
+* Tecnically
+  + Install elasticdump 
+    #+BEGIN_SRC command
+    apt-get install npm
+    npm install elasticdump -g   
+    #+END_SRC
+  + Use command as given below to take dump in a file 
+    #+BEGIN_SRC command
+    elasticdump --input=http://localhost:9200/vlabs --output=/home/ubuntu/vlabs_data.json --type=data
+    elasticdump --input=http://localhost:9200/vlabs --output=/home/ubuntu/vlabs_mapping.json --type=mapping
+    #+END_SRC
+
+* Utility
+  A shell script to fetch the following logs -
+  + edx tracking.log
+  + webserver logs
+  + analytics(ELK) logs  
+
