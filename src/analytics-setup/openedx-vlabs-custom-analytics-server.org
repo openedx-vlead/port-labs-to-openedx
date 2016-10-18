@@ -126,8 +126,7 @@
    sudo service elasticsearch restart
    #+END_SRC
 
-
-*** Configure Nginx
+*** Configure Nginx 
    + Configure Nginx for Flask API and ELK ::
      Open file /etc/nginx/sites-enabled/default and add below given lines
      #+BEGIN_SRC command
@@ -182,6 +181,60 @@
         proxy_cache_bypass $http_upgrade;
     }
   }
+
+     #+END_SRC
+   + Configure Nginx for Elasticsearch server ::
+     #+BEGIN_SRC command
+     
+
+server {
+    listen 80;
+
+    server_name example.com;
+
+    auth_basic "Restricted Access";
+    auth_basic_user_file /etc/nginx/htpasswd.users;
+
+    location / {
+        proxy_pass http://localhost:5601;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;        
+    }
+
+}
+
+upstream elasticsearch {
+    server localhost:9200;
+    keepalive 64;
+}
+server {
+    listen 9400;
+    server_name some-server.domain; 
+    #client_max_body_size 50m;
+
+    location / {
+	if ($request_method !~ ^(GET|POST)$ ) {
+              return 444;
+        }
+        proxy_pass http://elasticsearch;
+        proxy_redirect off;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+        proxy_pass_header Access-Control-Allow-Origin;
+        proxy_pass_header Access-Control-Allow-Methods;
+        proxy_hide_header Access-Control-Allow-Headers;
+        add_header 'Access-Control-Allow-Origin' '*';
+        add_header Access-Control-Allow-Headers 'X-Requested-With, Content-Type';
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+        #add_header Access-Control-Allow-Credentials true;
+    }
+}
 
      #+END_SRC
    + Restart Nginx server ::

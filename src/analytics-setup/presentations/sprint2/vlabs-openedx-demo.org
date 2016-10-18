@@ -17,40 +17,56 @@
 
     + [[https://github.com/openedx-vlead/port-labs-to-openedx/blob/develop/src/comparison_between_different_mooc_platforms.org][Document Link]]
     + [[https://bitbucket.org/vlead/vlead/src/f6f498c54b1f6bd37584e467e83f71bc4d949c18/presentations/2016-10-21-iitd/demo-scripts/open-edx/uniform-ui.org?at=master][Demo Script Link ]]
-    + [[http://52.53.156.84/][Demo Link]]
+    + [[http://open-edx.vlabs.ac.in/][Demo Link]]
 
 *** Single Sign-on 
-    + [[https://bitbucket.org/vlead/vlead/src/192c4f0cac91855a48c39a867cea402e87099364/presentations/2016-07-29-vlead-status-report/src/index.org?at=master&fileviewer=file-view-default][Defination]] :: 
+    + [[https://bitbucket.org/vlead/vlead/src/192c4f0cac91855a48c39a867cea402e87099364/presentations/2016-07-29-vlead-status-report/src/index.org?at=master&fileviewer=file-view-default][Definition]] :: 
       There must be a central system to register and login into the system for accessing course.
     
+    + [[https://drive.google.com/open?id=0ByhNY8nO_CW3SEU4LWJMY1Q2Y1E][DPR]]
     + [[https://bitbucket.org/vlead/vlead/src/192c4f0cac91855a48c39a867cea402e87099364/presentations/2016-10-21-iitd/demo-scripts/open-edx/single-singnon.org?at=master][Demo Script Link]]
-    + [[open-edx.vlabs.ac.in][Demo Link]]
-
+    + [[http://open-edx.vlabs.ac.in][Demo Link]]
 
 *** Persistance and State
     + [[https://bitbucket.org/vlead/vlead/src/f6f498c54b1f6bd37584e467e83f71bc4d949c18/presentations/2016-07-29-vlead-status-report/src/index.org?at=master&fileviewer=file-view-default][Definations]] :: 
       The ability of a lab to save it's state during user interaction with the lab.
 
     + [[https://bitbucket.org/vlead/vlead/src/f6f498c54b1f6bd37584e467e83f71bc4d949c18/presentations/2016-10-21-iitd/demo-scripts/open-edx/persistance-and-state.org?at=master&fileviewer=file-view-default][Script Link]]
-    + [[open-edx.vlabs.ac.in][Demo Link]]
+    + [[http://open-edx.vlabs.ac.in][Demo Link]]
 
 *** Analytics
     + Analytics for Old usage ::
-      + [[https://docs.google.com/presentation/d/1c-NGJfelIVdvk028SkCbDOpEH9Rh5WOtx-dVZlWCRmY/edit?ts=57e523b1#slide=id.g17e844a44d_1_0][Top 10 popular labs from March 31, 2015 to Till date]]
+      + [[https://bitbucket.org/vlead/vlead/src/07c51b71cf8a4e21cda522ca0021542ba016b7aa/presentations/2016-10-21-iitd/slides/data-table.png?at=master&fileviewer=file-view-default][Top 10 Popular lab since March 31, 2015 to till date]]
     + Analytics for Existing usage from Open edX ::
-      + [[./images/top-5-Labs.jpg][Top 5 labs (say from the date of edx in production]]
-      + [[./images/top-5-experiments.png][Top 5 experiments (say from the date of edx in production) ]]
+      + [[https://github.com/openedx-vlead/port-labs-to-openedx/blob/develop/src/analytics-setup/presentations/sprint2/images/top-5-Labs.jpg][Top 5 labs (say from the date of edx in production]])
+      + [[https://github.com/openedx-vlead/port-labs-to-openedx/blob/develop/src/analytics-setup/presentations/sprint2/images/top-5-experiments.png][Top 5 experiments (say from the date of edx in production)]]
+      + Usage across dates - Top 5 dates with most usage -TBD
+      + Top 5 Gateways (from the date of edx in production till date)
+
     + Live Demo of analytics ::  
        
     + [[https://github.com/openedx-vlead/port-labs-to-openedx/blob/develop/src/analytics-setup/openedx-vlabs-custom-analytics-server.org][Document Link]]
     + [[https://bitbucket.org/vlead/vlead/src/f6f498c54b1f6bd37584e467e83f71bc4d949c18/presentations/2016-10-21-iitd/demo-scripts/open-edx/analytics-usages.org?at=master&fileviewer=file-view-default][Script Link]]
     + [[http://open-edx.vlabs.ac.in/courses/course-v1:NITK+UOREPC+Anytime/info][Demo Link]]
-    + [[http://vlabs-analytics.vlabs.ac.in/app/kibana#/dashboard/pie-dashboard?_g=(refreshInterval:(display:Off,pause:!f,value:0),time:(from:now-15m,mode:quick,to:now))&_a=(filters:!(),options:(darkTheme:!f),panels:!((col:7,id:experiment-usage-breakdown-pie,panelIndex:1,row:1,size_x:6,size_y:6,type:visualization),(col:1,id:request-codes,panelIndex:2,row:17,size_x:3,size_y:3,type:visualization),(col:1,id:popular-lab-pie,panelIndex:3,row:1,size_x:6,size_y:6,type:visualization),(col:7,id:most-popular-gateways,panelIndex:4,row:12,size_x:6,size_y:5,type:visualization),(col:1,id:most-active-students,panelIndex:5,row:7,size_x:6,size_y:5,type:visualization),(col:1,id:area-chart-for-status-code,panelIndex:6,row:12,size_x:6,size_y:5,type:visualization),(col:7,id:top-15-date-and-time-of-access-pie,panelIndex:8,row:7,size_x:6,size_y:5,type:visualization),(col:4,id:top-5-labs,panelIndex:9,row:29,size_x:9,size_y:6,type:visualization),(col:1,id:top-5-experiments,panelIndex:10,row:20,size_x:12,size_y:9,type:visualization)),query:(query_string:(analyze_wildcard:!t,query:'*')),title:pie-dashboard,uiState:(P-8:(spy:(mode:(fill:!f,name:!n)))))][Data Dource Link]]
+    + [[http://vlabs-analytics.vlabs.ac.in/app/kibana#/dashboard/pie-dashboard?_g=(refreshInterval:(display:Off,pause:!f,value:0),time:(from:now-15m,mode:quick,to:now))&_a=(filters:!(),options:(darkTheme:!f),panels:!((col:7,id:experiment-usage-breakdown-pie,panelIndex:1,row:1,size_x:6,size_y:6,type:visualization),(col:1,id:request-codes,panelIndex:2,row:17,size_x:3,size_y:3,type:visualization),(col:1,id:popular-lab-pie,panelIndex:3,row:1,size_x:6,size_y:6,type:visualization),(col:7,id:most-popular-gateways,panelIndex:4,row:12,size_x:6,size_y:5,type:visualization),(col:1,id:most-active-students,panelIndex:5,row:7,size_x:6,size_y:5,type:visualization),(col:1,id:area-chart-for-status-code,panelIndex:6,row:12,size_x:6,size_y:5,type:visualization),(col:7,id:top-15-date-and-time-of-access-pie,panelIndex:8,row:7,size_x:6,size_y:5,type:visualization),(col:4,id:top-5-labs,panelIndex:9,row:29,size_x:9,size_y][Analytics Source link]]
       
+*** Search facility discliplines wise
+    + Document link 
+    + [[http://open-edx.vlabs.ac.in][Demo Link ]]
+    + [[https://bitbucket.org/vlead/vlead/src/07c51b71cf8a4e21cda522ca0021542ba016b7aa/presentations/2016-10-21-iitd/demo-scripts/open-edx/search-feature.org?at=master&fileviewer=file-view-default][Script Link]]
+*** Search facility institute wise
+    + Document Link 
+    + [[http://open-edx.vlabs.ac.in][Demo Link]]
+    + [[https://bitbucket.org/vlead/vlead/src/07c51b71cf8a4e21cda522ca0021542ba016b7aa/presentations/2016-10-21-iitd/demo-scripts/open-edx/search-feature.org?at=master&fileviewer=file-view-default][Script Link]]
+*** Search on keyword 
+    Currently, in https://vlabs.ac.in, there is no search facility in http://vlabs.ac.in.
+    However, students can get a list of course both discipline and institute wise. 
+    Keyword based search is under progress now. 
+
 *** Feedback 
-    + Document Link
-    + Script Link 
-    + Demo Link 
+    + [[https://github.com/vlead/feedback-portal/blob/master/feedback-model.org][Document Link]]
+    + [[https://bitbucket.org/vlead/vlead/src/07c51b71cf8a4e21cda522ca0021542ba016b7aa/presentations/2016-10-05-iitd/demo-scripts/add-feedback-and-check-usage.org?at=master&fileviewer=file-view-default][Script Link]]
+    + [[http://open-edx.vlabs.ac.in][Demo Link]]
 
 *** Portable Media 
     + [[https://github.com/openedx-vlead/portable-media/blob/master/src/index.org][Document Link]]
@@ -58,41 +74,54 @@
     + Demo Link 
 
 *** Authoring of Lab 
-    + Document Link
-    + [[https://bitbucket.org/vlead/vlead/src/f6f498c54b1f6bd37584e467e83f71bc4d949c18/presentations/2016-10-21-iitd/demo-scripts/open-edx/authoring-lab.org?at=master&fileviewer=file-view-default][Script Link]]
+    + [[https://github.com/openedx-vlead/port-labs-to-openedx/blob/develop/src/authoring-of-lab.org][Document Link]]
+    + [[https://bitbucket.org/vlead/vlead/src/56970aa2d76ad32c220ddb34509b54b401f5b9b2/presentations/2016-10-21-iitd/demo-scripts/open-edx/authoring-lab.org?at=master&fileviewer=file-view-default][Script Link]]
  
 
 
-    
-* VLEAD showcase 
+* Analytics Dashboard 
+** VLABS Dashboard
+*** Dashboard will contain the following analytics - To be displayed on Thursday, OCT 13
+    + Usage count - Top 5 Labs (from the date of edx in production to till date)
+    + Usage count - Top 5 experiments (from the date of edx in production to till date)
+    + Usage count - Top 5 popular dates of action on Virtual labs (from the date of edx in production to till date)
+    + Usage count - Top 5 popular gateway IP address (from the date of edx in production to till date)
+
+*** Feedback Dasboard 
+
+ 
+* VLEAD showcase (Till OCT 14, 2016)
    
-|---------------------------------------------------+-------|
-| Items                                             | Count |
-|---------------------------------------------------+-------|
-| No. of Servers (Physical)                         |     4 |
-|---------------------------------------------------+-------|
-| No. of Containers on Physical servers             |   367 |
-|---------------------------------------------------+-------|
-| No. of AWS (Amazon Web Services) Virtual Machines |       |
-|---------------------------------------------------+-------|
-| No. of Services                                   |     3 |
-|---------------------------------------------------+-------|
-| No. of VLEAD repositories                         |       |
-|---------------------------------------------------+-------|
-| No. of commits in all VLEAD repos                 |       |
-|---------------------------------------------------+-------|
+|---------------------------------------------------+-------+----------------------------------|
+| Items                                             | Count | Source                           |
+|---------------------------------------------------+-------+----------------------------------|
+| No. of Servers (Physical)                         |     4 |                                  |
+|---------------------------------------------------+-------+----------------------------------|
+| No. of Containers on Physical servers             |   367 |                                  |
+|---------------------------------------------------+-------+----------------------------------|
+| No. of AWS (Amazon Web Services) Virtual Machines |   106 |                                  |
+|---------------------------------------------------+-------+----------------------------------|
+| No. of VLEAD repositories                         |   153 | https://github.com/vlead         |
+|                                                   |       | https://github.com/openedx-vlead |
+|---------------------------------------------------+-------+----------------------------------|
+| No. of commits in all VLEAD repos                 |  5638 | https://github.com/openedx-vlead |
+|                                                   |       | https://github.com/vlead         |
+|---------------------------------------------------+-------+----------------------------------|
+
+
 
 + [[https://docs.google.com/spreadsheets/d/1N79-GWEOAAtktxiQodG1Vh0JKt_ZaUCXqbKfy5LnxfE/edit?ts=57ea69d2#gid=0][Details]]
   
-
 * Skeleton of the Presentation for Oct 21st meeting
 
    https://bitbucket.org/vlead/vlead/src/f6f498c54b1f6bd37584e467e83f71bc4d949c18/presentations/2016-10-21-iitd/src/index.org?at=master&fileviewer=file-view-default
 
 
-
-* To Do list 
+* To Do list
+  + Making ELK stack auto-deployable and run Open edx from cluster - Post October 21, 2016
+  + [[http://54.153.70.190][Latest theme ]]
   + https://github.com/openedx-vlead/port-labs-to-openedx/blob/develop/src/analytics-setup/presentations/sprint2/theming-to-dos.org
   + Expected efforts - 3 person 4 days (by end of this week)
-  
+  + backing up elasticsearch data  
 
+  

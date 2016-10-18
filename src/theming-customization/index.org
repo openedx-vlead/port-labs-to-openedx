@@ -286,3 +286,30 @@ Below are the email id's which are to replaced.
 | SERVER_EMAIL                   |               devops@example.com     | not needed for now       |      -            |  
 | TECH_SUPPORT_EMAIL             |               technical@example.com  | engg@vlabs.ac.in         |    exists         |
 | UNIVERSITY_EMAIL               |               university@example.com | not needed for now       |      -            |
+* Comprehensive theme on dogwood3 
+  To apply comprehensive theme on dogwood follow the steps -
+  + Login to edX server 
+  + cd /edx/app/edxapp/themes/
+  + Clone repository https://github.com/openedx-vlead/vlabs-edx-bootstrap-theme
+    #+BEGIN_SRC command
+    git clone https://github.com/openedx-vlead/vlabs-edx-bootstrap-theme edx-bootstrap-theme
+    #+END_SRC
+  + Give proper permissions 
+  + Open /edx/app/edxapp/lms.env.json
+  + Change the following keys -
+    #+BEGIN_SRC command
+    "COMPREHENSIVE_THEME_DIRS": ["/edx/app/edxapp/themes"]
+    "ENABLE_COMPREHENSIVE_THEMING": true
+    "DEFAULT_SITE_THEME": "edx-bootstrap-theme"
+    "USE_CUSTOM_THEME": false
+    "THEME_NAME": ""
+    #+END_SRC
+  + Save changes
+  + Compile changes using the commands below -
+    #+BEGIN_SRC command
+    sudo -H -u edxapp bash 
+    cd /edx/app/edxapp/edx-platform
+    source ../edxapp_env
+    paver update_assets lms --setting=aws
+   #+END_SRC
+  + Once done, restart services using /edx/bin/supervisorctl/ restart all 

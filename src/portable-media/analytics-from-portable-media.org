@@ -1,0 +1,87 @@
+#+Title: Fetch Analytics for portable media 
+#+Author: VLEAD
+#+Date: 17-10-2016
+
+
+* Introduction 
+  This document describes the process of fetching logs from portable media
+  version of VLABS.
+
+* Requirements 
+  + VLABS Analytics must be captured from portable version of VLABS 
+  + A utility for workshop coordinator to fetch analytics and share with 
+    central team
+  + Analytics captured must be shared to VLEAD team 
+ 
+* Technically
+  + Install elasticdump 
+    #+BEGIN_SRC command
+    apt-get install npm
+    npm install elasticdump -g   
+    #+END_SRC
+  + Use command as given below to take dump in a file 
+    #+BEGIN_SRC command
+    elasticdump --input=http://localhost:9200/vlabs --output=/home/ubuntu/vlabs_data.json --type=data
+    elasticdump --input=http://localhost:9200/vlabs --output=/home/ubuntu/vlabs_mapping.json --type=mapping
+    #+END_SRC
+
+* Utility
+  A python GUI to fetch the following -
+  + webserver logs
+  + analytics(ELK) logs  
+  
+* Setting utility
+  + Install tkinter 
+   #+BEGIN_SRC command
+   yum -y install tkinter 
+   #+END_SRC
+
+  + GUI source 
+    #+BEGIN_SRC command
+    + GUI source 
+    #+BEGIN_SRC command
+    #!/usr/bin/python
+
+    import Tkinter
+    import tkMessageBox
+    import subprocess as sub
+
+    window = Tkinter.Tk()
+    window.title("VLABS Portable log fetcher")
+    window.geometry("400x400") 
+    window.configure(background='grey')
+
+    B1 = Tkinter.Button(window, text = "Get Analytics Logs", command = sub.call('/root/fetch_analytics.sh'))
+    B1.pack()
+    tkMessageBox.showinfo("", "Click Generate logs button to generate logs once workshop is over")
+
+    window.mainloop()
+
+    #+END_SRC 
+    
+  + Create a script fetch_analytics.sh script in root directory 
+    
+    #+BEGIN_SRC command command
+    #!/bin/sh
+
+   DATE=`date +"%d-%m-%y-%H-%M"`
+   WORKSHOP_FOLDER="workshop-analytics-$DATE"
+   WORKSHOP_DIR="/root/$WORKSHOP_FOLDER"
+   INDEX_NAME="vlabs"
+   user="portablemedia"
+
+   rm -rf workshop-analytics*
+   mkdir $WORKSHOP_DIR
+
+   echo "`elasticdump --input=http://localhost:9200/$INDEX_NAME --output=$WORKSHOP_DIR/vlabs_mapping_$DATE.json --type=mapping`"
+   echo "`elasticdump --input=http://localhost:9200/$INDEX_NAME --output=$WORKSHOP_DIR/vlabs_data_$DATE.json --type=data`"
+
+   cp -r /var/log/httpd $WORKSHOP_DIR/
+
+   echo "`tar -zcvf $WORKSHOP_FOLDER.tar.gz $WORKSHOP_FOLDER`"
+   echo "`cp $WORKSHOP_FOLDER.tar.gz ~/Desktop`" 
+   echo "`cp $WORKSHOP_FOLDER.tar.gz /home/$user/Desktop`" 
+
+    #+END_SRC
+
+  
