@@ -356,15 +356,17 @@ Click here </a> to give feedback</p>
     + Add, commit and push all the changes to the git repository.
 * Disclaimer
   VLEAD team at IIIT-H would be only responsible for the creation of
-  lab speicifications called labspec.json files. They would provide
-  the labspecs and the information provided must be adhered by the lab
-  author while creating a course on Open edX. Subsequent to the
+  lab specifications called labspec.json files. They would provide the
+  labspecs and the information provided must be adhered by the lab
+  author while creating a lab on Open edX. Subsequent to the
   availability of labspecs, each author would be responsible for the
-  content of a course. Also subsequent to the course creation on the
-  staging instance by the author, the hosting request for the course
-  on production edX environment should be raised in the
-  engineers-forum after the initial credentials of a course are as per
-  the lab specifications.
+  content of a lab. Also subsequent to the lab creation on the staging
+  instance by the author, the hosting request for the lab on the
+  production edX environment should be raised in the engineers-forum
+  after the initial credentials of a course are as per the lab
+  specifications. The protocols for raising requests for hosting must
+  be adhered consistenly by all the authors and other modes for the
+  communication would not be entertained.
 * Summary
   This document highlights the authoring of a new lab from lab
   creation to hosting. It focusses on the process to contribute
