@@ -167,10 +167,12 @@ function popup(){
 
    #+BEGIN_SRC command
    <p><button onclick="popup()">Full Screen</button></p>
-   <p><iframe src="http://pevii-au.virtual-labs.ac.in/index.php?exp_id=Optimal_Foraging_Pollinators" height="602" width="802"> </iframe></p>
+   <p><iframe src="http://pevii-au.virtual-labs.ac.in/index.php?exp_id=Optimal_Foraging_Pollinators" 
+   height="602" width="802"> </iframe></p>
    <script>// <![CDATA[
    function popup(){
-    window.open('http://pevii-au.virtual-labs.ac.in/index.php?exp_id=Optimal_Foraging_Pollinators', '_blank', 'toolbar=0,location=0,menubar=0');
+   window.open('http://pevii-au.virtual-labs.ac.in/index.php?exp_id=Optimal_Foraging_Pollinators',
+   '_blank', 'toolbar=0,location=0,menubar=0');
     }
    //  ]]></script>
 
@@ -201,6 +203,69 @@ function popup(){
     iframes of simulations. In case of unavailability of lab SSL
     certificates, =http= URL should be included.
 *** Steps to include the feedback
+    The feedback would be captured at lab level as well as at every
+    experiment level by the feedback service.
+**** Lab level feedback
+     Feedback code should be included in each simulation code in
+     order to capture the usage for each experiment performed by a
+     student. The lab level feedback code snippet is given below :
+#+BEGIN_SRC command
+<p>
+<script src="http://open-edx.vlabs.ac.in:5959/feedback_utils.js"></script>
+<script>// <![CDATA[
+var user_id = "%%USER_ID%%"
+var lab_id = "PEVII-AU"
+var lab_name = "Population Ecology II"
+// ]]></script>
+</p>
+<p><a onclick="submit_feedback(lab_id, lab_name, user_id)" style="cursor: pointer;">
+Click here </a> to give feedback</p>
+#+END_SRC
+   + In the above code snippet, the =lab_id= field would include the
+     lab IDs which could be obtained from the lab-specifications
+     repository for this lab. The values of =lab_id= and =lab_name=
+     given above in the example code snippet is only for
+     representational purposes. *Kindly refrain from giving the same
+     values as given in above example*.
+   + The =var= fields should be filled with appropriate lab_id and
+     lab_name of the authored lab.
+   + *NOTE* : The =user_id= field given as =%%USER_ID%%= should be
+     left as it is without any modifications.
+   + To ensure link integrity, the =https= URL must be included in the
+     iframes of simulations. In case of unavailability of lab SSL
+     certificates, =http= URL should be included.
+**** Experiment level feedback
+     Feedback code should be included in each experiment section as a
+     separate subsection in order to capture the feedback for each
+     experiment performed by a student. The feedback code is given
+     below :
+#+BEGIN_SRC command
+<p>
+<script src="http://open-edx.vlabs.ac.in:5959/feedback_utils.js"></script>
+<script>// <![CDATA[
+var user_id = "%%USER_ID%%"
+var lab_id = "PEVII-AU"
+var lab_name = "Population Ecology II"
+var exp_id = "E99946"
+var exp_name = "Optimal Pollinators"
+// ]]></script>
+</p>
+<p><a onclick="submit_feedback(lab_id, lab_name, exp_id, exp_name, user_id)" style="cursor: pointer;">
+Click here </a> to give feedback</p>
+#+END_SRC
+   + In the above code snippet, the =lab_id= field would include the
+     lab IDs which could be obtained from the lab-specifications
+     repository for this lab. The values of =lab_id=, =lab_name=,
+     =exp_id= and =exp_name= given above in the example code snippet
+     is only for representational purposes. *Kindly refrain from
+     giving the same values as given in above example*.
+   + The =var= fields should be filled with appropriate lab_id,
+     lab_name, exp_id and exp_name of the authored lab.
+   + *NOTE* : The =user_id= field given as =%%USER_ID%%= should be
+     left as it is without any modifications.
+   + To ensure link integrity, the =https= URL must be included in the
+     iframes of simulations. In case of unavailability of lab SSL
+     certificates, =http= URL should be included.
 *** Steps to include the videos
     + Click on =+ New Unit= to create a unit named *Video*
     + Choose the =Video= component from Add New Component.
