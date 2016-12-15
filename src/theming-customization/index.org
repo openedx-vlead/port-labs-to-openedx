@@ -5,14 +5,14 @@
 #+PROPERTY: exports code
 #+SETUPFILE: ../org-templates/level-1.org
 
-* Strategy
+* COMMENT Strategy
 Efforts in theming and customization are carried in three different ways -
 + Theming in dogwood 0 - Sripathi
 + Theming in dogwood 2 - Ashay
 + Editing source code  - Ashay/Sripathi  -- We will not this technique.
 
 * Introduction
-This document briefly explaines the process of customizting the themes,
+This document briefly explaines the process of customizing the VLABS Open edx theme.
 * Changing theme on dogwood0
 ** Procedure to change the theme of OpenEdx LMS
 ** The manual way
@@ -313,3 +313,5 @@ Below are the email id's which are to replaced.
     paver update_assets lms --setting=aws
    #+END_SRC
   + Once done, restart services using /edx/bin/supervisorctl/ restart all 
+* Link to VLABS Open edX theme on github
+  https://github.com/openedx-vlead/vlabs-edx-bootstrap-theme
