@@ -46,8 +46,9 @@
   - [[./theming-customization/index.org][Change the way Open edX platform looks]]
   - [[./porting-labs/index.org][Port a lab to Open edX platform]]
   - [[./communication-channels/index.org][Communication Channels for collaboration]]
-  - Setting up Analytics 
-    
+  - Setting up Analytics
+    + [[https://github.com/openedx-vlead/elk-stack-for-analytics][Elasticsearch server]]
+    + [[https://github.com/openedx-vlead/vlabs-analytics-api-server][Analytics Server API]]
 
 * Open Questions
 
