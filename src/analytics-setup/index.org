@@ -1,0 +1,437 @@
+#+TITLE: Setup Analytics for Virtual-labs 
+#+Author: Siva Shanker
+#+Date: [2016-04-26]
+#+PROPERTY: results output
+#+PROPERTY: exports code
+#+SETUPFILE: ../org-templates/level-1.org
+#+OPTIONS: ^:nil
+	   
+* Introduction
+  Analytics provide the user activity while using virtual labs on Open edX
+  platform.  This data allows an insight into the usage of virtual labs that
+  could be used for various purposes.  
+* Requirements
+  - Have a Open edX platform setup ready. Refer [[../platform-installation/index.org]]
+  - One more VM for setting up analytics.
+* Architecture of Open edX Analytics Gathering
+
+  [[http://edx.readthedocs.org/projects/edx-installing-configuring-and-running/en/latest/_images/Analytics_Pipeline.png][Architecture Diagram]]
+
+  Capturing of Analytics is three phased.  
+  1. LMS, read as Open edX platfrom from which the labs are run, captures the
+     events of a user.
+  2. Pipeline reads this data from the platform, collates and creates a store
+     in a format that could be read by an API.
+  3. edx Analytics Data API provides an HTTP interface to access the store
+     created by the Pipeline.
+  4. Finally insights application will serve the analytics of courses
+     which are hosted on LMS.
+  The platform also exposes a [[http://edx.readthedocs.org/projects/edx-platform-api/en/latest/course_structure/index.html][set of API]] to get all the courses that are being
+  run on a platform. 
+* Configure Open edX analytics for the courses 
+** Setup edx-analytics
+   1. Create a separate VM with at least 2GB of RAM and 30GB of HDD
+      for setting up edX analytics
+   2. Update and upgrade the VM
+      #+BEGIN_EXAMPLE
+      sudo apt-get update -y
+      sudo apt-get install python-pip git libmysqlclient-dev python-dev -y
+      sudo pip install virtualenv
+      #+END_EXAMPLE
+   3. Create a separate virtual environment for the edx analytics setup.
+      #+BEGIN_EXAMPLE
+      # create an "ansible" virtualenv and activate it
+      virtualenv ansible
+      . ansible/bin/activate
+      #+END_EXAMPLE
+   4. Do the following steps
+      #+BEGIN_EXAMPLE
+      git clone https://github.com/edx/configuration.git
+      cd configuration/
+      pip install -r requirements.txt
+      #+END_EXAMPLE
+   5. Install Nodejs and npm if you are using dogwood version Open edX platform and Open edX insights
+      #+BEGIN_SRC 
+      sudo add-apt-repository ppa:chris-lea/node.js
+      sudo apt-get update
+      sudo apt-get install -y nodejs --no-install-recommends
+      sudo apt-get install npm
+      #+END_SRC    
+   6. Run the playbook to setup insights app
+      #+BEGIN_SRC 
+      cd playbooks/edx-east/
+      ansible-playbook -i localhost, -c local analytics_single.yml --extra-vars "INSIGHTS_LMS_BASE=https://lms.vlabs.ac.in"
+      # (If your site uses https, change the scheme and set the oauth flag to true. Enforce_secure means "insist on https".)
+    
+    
+      # wait for a while :)
+      #+END_SRC
+   7. Install SSL certficates 
+      Follow the steps given below to add a SSL certificate in LMS machine 
+      - Login to your lms machine 
+      - Create a directory =certs= if it does not exist in =/etc/nginx/ssl/=
+       #+BEGIN_EXAMPLE
+       sudo  mkdir -p /etc/nginx/ssl/certs
+       #+END_EXAMPLE
+      - Change directory 
+       #+BEGIN_SRC
+       cd /etc/nginx/ssl/certs
+       #+END_SRC
+      - Copy your .crt, .key, and .ca-bundle file into =/etc/nginx/ssl/certs=
+      - Modify the nginx configuration files of insights
+      #+BEGIN_EXAMPLE
+      vim /etc/nginx/sites-enabled/insights
+      #+END_EXAMPLE
+      - Add the following lines to that opened file
+      #+BEGIN_EXAMPLE
+      	server {
+	#  listen 443 ssl default_server;
+	  listen 18110 default_server;
+	  server_name insights.vlabs.ac.in;
+
+	     ssl on;
+	     # ssl_certificate /etc/nginx/ssl/server.crt;
+	     ssl_certificate /etc/nginx/ssl/certs/STAR_vlabs_ac_in.crt;
+	     #  ssl_certificate_key /etc/nginx/ssl/server.key;
+	     ssl_certificate_key /etc/nginx/ssl/certs/vlabs.ac.in.key;
+
+
+
+
+	     location ~ ^/static/(?P<file>.*) {
+	     root /edx/var/insights;
+	     try_files /staticfiles/$file =404;
+	     }
+
+	     location / {
+             try_files $uri @proxy_to_app;
+	     }
+
+	     # No basic auth security on the heartbeat url, so that ELB can use it
+	     location /status {
+	     try_files $uri @proxy_to_app;
+	     }
+
+
+	     location @proxy_to_app {
+	     proxy_set_header X-Forwarded-Proto $http_x_forwarded_proto;
+	     proxy_set_header X-Forwarded-Port $http_x_forwarded_port;
+	     proxy_set_header X-Forwarded-For $http_x_forwarded_for;
+	     proxy_set_header Host $http_host;
+
+	     #    proxy_redirect off;
+	     proxy_redirect http://insights.vlabs.ac.in https://insights.vlabs.ac.in;
+	     proxy_pass http://insights_app_server;
+	     }
+
+	       }
+
+      	#+END_EXAMPLE
+   8. Run the following commands to see hadoop job. This job has
+      built-in "compute pi"
+      #+BEGIN_EXAMPLE
+      sudo su - hadoop
+  
+      cd /edx/app/hadoop
+ 
+      hadoop jar hadoop-2.3.0/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.3.0.jar pi 2 100
+      # it should compute something -- I got pi = 3.12. Close enough :)
+      #+END_EXAMPLE
+   9. Also make sure you can run hive
+      #+BEGIN_EXAMPLE
+      /edx/app/hadoop/hive/bin/hive
+      # it should work
+      ^D or exit  to get back to your regular user
+      #+END_EXAMPLE
+   10. The Insights app should be up. Test them by runing the following commands
+       #+BEGIN_EXAMPLE
+       curl https:://localhost:8110
+       curl https://insights.vlabs.ac.in:18110
+       #+END_EXAMPLE
+   11. Get some test logs into HDFS of Insights machine from LMS machine
+      
+       #+BEGIN_EXAMPLE
+       # scp tracking.log onto the machine from the LMS. Then...
+       sudo mkdir -p /edx/var/log/tracking # if directory not exists.
+       sudo scp root@<LMS-IP>:/edx/var/log/tracking/tracking.log /edx/var/log/tracking
+       sudo chown hadoop /edx/var/log/tracking/tracking.log
+       # wait a minute -- ansible creates a cron job to load files in that dir every minute
+    
+       # Check it  
+       hdfs dfs -ls /data
+    
+       Found 1 items
+       -rw-r--r--   1 hadoop supergroup     308814 2015-10-15 14:31 /data/tracking.log
+       #+END_EXAMPLE
+       - Exit from haddop user and get back to normal user(ubuntu)
+   12. Setup PIPELINE 
+	#+BEGIN_SRC 
+	ssh-keygen -t rsa -f ~/.ssh/id_rsa -P ''
+	echo >> ~/.ssh/authorized_keys # Make sure there's a newline at the end
+	cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+	# check: ssh localhost "echo It worked!" -- make sure it works.
+  
+	# Make a new virtualenv -- otherwise will have conflicts
+	virtualenv pipeline
+	. pipeline/bin/activate
+  
+  
+	git clone https://github.com/edx/edx-analytics-pipeline
+	cd edx-analytics-pipeline
+	make bootstrap
+    
+       #+END_SRC
+   13. Check the pipeline install by running a simple job to count
+       events per day.
+
+       - NOTE :: You may have to change the =--user= name and
+         =--interval= in the following command according to system's
+         user accounts.
+
+       For example, If you want to run the command from root user (ssh
+       access should be enabled on this user) then provide *--user
+       root*
+       #+BEGIN_SRC
+       # Ensure you're in the pipeline virtualenv 
+       remote-task --host localhost --repo https://github.com/edx/edx-analytics-pipeline --user ubuntu --override-config $HOME/edx-analytics-pipeline/config/devstack.cfg --wheel-url http://edx-wheelhouse.s3-website-us-east-1.amazonaws.com/Ubuntu/precise --remote-name analyticstack --wait TotalEventsDailyTask --interval 2016-01-01-2020-01-01 --output-root hdfs://localhost:9000/output/ --local-scheduler
+       #+END_SRC
+   14. Write config files for the pipeline so that it knows where the LMS database is: 
+       #+BEGIN_SRC 
+       sudo vim /edx/etc/edx-analytics-pipeline/input.json
+       # put in the right url and credentials for your LMS database
+       # username = edxapp001
+       # host = LMS machine's IP/FQDN
+       # password = password of the edxapp001 user
+       #+END_SRC
+   
+   15. Test it by running the following command. The output of the
+       below command shows the mysql queries. 
+       #+BEGIN_SRC 
+       remote-task --host localhost --user ubuntu --remote-name analyticstack --skip-setup --wait ImportEnrollmentsIntoMysql --interval 2016 --local-scheduler
+       #+END_SRC
+       - If it succeeds, you'll see: 
+         #+BEGIN_EXAMPLE
+         sudo mysql
+	 SELECT * FROM reports.course_enrollment_daily;
+  
+	# Should give enrollments over time. Note that this only counts enrollments in the event logs -- if you manually created users / enrollments in the DB, they won't be counted.
+         #+END_EXAMPLE
+   16. Now, you will now need to update variable values in
+       =/edx/etc/insights.yml= with appropriate values (that are
+       generated automatically on django admin page on LMS machine).
+       #+BEGIN_SRC 
+       SOCIAL_AUTH_EDX_OIDC_ID_TOKEN_DECRYPTION_KEY: '<Client secret FROM LMS>'
+       SOCIAL_AUTH_EDX_OIDC_KEY: '<Client id from LMS>'
+       SOCIAL_AUTH_EDX_OIDC_SECRET: '<Client secret FROM LMS>'
+       SOCIAL_AUTH_EDX_OIDC_URL_ROOT: '<LMS URL>/oauth2'
+       SOCIAL_AUTH_REDIRECT_IS_HTTPS: true
+       #+END_SRC
+
+   17. Edit open_id.py file 
+       + Fire =locate= command to find the path of the open_id.py file
+       #+BEGIN_SRC 
+	insights # locate open_id.py
+	  /edx/app/insights/venvs/insights/lib/python2.7/site-packages/social/backends/open_id.py
+	  /edx/app/insights/venvs/insights/lib/python2.7/site-packages/social/backends/open_id.pyc
+	  /edx/app/insights/venvs/insights/lib/python2.7/site-packages/social/tests/backends/open_id.py
+	  /edx/app/insights/venvs/insights/lib/python2.7/site-packages/social/tests/backends/open_id.pyc                     
+       #+END_SRC                                       
+       + Open file
+         #+BEGIN_SRC
+	  sudo vim /edx/app/insights/venvs/insights/lib/python2.7/site-packages/social/backends/open_id.py                        
+         #+END_SRC                                                                                                          
+       + Search for string "issuer=self.ID_TOKEN_ISSUER". This string
+         #will fall in  def validate_and_return_id_token of file.
+
+       + In try block replace
+         #+BEGIN_SRC
+         id_token = jwt_decode(id_token, decryption_key, audience=client_id,
+                                  issuer=self.ID_TOKEN_ISSUER,
+                                  algorithms=['HS256'])
+
+                       WITH
+         id_token = jwt_decode(id_token, decryption_key, audience=client_id,
+                                  issuer=self.ID_TOKEN_ISSUER, options = {'verify_iat' : False,},
+                                  algorithms=['HS256'])
+                                                                                                                     
+         #+END_SRC                                                                                                          
+       + Save file
+       + Compile open_id.py files
+         #+BEGIN_SRC
+	   insights # sudo python
+	   Python 2.7.10 (default, Jun 29 2015, 22:38:23)
+	   [GCC 4.6.3] on linux2
+	   Type "help", "copyright", "credits" or "license" for more information.
+	   >>> import py_compile
+	   >>> py_compile.compile("open_id.py")
+           >>> exit()                                                                                                         
+         #+END_SRC                                                                                                          
+   18. Restart insights app
+       #+BEGIN_SRC 
+       /edx/bin/supervisorctl restart all
+       #+END_SRC
+   19. Edit base.py file
+       #+BEGIN_SRC 
+	sudo vim  /edx/app/insights/venvs/insights/lib/python2.7/site-packages/social/backends/base.py                           
+       #+END_SRC                                                                                                          
+       + In def request(self, url, method='GET', *args, **kwargs):, add the   following line. This line says that please do not verify SSL.
+         #+BEGIN_SRC 
+	  kwargs.setdefault('headers', {})
+	  if self.setting('VERIFY_SSL') is not None:
+             		kwargs.setdefault('verify',self.setting('VERIFY_SSL'))
+          kwargs.setdefault('verify', False) ## This line needs to bee added
+	  kwargs.setdefault('timeout', self.setting('REQUESTS_TIMEOUT') or
+                                    self.setting('URLOPEN_TIMEOUT'))                                                
+         #+END_SRC                                                                                                          
+       + In the same def in try block, replace as shown. This is to ignore
+         SSL_PROTOCOL even if it is there.
+         #+BEGIN_SRC
+         if self.SSL_PROTOCOL
+         WITH
+         if self.SSL_PROTOCOL is not None:                                                                                  
+         #+END_SRC                                                                                                          
+       + In the same try block, add line in else section
+         #+BEGIN_SRC
+	  else:
+	      response = request(method, url, *args, **kwargs) 
+         #+END_SRC                                       
+
+       + Finally your def function looks like the one shown
+       below. Please see the commented lines.
+       #+BEGIN_SRC
+        def request(self, url, method='GET', *args, **kwargs):
+      	      kwargs.setdefault('headers', {})
+	      if self.setting('VERIFY_SSL') is not None:
+                  kwargs.setdefault('verify', self.setting('VERIFY_SSL'))
+              kwargs.setdefault('verify', False) #Added by Dr. Ramesh
+              kwargs.setdefault('timeout', self.setting('REQUESTS_TIMEOUT') or
+                                           self.setting('URLOPEN_TIMEOUT'))
+              if self.SEND_USER_AGENT and 'User-Agent' not in kwargs['headers']:
+                  kwargs['headers']['User-Agent'] = user_agent()
+
+              try:
+                  if self.SSL_PROTOCOL is not None: #Modified to not none
+                #session = SSLHttpAdapter.ssl_adapter_session(self.SSL_PROTOCOL)
+                #response = session.request(method, url, *args, **kwargs)
+                      response = request(method, url, *args, **kwargs)
+                  else:
+                      response = request(method, url, *args, **kwargs)
+              except ConnectionError as err:
+	      	  raise AuthFailed(self, str(err))
+              response.raise_for_status()
+              return response                                                                                              
+       #+END_SRC                                                                                                          
+       + Save file and compile it.
+         #+BEGIN_SRC
+	  insights # sudo python
+ 	  Python 2.7.10 (default, Jun 29 2015, 22:38:23)
+	  [GCC 4.6.3] on linux2
+          Type "help", "copyright", "credits" or "license" for more
+          information.
+          >>> import py_compile
+          >>> py_compile.compile("base.py")
+          >>> exit()                                                                                                         
+         #+END_SRC                                                                                                          
+       + Restart edx services
+         #+BEGIN_SRC
+       	 sudo /edx/bin/supervisorctl restart all                                                                            
+         #+END_SRC                               
+
+   20. References
+       - https://openedx.atlassian.net/wiki/display/OpenOPS/edX+Analytics+Installation
+       - https://openedx.atlassian.net/wiki/pages/viewpage.action?spaceKey=AN&title=Configuring+Insights+for+Open+ID+Connect+SSO+with+LMS
+   
+** Test LMS and Insights for analytics
+   + Log into LMS as a staff@example.com 
+   + Select any course
+   + Navigate to course analytics button/link (Click on instructor
+     button)
+   + Redirects to insights/analytics machine to see the analytics of
+     selected course.
+** Run remote tasks
+   Following remote tasks will insert analytics information details
+   into reports database. These are imported if we want to see proper
+   analytics of each course and users activity on courses and other
+   analyitcs information. For more details about the tasks please go
+   [[https://github.com/edx/edx-analytics-pipeline/wiki/Tasks-to-Run-to-Update-Insights][here]]
+   - Enrollment remote task
+   #+BEGIN_EXAMPLE
+   remote-task --host localhost --user ubuntu --remote-name analyticstack --skip-setup --wait ImportEnrollmentsIntoMysql --interval 2016-01-01-2020-01-01 --local-scheduler
+   #+END_EXAMPLE
+   - Performance remote task
+   #+BEGIN_EXAMPLE
+   remote-task --host localhost --user ubuntu --remote-name analyticstack --skip-setup --wait AnswerDistributionWorkflow --local-scheduler --src hdfs://localhost:9000/data/ --dest  hdfs://localhost:9000/ --name vlead  --output-root hdfs://localhost:9000/output/ --include '*tracking.log*'  --manifest hdfs://localhost:9000/data/manifest.txt  --n-reduce-tasks 10 --marker hdfs://localhost:9000/marker --database reports --credentials "/edx/etc/edx-analytics-pipeline/output.json"   
+   #+END_EXAMPLE
+   - Engagement tasks
+     #+BEGIN_EXAMPLE
+  remote-task --host localhost --user ubuntu --remote-name analyticstack --skip-setup --wait CourseActivityWeeklyTask --local-scheduler \
+  --end-date $(date +%Y-%m-%d -d "today") \
+  --weeks 24 \
+  --credentials /edx/etc/edx-analytics-pipeline/output.json \
+  --n-reduce-tasks 1
+     #+END_EXAMPLE
+
+* Troubleshooting
+** remote task
+   #+BEGIN_EXAMPLE
+   remote-task --host localhost --repo https://github.com/edx/edx-analytics-pipeline --user ubuntu --override-config $HOME/edx-analytics-pipeline/config/devstack.cfg --wheel-url http://edx-wheelhouse.s3-website-us-east-1.amazonaws.com/Ubuntu/precise --remote-name analyticstack --wait TotalEventsDailyTask --interval 2016-01-01-2020-01-01 --output-root hdfs://localhost:9000/output/ --local-scheduler
+   #+END_EXAMPLE
+*** Error
+   #+BEGIN_EXAMPLE
+   PLAY RECAP ********************************************************************
+localhost                  : ok=23   changed=14   unreachable=0    failed=0
+
+Running command = ['ssh', '-tt', '-o', 'ForwardAgent=yes', '-o', 'StrictHostKeyChecking=no', '-o', 'UserKnownHostsFile=/dev/null', '-o', 'KbdInteractiveAuthentication=no', '-o', 'PasswordAuthentication=no', '-o', 'User=root', '-o', 'ConnectTimeout=10', 'localhost', "sudo -Hu hadoop /bin/bash -c 'cd /var/lib/analytics-tasks/analyticstack/repo && . $HOME/.bashrc && /var/lib/analytics-tasks/analyticstack/venv/bin/launch-task TotalEventsDailyTask --interval 2015 --output-root hdfs://localhost:9000/output/ --local-scheduler --overwrite'"]
+Warning: Permanently added 'localhost' (ECDSA) to the list of known hosts.
+Traceback (most recent call last):
+  File "/var/lib/analytics-tasks/analyticstack/venv/bin/launch-task", line 6, in <module>
+    from edx.analytics.tasks.launchers.local import main
+  File "/var/lib/analytics-tasks/analyticstack/venv/local/lib/python2.7/site-packages/edx/analytics/tasks/launchers/local.py", line 16, in <module>
+    import cjson
+ImportError: /var/lib/analytics-tasks/analyticstack/venv/local/lib/python2.7/site-packages/cjson.so: undefined symbol: PyUnicodeUCS2_DecodeUnicodeEscape
+Connection to localhost closed.
+Exiting with status = 1
+   #+END_EXAMPLE
+*** Solution
+   #+BEGIN_EXAMPLE
+   -download cjson from https://pypi.python.org/pypi/python-cjson/1.0.5
+   -extract the files and execute ./build_inplace to compile the library
+   -replace cjson.so file in /var/lib/analytics-tasks/analyticstack/venv/local/lib/python2.7/site-packages
+
+   -in the analytic stack venv, reinstall numpy and pandas:
+
+    cd /var/lib/analytics-tasks/analyticstack
+
+    . venv/bin/activate
+
+    pip uninstall numpy
+
+    pip install numpy==1.8.0
+
+    pip uninstall pandas
+
+    pip install pandas==0.13
+
+   #+END_EXAMPLE
+   After this, rerun the remote tasks again.
+*** Reference
+   - [[https://groups.google.com/forum/#!topic/openedx-analytics/51f8zWpcvAA][google-group]]
+
+* Open Issues on GitHub
+  Open Issues on GitHub regarding analytics/insights setup.  At
+  present, there is only one open issue, that is
+  https://github.com/vlead/port-labs-to-openedx/issues/4
+
+* References
+  - https://github.com/edx/configuration/wiki
+  - https://openedx.atlassian.net/wiki/display/OPEN/Debugging+Issues+with+LMS+and+Studio
+  - https://github.com/edx/edx-analytics-pipeline/wiki
+  - http://edx.readthedocs.org/projects/edx-installing-configuring-and-running/en/latest/analytics/install_analytics.html
+  - https://github.com/open-craft/edx-analytics-devstack
+      
+* Acknowledgments 
+  We acknowledge the valuable support of Dr. Ramesh NPN from APSSDC to
+  help us identify and solve problems we were facing during setting up
+  edx-analytics. We also thank Mrs. Sukla Nag from IIT-B for her
+  appropriate suggestions.
+  - [[./suggestions-by-experts.org]]

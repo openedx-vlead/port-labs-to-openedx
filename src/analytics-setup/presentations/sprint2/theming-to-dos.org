@@ -1,0 +1,30 @@
+#+Title: Actions items for VLABS edX platform theming 
+#+Date: September 27, 2016
+#+Author: VLEAD
+
+* Introduction
+  This document lists all the TO-DO items in theming VLABS openedx platform.
+
+* Priya's List of To-Do's  (September 27, 2016, 8:28PM ) 
+  + Ported Labs to be moved the themed instance - DONE
+  + All ported labs to carry script for feedback and analytics - IN PROGRESS 
+  + Final dashboard for analytics and feeback - IN PROGRESS 
+  + Lab icons are collected. To be applied to each and every ported lab on edX.- DONE
+  + Registration and Login page - DONE
+    + Background clor to be white, foegroud black
+    + Font size to be increased.
+  + Find courses button to be placed properly - DONE
+  + Domain and discipline : Change - DONE
+  + Parner institute : narrower. - DONE
+  + Header menu change  - TBD 
+  + Footer : reformat - DONE
+  + Powered by : to be added - DONE
+  + Links on images whereever possible. - DONE
+  + Font and colour uniformity - IN PROGRESS
+  + Marquee must be in a loop - Replaced with slider
+  + Also add in topic to be discussed : Disciplines and domain will not be clickable. - Are clickable now 
+  + More ToDo's - http://issues.vlabs.ac.in/issues/1031
+  
+  
+* Check status 
+   [[https://github.com/openedx-vlead/port-labs-to-openedx/blob/develop/src/analytics-setup/presentations/sprint2/images/theming-status.jpg][Status diagram]]

@@ -1,0 +1,134 @@
+#+TITLE: Load/Performance test on Open edX platform 
+
+* Introduction
+  This documnets describes how to test load on web server using siege tool.
+  *siege* is a load/stress tester on web server.
+
+  Performance test will be done on home page of Open edX platform.
+
+* Requirements
+  - Capture the threshold value, so that Open edX platform can handle
+    up to the threshold value requests.
+  - Capture the RAM usage when number of concurrent users hitting the server
+  - Capture the CPU utilization when number concurrent users hitting
+    the server
+* Implementation   
+  Install siege. We can also use ab(apache benchmark) and locust.io.
+  #+BEGIN_EXAMPLE
+  yum/apt-get install siege
+  #+END_EXAMPLE
+
+** RAM and CPU utilization
+   |-------------------------------------------------+-----------+------|
+   | Command                                         | RAM used  |  CPU |
+   |-------------------------------------------------+-----------+------|
+   | siege -c 100 -r 1 http://platform.vlabs.ac.in/  | No change |  20% |
+   |-------------------------------------------------+-----------+------|
+   | siege -c 200 -r 1 http://platform.vlabs.ac.in/  | No change |  30% |
+   |-------------------------------------------------+-----------+------|
+   | siege -c 500 -r 1 http://platform.vlabs.ac.in/  | No change |  70% |
+   |-------------------------------------------------+-----------+------|
+   | siege -c 700 -r 1 http://platform.vlabs.ac.in/  | No change | 100% |
+   |-------------------------------------------------+-----------+------|
+   | siege -c 1000 -r 1 http://platform.vlabs.ac.in/ | No change | 100% |
+   |-------------------------------------------------+-----------+------|
+
+   where 
+   -c num - CONCURRENT, allows you to set the concurrent number
+   of simulated users to num. The number of simulated users is limited
+   to the resources on the computer running siege. 
+
+   -r NUM - allows you to run the siege for NUM repetitions
+
+   Once Cpu is reached to 100% it fluctuates the CPU utilization based
+   on in coming requests 
+
+** Summary
+   - System can allow 500 - 750 users to login 
+   - Average Transaction rate: ~50 trans/sec 
+   - After login, 125-175 users can use the system simultaneously
+
+** GitHub Issue
+   [[https://github.com/openedx-vlead/port-labs-to-openedx/issues/39][Performance Test on edx platform]]
+** Sample Performance test with 100 concurrent users and 1 repetition
+   #+BEGIN_EXAMPLE
+   siege -c 100 -r 1 http://platfrom.vlabs.ac.in/
+
+   where 
+   -c num - CONCURRENT, allows you to set the concurrent number of simulated users to num. The number of simulated users is limited to the resources on the computer running siege.
+   -r NUM -  allows you to run the siege for NUM repetitions
+   #+END_EXAMPLE
+   sample output 
+   #+BEGIN_EXAMPLE
+   Transactions: 100 hits
+   Availability: 100.00 %
+   Elapsed time: 1.23 secs
+   Data transferred: 0.29 MB
+   Response time: 0.12 secs
+   Transaction rate: 81.30 trans/sec
+   Throughput: 0.24 MB/sec
+   Concurrency: 9.45
+   Successful transactions: 100
+   Failed transactions: 0
+   Longest transaction: 0.20
+   Shortest transaction: 0.07
+   #+END_EXAMPLE
+   Definition of fields
+   #+BEGIN_EXAMPLE
+    Transactions
+          The number of server hits.  In the example, 1000 simulated users [ -c100 ] each hit the server 1 times
+          [ -r1 ], a total of 1000 transactions. It is possible for the number of transactions to  exceed  the
+          number  of  hits that were scheduled. Siege counts every server hit a transaction, which means redi‐
+          rections and authentication challenges count as two hits, not one. With this regard,  siege  follows
+          the HTTP specification and it mimics browser behavior.
+
+   Availability
+          This is the percentage of socket connections successfully handled by the server. It is the result of
+          socket failures (including timeouts) divided by the sum of all connection attempts. This number does
+          not  include  400  and 500 level server errors which are recorded in "Failed transactions" described
+          below.
+
+   Elapsed time
+         The duration of the entire siege test.  This is measured from the time the user invokes siege  until
+          the  last  simulated  user  completes its transactions.  Shown above, the test took  1.28 secs to complete.
+
+   Data transferred
+          The sum of data transferred to every siege simulated user.  It includes the  header  information  as
+          well  as  content.   Because  it  includes  header information, the number reported by siege will be
+          larger then the number reported by the server. In internet mode, which hits random URLs in a config‐
+          uration file, this number is expected to vary from run to run.
+
+   Response time
+          The average time it took to respond to each simulated user's requests.
+
+   Transaction rate
+          The average number of transactions the server was able to handle per second, in a nutshell: transac‐
+          tions divided by elapsed time.
+
+   Throughput
+          The average number of bytes transferred every second from the server to all the simulated users.
+
+   Concurrency
+          The average number  of  simultaneous  connections,  a  number  which  rises  as  server  performance
+          decreases.
+
+   Successful transactions
+          The number of times the server responded with a return code < 400.
+
+   Failed transactions
+          The number of times the server responded with a return code >= 400 plus the sum of all failed socket
+          transactions which includes socket timeouts.
+
+   Longest transaction
+          The greatest amount of time that any single transaction took, out of all transactions.
+
+   #+END_EXAMPLE
+   
+   
+
+  
+
+
+
+
+

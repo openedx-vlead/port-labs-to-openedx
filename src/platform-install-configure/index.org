@@ -1,0 +1,637 @@
+#+TITLE: Setup Open edX platform and Configure it
+#+Author: Siva Shanker
+#+PROPERTY: results output
+#+PROPERTY: exports code
+#+SETUPFILE: ../org-templates/level-1.org
+
+* Introduction
+  This document describes the set up and configuration of Open edX platfrom.
+  Once we setup Open edX platform, we can port all our virtual-labs to the edX
+  platform.
+
+    
+* Set up Open edX platform
+  Open edx Platform [[http://edx.readthedocs.io/projects/edx-installing-configuring-and-running/en/latest/installation/installation_options.html][installation]] has various [[https://openedx.atlassian.net/wiki/display/OpenOPS/Open+edX+Installation+Options][options]].  VLEAD has chosen to go
+  with =Native= Open edX installation on Ubuntu 12.04 64-bit. 
+  
+** Installation on an AWS VM. 
+
+*** <<creation>> Creation of VM   
+
+    1. Launch an Ubuntu 12.04 64 bit VM on AWS the following way:
+       - Choose an instance from community with instance id =ami-019b6745=
+       - Set the instance type to =t2.medium=
+       - Set RAM size to 4 GB
+       - Set Hard Disk size to 50 GB
+       - Enable “Auto-assign Public IP”
+       - Choose appropriate “Security Group”
+       - Choose a key-pair if one exists or create a new key-pair.
+
+    2. <<login>> Login to launched instance using SSH
+      #+BEGIN_EXAMPLE
+      ssh -i <key-pair>" <user-name>@<public-ip>
+      ssh -i "OpenedX.pem" ubuntu@54.153.2.214
+      #+END_EXAMPLE
+
+    3. Update and upgrade instance
+      #+BEGIN_EXAMPLE
+      sudo apt-get update -y  
+      sudo apt-get upgrade -y
+      #+END_EXAMPLE
+
+    4. Reboot the instance 
+      #+BEGIN_EXAMPLE
+      sudo reboot
+      #+END_EXAMPLE
+
+*** Automated Installation
+    1. [[login][Login]] in to the VM [[creation][created]] 
+    2. Installation of a particular release
+
+       The documented [[https://openedx.atlassian.net/wiki/display/OpenOPS/Native+Open+edX+Ubuntu+12.04+64+bit+Installation][procedure]] by Open edX platform team is followed here. 
+
+       + Export variable =OPENEDX_RELEASE= to install a particular release.
+         cypress, dogwood and dogwood.1 are some of the releases of Open edX
+         platform.
+         
+         If =dogwood= release of Open edX plaform has to be installed, set the
+         variable =OPENEDX_RELEASE= and export it the following way.
+
+	 #+BEGIN_EXAMPLE
+         export OPENEDX_RELEASE=named-release/dogwood
+	 #+END_EXAMPLE
+       + Create an emty file (This step is not needed in Mauall Installation
+         #+BEGIN_SRC 
+         sudo touch /edx/app/edx_notes_api/edx_notes_api/requirements/optional.txt
+         #+END_SRC
+	 - NOTE :: This could be the output if file is not created while running the second shell script
+	   #+BEGIN_EXAMPLE
+	   TASK: [edx_notes_api | install application requirements] ********************** 
+	   changed: [localhost] => (item=base.txt)
+	   failed: [localhost] => (item=optional.txt) => {"cmd": "/edx/app/edx_notes_api/venvs/edx_notes_api/bin/pip install --exists-action w -r /edx/app/edx_notes_api/edx_notes_api/requirements/optional.txt", "failed": true, "item": "optional.txt"}
+	   msg: 
+	   :stderr: Could not open requirements file: [Errno 2] No such file or directory: '/edx/app/edx_notes_api/edx_notes_api/requirements/optional.txt'
+	   You are using pip version 7.1.2, however version 8.1.2 is available.
+	   You should consider upgrading via the 'pip install --upgrade pip' command.
+	   #+END_EXAMPLE
+       + Execute Commands
+         Run the following commands
+
+         #+BEGIN_EXAMPLE
+         wget https://raw.githubusercontent.com/edx/configuration/master/util/install/ansible-bootstrap.sh -O - | sudo bash     
+         wget https://raw.githubusercontent.com/edx/configuration/master/util/install/sandbox.sh -O - | bash     
+         #+END_EXAMPLE
+
+         The above commands will copy the configuration files and run various
+         ansible playbooks to setup the platform.  When there are zero failures
+         displayed in the status, the installation is successful.
+  
+    3. Platform is ready, 
+       + LMS is accessible on port 80
+         #+BEGIN_EXAMPLE
+         http://<public-ip> # courses dashboard
+         #+END_EXAMPLE
+
+       + CMS is accessible on port 18010
+         #+BEGIN_EXAMPLE
+         http://<public_ip>:18010    # Studio
+         #+END_EXAMPLE
+
+    4. Login
+       A default user =staff@example.com= comes with the installation.  This
+       login is used to quickly test the instalaltion.  The password is =edx=
+ 
+    5. Reference
+       + [[https://openedx.atlassian.net/wiki/display/OpenOPS/Native+Open+edX+Ubuntu+12.04+64+bit+Installation][Native Open edX installation on Ubuntu 12.04 64-bit]]
+
+*** Manual Installation
+    1. [[login][Login]] in to the VM [[creation][created]]
+
+    2. Install Packages
+       #+BEGIN_EXAMPLE 
+       sudo apt-get install -y build-essential software-properties-common python-software-properties curl git-core libxml2-dev libxslt1-dev libfreetype6-dev python-pip python-apt python-dev libxmlsec1-dev swig libmysqlclient-dev
+       sudo pip install --upgrade pip
+       sudo pip install paramiko==1.10
+       #+END_EXAMPLE
+
+    3. Clone configuration repository
+       #+BEGIN_EXAMPLE 
+       cd /var/tmp
+       git clone https://github.com/edx/configuration
+       #+END_EXAMPLE
+
+    4. Choose the release
+       + Checkout to the release verion of configuration repository
+         #+BEGIN_EXAMPLE
+         cd /var/tmp/configuration
+         git checkout <version>
+         git checkout  named-release/dogwood #example
+         #+END_EXAMPLE
+
+       + Export variable =OPENEDX_RELEASE= to install a particular release.
+         cypress, dogwood and dogwood.1 are some of the releases of Open edX
+         platform.
+         
+         If =dogwood= release of Open edX plaform has to be installed, set the
+         variable =OPENEDX_RELEASE= to =dogwood= and export it the following way.
+
+	 #+BEGIN_EXAMPLE
+         export OPENEDX_RELEASE=named-release/dogwood
+	 #+END_EXAMPLE
+
+    5. Configure password based SSH authentication
+       Edit the =main.yaml= to and set =COMMON_SSH_PASSWORD_AUTH= to =yes= 
+       #+BEGIN_EXAMPLE
+       sudo vim =configuration/playbooks/roles/common_vars/defaults/main.yml
+       COMMON_SSH_PASSWORD_AUTH = yes
+       #+END_EXAMPLE
+
+    6. Install the ansible requirements 
+       
+       #+BEGIN_EXAMPLE 
+       cd /var/tmp/configuration
+       sudo pip install -r requirements.txt
+       sudo pip install setuptools --upgrade
+       #+END_EXAMPLE
+
+    7. Run the playbook
+       #+BEGIN_EXAMPLE 
+       cd /var/tmp/configuration/playbooks && sudo ansible-playbook -c local ./edx_sandbox.yml -i "localhost,"
+       #+END_EXAMPLE
+
+    8. The above command will copy the platform files and runs various ansible
+       playbooks to setup the platform.  When there are zero failures displayed
+       in the status, the installation is successful.
+  
+    9. Platform is ready, 
+       + LMS is accessible on port 80
+         #+BEGIN_EXAMPLE
+         http://<public-ip> # courses dashboard
+         #+END_EXAMPLE
+
+       + CMS is accessible on port 18010
+         #+BEGIN_EXAMPLE
+         http://<public_ip>:18010    # Studio
+         #+END_EXAMPLE
+
+    10. Login
+        A default user =staff@example.com= comes with the installation.  This
+        login is used to quickly test the instalaltion.  The password is =edx=
+ 
+    11. Reference
+        + [[https://openedx.atlassian.net/wiki/display/OpenOPS/Native+Open+edX+Ubuntu+12.04+64+bit+Installation][Native Open edX installation on Ubuntu 12.04 64-bit]]
+
+
+* Configuring Open edX platform
+** Install SSL certificates in LMS machine
+   Follow the steps given below to add a SSL certificate in LMS machine 
+   + Login to your lms machine 
+   + Create a directory =certs= if it does not exist in =/etc/nginx/ssl/=
+     #+BEGIN_EXAMPLE
+     sudo  mkdir /etc/nginx/ssl/certs
+     #+END_EXAMPLE
+   + Change directory 
+     #+BEGIN_SRC
+     cd /etc/nginx/ssl/certs
+     #+END_SRC
+   + Copy your .crt, .key, and .ca-bundle file into =/etc/nginx/ssl/certs=
+   + Change directory
+   #+BEGIN_SRC 
+   cd /etc/nginx/sites-enabled
+   #+END_SRC
+   + Open file lms 
+     #+BEGIN_SRC
+     sudo vim lms
+     #+END_SRC 
+   + Append/Add the following lines to the opened file
+     #+BEGIN_SRC 
+ server {
+   # LMS configuration file for nginx, templated by ansible
+   
+     # error p		   ages
+     error_page 504	    /server/server-error.html;
+     error_page 502 /server/server-error.html;
+     error_page 500 /server/server-error.html;
+     
+     listen 443 ssl default;
+     server_name lms.vlabs.ac.in;
+
+     ssl on;
+     # ssl_certificate /etc/nginx/ssl/server.crt;
+     ssl_certificate /etc/nginx/ssl/certs/STAR_vlabs_ac_in.crt;
+     #  ssl_certificate_key /etc/nginx/ssl/server.key; 
+     ssl_certificate_key /etc/nginx/ssl/certs/vlabs.ac.in.key; 
+     
+     access_log /edx/var/log/nginx/access.log p_combined;
+     error_log /edx/var/log/nginx/error.log error;
+
+     # CS184 requires uploads of up to 4MB for submitting screenshots.
+     # CMS requires larger value for course assest, values provided
+     # via hiera.
+     client_max_body_size 4M;
+
+     rewrite ^(.*)/favicon.ico$ /static/images/favicon.ico last;
+
+  location @proxy_to_lms_app {
+  	     proxy_set_header X-Forwarded-Proto $scheme;
+	     proxy_set_header X-Forwarded-Port $server_port;
+	     proxy_set_header X-Forwarded-For $remote_addr;
+	     proxy_set_header Host $http_host;
+
+	     proxy_redirect off;
+	     proxy_pass http://lms-backend;
+  }
+
+  location / {
+        try_files $uri @proxy_to_lms_app;
+  }
+
+
+  # No basic auth for /segmentio/event
+  location /segmentio/event {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+  # The api is accessed using OAUTH2 which
+  # uses the authorization header so we can't have
+  # basic auth on it as well.
+  location /api {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+  # Need a separate location for the image uploads endpoint to limit upload sizes
+
+  location ~ ^/api/profile_images/[^/]*/[^/]*/upload$ {
+    try_files $uri @proxy_to_lms_app;
+    client_max_body_size 1049576;
+  }
+
+  location /notifier_api {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+  location /user_api {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+  # No basic auth security on the github_service_hook url, so that github can use it for cms
+  location /github_service_hook {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+  # No basic auth security on oauth2 endpoint
+  location /oauth2 {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+  # No basic auth security on third party auth endpoints
+  location /auth {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+
+  # No basic auth security on the heartbeat url, so that ELB can use it
+  location /heartbeat {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+  # No basic auth on the LTI provider endpoint, it does OAuth1
+  location /lti_provider {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+  # No basic auth on LTI component grade.
+  location ~ /handler_noauth {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+  location /courses {    try_files $uri @proxy_to_lms_app;
+  }
+
+location ~ ^/media/(?P<file>.*) {
+    root /edx/var/edxapp/media;
+    try_files /$file =404;
+    expires 31536000s;
+}
+
+      # static pages for server status
+  location ~ ^/server/(?P<file>.*) {
+      root /edx/var/nginx/server-static;
+      try_files /$file =404;
+  }
+
+  location ~ ^/static/(?P<file>.*) {
+    root /edx/var/edxapp;
+    try_files /staticfiles/$file /course_static/$file =404;
+
+    # return a 403 for static files that shouldn't be
+    # in the staticfiles directory
+    location ~ ^/static/(?:.*)(?:\.xml|\.json|README.TXT) {
+        return 403;
+    }
+
+    # http://www.red-team-design.com/firefox-doesnt-allow-cross-domain-fonts-by-default
+    location ~ "/static/(?P<collected>.*\.[0-9a-f]{12}\.(eot|otf|ttf|woff|woff2)$)" {
+        expires max;
+        add_header Access-Control-Allow-Origin *;
+        try_files /staticfiles/$collected /course_static/$collected =404;
+    }
+
+    # Set django-pipelined files to maximum cache time
+    location ~ "/static/(?P<collected>.*\.[0-9a-f]{12}\..*)" {
+        expires max;
+        # Without this try_files, files that have been run through
+        # django-pipeline return 404s
+        try_files /staticfiles/$collected /course_static/$collected =404;
+    }
+
+    # Set django-pipelined files for studio to maximum cache time
+    location ~ "/static/(?P<collected>[0-9a-f]{7}/.*)" {
+        expires max;
+
+        # Without this try_files, files that have been run through
+        # django-pipeline return 404s
+        try_files /staticfiles/$collected /course_static/$collected =404;
+    }
+
+    # Expire other static files immediately (there should be very few / none of these)
+    expires epoch;
+  }
+
+
+}
+
+     #+END_SRC 
+   + Restart ngnix service
+     #+BEGIN_SRC 
+     /etc/init.d/ngnix restart
+     #+END_SRC
+** Configure Mysql server so that it allows remote machines to execute queries
+   
+   [[https://easyengine.io/tutorials/mysql/remote-access/][Allow]] Analytics machine to connect LMS machine's databases by
+   running the following example commands
+
+   - Open =/et/mysql/my.conf=
+   - Change =bind-address= from =127.0.0.1= to =0.0.0.0=
+   - Restart the mysql server
+     #+BEGIN_EXAMPLE
+     /etc/init.d/mysql restart
+     #+END_EXAMPLE
+   - Log in as root user
+     #+BEGIN_EXAMPLE
+      mysql -uroot -p 
+     #+END_EXAMPLE
+    - Grant permissions from analytics machine with the following details
+     #+BEGIN_EXAMPLE
+     mysql> GRANT ALL PRIVILEGES ON edxapp.* TO 'edxapp001'@'<analytics-server-ip>' IDENTIFIED BY 'password';
+     #+END_EXAMPLE
+   - [[https://easyengine.io/tutorials/mysql/remote-access/][Reference]] 
+
+** Update Analytics Dashboard URL on LMS machine
+   - Edit the files =/edx/app/edxapp/lms.env.json= and =/edx/app/edxapp/cms.env.json=
+     #+BEGIN_SRC
+     sudo vim /edx/app/edxapp/lms.env.json
+     sudo vim /edx/app/edxapp/cms.env.json
+     #+END_SRC
+
+   - Replace line the *"ANALYTICS_DASHBOARD_URL": "http://localhost:18110/courses"*  with
+     #+BEGIN_SRC
+     "ANALYTICS_DASHBOARD_URL": "https://insights.vlabs.ac.in:18110"
+     #+END_SRC
+   - Restart the edX services 
+     #+BEGIN_SRC
+     /edx/bin/supervisorctl restart edxapp:       
+     /edx/bin/supervisorctl restart edxapp_worker:
+     or 
+     /edx/bin/supervisorctl restart all
+     #+END_SRC
+
+** Provide proper verification link for registered users
+   [[https://openedx.atlassian.net/wiki/display/OPEN/Debugging+Issues+with+LMS+and+Studio][Reference]]
+   - Modify the files 
+     #+BEGIN_EXAMPLE 
+     sudo vim /edx/app/edxapp/lms.env.json
+     sudo vim /edx/app/edxapp/cms.env.json
+     #+END_EXAMPLE
+
+     and set =SITE_NAME= variable to FQDN of LMS machine in both the files.
+
+     #+BEGIN_EXAMPLE
+     SITE_NAME = <FQDN of lms machine>
+     #+END_EXAMPLE
+
+   - Restart the edx [[https://openedx.atlassian.net/wiki/display/OpenOPS/Managing+OpenEdX+Tips+and+Tricks][services]]
+     #+BEGIN_EXAMPLE 
+     /edx/bin/supervisorctl restart all
+     #+END_EXAMPLE
+     
+** Establish the connection between Insights and the LMS, so single sign on works.
+   - Generate admin user for accessing *OpenedX platform's django
+     admin page* using the steps mentioned in[[.administration.org][ Administration of OpenedX platform]]
+   - Log on to https://lms.vlabs.ac.in/admin.
+   - Provide admin-user name and password.
+   - Select/Choose Oauth2 section/table and click on clients to add a
+     new client
+   - In Add client form, provide following details.
+     #+BEGIN_EXAMPLE
+     1. We can ignore User field
+     2. Name can be anything. For now, Name : Insights
+     3. Url: https://insights.vlabs.ac.in:8110
+     4 Redirect
+     Uri:https://insights.vlabs.ac.in:8110/complete/edx-oidc/
+     5. Note down the Client id and Client secret. Example as follows
+     	client id: 76dad0fdb73bab0ca5e2
+	Client secret: 962a1c037eedaecc135835e9accd2d114ac44847
+     6. Client type: Confidential(Web Application)
+     7. Click on Save button to save the entered details
+
+     #+END_EXAMPLE
+   - *Important* 
+     #+BEGIN_EXAMPLE
+     Ensure that JWT_ISSUER and OAUTH_OIDC_ISSUER on the LMS in /edx/app/edxapp/lms.env.json match the url root in 
+     /edx/etc/insights.yml (SOCIAL_AUTH_EDX_OIDC_URL_ROOT). This
+     should be the case unless your environment is weird
+     #+END_EXAMPLE
+      + Edit the files =/edx/app/edxapp/lms.env.json= and
+   =/edx/app/edxapp/cms.env.json= 
+	#+BEGIN_SRC 
+	sudo vim /edx/app/edxapp/lms.env.json
+	sudo vim /edx/app/edxapp/cms.env.json
+	#+END_SRC
+     + Replace the following lines 
+       #+BEGIN_SRC 
+       "JWT_ISSUER": "https:///oauth2",
+       "OAUTH_OIDC_ISSUER": "https:///oauth2",
+       #+END_SRC
+       with 
+       #+BEGIN_SRC 
+       "JWT_ISSUER": "https://lms.vlabs.ac.in/oauth2",
+       "OAUTH_OIDC_ISSUER": "https://lms.vlabs.ac.in/oauth2",
+       #+END_SRC
+    - Update 
+      #+BEGIN_SRC 
+      	sudo vim /edx/app/edxapp/lms.env.json
+	sudo vim /edx/app/edxapp/cms.env.json
+      #+END_SRC
+      with 
+      #+BEGIN_SRC 
+       "ENABLE_OAUTH2_PROVIDER": true
+       "OAUTH_ENFORCE_SECURE": true,
+      #+END_SRC
+
+** Disable course creation for users on edX-Studio
+   In =/edx/app/edxapp/edx-platform/cms/envs/common.py=, or your extension of
+   it, set 'ENABLE_CREATOR_GROUP':True to FEATURES. [[https://github.com/edx/edx-platform/wiki/Controlling-course-creation-rights][Reference]]
+
+   1) Update ENABLE_CREATOR_GROUP in common.py
+      #+BEGIN_EXAMPLE 
+      cd /edx/app/edxapp/edx-platform/cms/envs 
+      sudo vim common.py      
+      #+END_EXAMPLE
+      Set :
+      #+BEGIN_EXAMPLE 
+      FEATURES {
+      ENABLE_CREATOR_GROUP : True
+      }
+      #+END_EXAMPLE
+   
+   2) Update CMS DB structure 
+      #+BEGIN_EXAMPLE
+      sudo cd /edx/app/edxapp/edx-platform     
+      sudo -u www-data /edx/bin/python.edxapp ./manage.py cms syncdb --migrate --settings aws --migrate –noinput
+      #+END_EXAMPLE
+
+   3) Restart the edX services
+      #+BEGIN_EXAMPLE 
+      sudo /edx/etc/supervisorctl restart all:
+      #+END_EXAMPLE
+
+   Then registered users will not be able create courses on edX-studio. They
+   will need to contact admin or super-user to get privileges for creating
+   courses.
+
+
+   - Grant permissions from analytics machine with the following details
+     #+BEGIN_EXAMPLE
+     mysql> GRANT ALL PRIVILEGES ON edxapp.* TO 'edxapp001'@'<analytics-server-ip>' IDENTIFIED BY 'password';
+     #+END_EXAMPLE
+   
+   LMS database( Mysql) is not open to all remote hosts. It is open to
+   only localhost.
+   
+   In order to make database open for all remote hosts, we need to do
+   the following steps.
+   - Open =/etc/mysql/my.cnf=
+   - Change =bind-address= from =127.0.0.1= to =0.0.0.0=
+   - Restart the mysql server
+     #+BEGIN_EXAMPLE
+     /etc/init.d/mysql restart
+     #+END_EXAMPLE
+   - [[https://easyengine.io/tutorials/mysql/remote-access/][Reference]] 
+
+   
+* Administration of Open edX platform
+  This section describes tasks that can be done only by administrator.
+  Please go through [[./administration.org][Administration of Open edX platform]] for more
+  about administration tasks.
+
+* Trouble Shooting of Open edX platform
+  Describes trouble shooting of Open edX platform. Please have look at
+  [[./trouble-shooting.org][Trouble Shooting of Open edX platform]] for more about trouble
+  shooting on Open edX platform.
+
+* Open Issues on GitHub
+  Records all open issues regarding edx-plaform and configuring it.
+  At present there is only one open issue on GitHub,
+  https://github.com/vlead/port-labs-to-openedx/issues/2. It shows us,
+  what is our status/progress on this task?
+
+* References
+  - [[https://openedx.atlassian.net/wiki/display/OpenOPS/Native+Open+edX+Ubuntu+12.04+64+bit+Installation][Native Open edX Ubuntu 12.04 64 bit Installation]]
+  - [[https://openedx.atlassian.net/wiki/display/OPEN/Debugging+Issues+with+LMS+and+Studio][Email Registration]]
+  - [[https://openedx.atlassian.net/wiki/display/OpenOPS/Managing+OpenEdX+Tips+and+Tricks][Manage Tips & Tricks]]
+
+
+* COMMENT Setting up Open edX platform on a VM (Base1)
+  - Minimum hardware requirements 
+    + RAM : 4GB 
+    + HDD : 50GB
+    + CPUs: 2 
+  - Create a VM using
+** Process for creating new VM on base1
+   - ssh into base1 machine using below command.
+     #+begin_example
+     ssh -X root@<base1_ip>
+     #+end_example
+     *Note :-* Here -X will allow us to open application in GUI mode.
+   - Change directory into vms folder
+     #+begin_example 
+     cd /mnt/das1/vms
+     #+end_example
+   - Create a folder with VM name
+     #+begin_example
+     mkdir test_vm
+     #+end_example
+   - Change PWD to newly created VM folder and use 'qemu-img' command
+     to create disk image for VM. For example, to create a 60GB disk
+     image use:
+     #+begin_example
+     qemu-img create -f qcow2 test_vm.qcow2 60G
+     #+end_example
+   - Run below command to view the virtual machines in GUI mode.
+     #+begin_example
+     [root@base1 vms]# virt-manager
+     #+end_example
+   - Click on =create new virtual machine= icon
+   - Name your VM name and click on forward button.
+   - Choose an ISO image from local disk for base1 use path as
+     =/mnt/das1/operating_systems= and select OS name and its version
+     number.
+   - Choose at least 4GB of RAM and 2 CPUs.
+   - Choose radio button (Select managed or other existing storage)
+     and browse for hard disk image for VM from location where it was
+     created using qemu-img command. In our case it will be in
+     =/mnt/das1/vms/test_vm/testvm.qcow2=
+   - Check Customize configuration before install Use correct bridge
+     for networking. You can use 'ifconfig' command on base machine to
+     see which bridge in base machine is in 10.4.12.0/22 range and use
+     it while creating new VM. Use =breth1= bridge in base1.
+   - Then click on =Disk 1= choose advance options and select storage
+     format as =qcow2=. And apply
+   - Click on begin installation to start the os installation process.
+   - Once OS installation is done please log into the machine using
+     user name and password of the machine that you provided.
+   - Configure eth0 interface to do so open file at =vim
+     /etc/network/interfaces= and add the below details before that
+     find the free available ip address in the range of 10.4.12.0/22
+     using =ping <ip>= command
+     #+begin_example
+     auto eth0
+     iface eth0 inet static
+     address <ip-address>
+     netmask 255.255.252.0
+     gateway 10.4.12.236
+     #+end_example
+   - Add gateway to resolve domain names edit =vim /etc/resolve.conf=
+     #+begin_example
+     nameserver 10.4.12.160
+     #+end_example
+   - Restart the network manager to apply new changes
+     #+begin_example
+     /etc/init.d/networking restart
+     #+end_example
+   - Now check the internet connection 
+     #+begin_example
+     ping vlabs.ac.in (or) ping google.com
+     #+end_example
+   - After creating VM, follow the steps given at [[Using manual steps
+     to Setup Open edX platform]] to setup Open edX platform.
+   - Reference 
+     http://wiki.vlead.vlabs.ac.in/index.php/Creating_new_VM
+
+** Process for creating & restoring snapshots
+   [[https://www.sbarjatiya.com/notes_wiki/index.php/Creating_KVM_VM_with_qcow2_disk_format_for_supporting_snapshots][Clickhere]]
+
+
+
+      

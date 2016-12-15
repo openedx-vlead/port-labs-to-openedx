@@ -1,0 +1,112 @@
+#+Title: Feedback service API to write to Elasticsearch 
+#+Date: Friday, September 16, 2016
+#+Author: VLEAD Systems 
+
+
+* Introduction 
+  This document shares the feedback-ELK API to allow feedback service to
+  consume and write data to Elasticsearch database. 
+
+* API features
+  + API expects JSON format data of any structure.
+  + API appends received JSON with following fields at server side - TIME, DATE, IPADDRESS
+  + API does not take care of fixed expected structure of JSON and hence take any JSON
+  + JSON received is written in Elasticsearch (index, form) and (doc_type, feedback)
+  + API provides logging information and writes logs to feedback_service.log. 
+  
+* Source 
+#+BEGIN_SRC python
+from flask import Flask, request, jsonify
+from flask_cors import CORS, cross_origin
+from elasticsearch import Elasticsearch
+import logging
+import os
+import json
+import time
+
+app = Flask(__name__)
+CORS(app)
+
+#Edit Elasticsearch credentials here
+
+elastic_cred = { "HOST" : "localhost",
+                 "PORT" : "9200", 
+                 "INDEX" : "form", 
+                 "DOC_TYPE" : "feedback"
+               }
+
+
+#Set logging format and filename
+logging.basicConfig(format='%(levelname)s : %(asctime)s : %(message)s ', datefmt='%m/%d/%Y %I:%M:%S %p',filename='feedback_service.log',level=logging.DEBUG)
+
+
+@app.route('/api/add_feedback/', methods=['GET', 'POST'])
+def feedback_QAP():
+	if request.method == 'POST':
+		try:
+			request.json
+			content = request.json
+
+                        #Get time, date, ipaddress at server end
+			content["TIME"] = time.strftime("%H:%M:%S")
+			content["DATE"] = time.strftime("%d-%m-%Y")        
+        		content["IPADDRESS"] = request.environ.get('HTTP_X_REAL_IP',request.remote_addr)
+
+		except Exception as e:
+			msg = "Invalid json passed"
+			logging.error(msg)
+            		return jsonify({"error": msg}), 400
+	
+  
+ 		try:
+                        #Write to Elasticsearch
+			es = Elasticsearch([{'host': elastic_cred["HOST"], 'port': elastic_cred["PORT"]}])
+			es.index(index = elastic_cred["INDEX"], doc_type = elastic_cred["DOC_TYPE"], body = content)
+			logging.info("Feedback Submitted !!")
+		except Exception as e:
+                        logging.error("Error writing in Elasticsearch")
+			print e
+
+	return jsonify(content)
+		
+if __name__ == '__main__':
+    app.run(host= '0.0.0.0',debug=True)
+
+#+END_SRC
+
+
+* Sample log file obtained
+Note :: Need proper formatting 
+#+BEGIN_SRC command
+[aashay@localhost confirm]$ cat feedback_service.log 
+INFO : 09/16/2016 09:54:49 PM :  * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit) 
+INFO : 09/16/2016 09:54:49 PM :  * Restarting with stat 
+WARNING : 09/16/2016 09:54:49 PM :  * Debugger is active! 
+INFO : 09/16/2016 09:54:49 PM :  * Debugger pin code: 265-253-859 
+DEBUG : 09/16/2016 09:55:25 PM : Converted retries value: False -> Retry(total=False, connect=None, read=None, redirect=0) 
+DEBUG : 09/16/2016 09:55:25 PM : Starting new HTTP connection (1): localhost 
+DEBUG : 09/16/2016 09:55:25 PM : http://localhost:9200 "POST /form/feedback HTTP/1.1" 201 141 
+INFO : 09/16/2016 09:55:25 PM : POST http://localhost:9200/form/feedback [status:201 request:0.123s] 
+DEBUG : 09/16/2016 09:55:25 PM : > {"display_name": "Physics lab", "TIME": "21:55:25", "DATE": "16-09-2016", "org": "NRI", "IPADDRESS": "127.0.0.1", "id": "set id"} 
+DEBUG : 09/16/2016 09:55:25 PM : < {"_index":"form","_type":"feedback","_id":"AVcz0R45kljO4UbDKb5x","_version":1,"_shards":{"total":2,"successful":1,"failed":0},"created":true} 
+INFO : 09/16/2016 09:55:25 PM : Feedback Submitted !! 
+INFO : 09/16/2016 09:55:25 PM : 127.0.0.1 - - [16/Sep/2016 21:55:25] "POST /api/add_feedback/ HTTP/1.1" 200 - 
+INFO : 09/16/2016 10:19:12 PM :  * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit) 
+INFO : 09/16/2016 10:19:12 PM :  * Restarting with stat 
+WARNING : 09/16/2016 10:19:12 PM :  * Debugger is active! 
+INFO : 09/16/2016 10:19:12 PM :  * Debugger pin code: 265-253-859 
+ERROR : 09/16/2016 10:19:22 PM : Invalid json passed 
+INFO : 09/16/2016 10:19:22 PM : 127.0.0.1 - - [16/Sep/2016 22:19:22] "POST /api/add_feedback/ HTTP/1.1" 400 - 
+#+END_SRC 
+  
+
+* Get Elasticsearch data on terminal
+  Obtain the elastic search output on terminal using the command 
+  #+BEGIN_SRC command
+  curl -XGET "http://localhost:9200/<index_name>/_search?size=<no-of-records>&pretty" 
+  curl -XGET "http://localhost:9200/form/_search?size=50&pretty" 
+  #+END_SRC
+
+  
+  
+  

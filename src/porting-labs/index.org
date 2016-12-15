@@ -1,0 +1,115 @@
+#+TITLE: Porting Virtual Labs to Open edX Platform
+#+Author: VLEAD
+#+Date: [2016-01-27 Wed]
+#+PROPERTY: results output
+#+PROPERTY: exports code
+#+SETUPFILE: ../org-templates/level-1.org
+
+* Introduction
+  This document demonstrates:
+  - creation of a skeletal structure for a lab in the format expected by Open
+    edX studio from a specification
+  - import and addition of content to the skeletal structure
+  - configuration changes to publish a lab 
+
+* Porting an existing lab to Open edX
+
+** Labs chosen
+
+  The first six labs are picked from the labs there were listed to be
+  demonstrated at T4E conference at NIT, Warangal.
+
+  |------+-------------------------------+------------------------+------+----------+--------------------|
+  | S.No | Lab Name                      | Discipline             | Lab  | Oped edX | Institute          |
+  |      |                               |                        | Url  | Sources  |                    |
+  |------+-------------------------------+------------------------+------+----------+--------------------|
+  |   1. | Computer Programming          | Computer Science       | [[http://cse02-iiith.vlabs.ac.in/][Link]] | [[https://github.com/vlead/Open-edX-Computer-Programming][Link]]     | IIIT, Hyderabad    |
+  |      | Lab                           |                        |      |          |                    |
+  |------+-------------------------------+------------------------+------+----------+--------------------|
+  |   2. | Structural Analysis           | Civil engineering      | [[http://eerc04-iiith.virtual-labs.ac.in/index.php][Link]] | [[https://github.com/vlead/Open-edX-Structural-Analysis][Link]]     | IIIT, Hyderabad    |
+  |------+-------------------------------+------------------------+------+----------+--------------------|
+  |   3. | Population Ecology II         | Biotechnology &        | [[http://pevii-au.virtual-labs.ac.in/][Link]] | [[https://github.com/vlead/Open-edX-Population-Ecology-2][Link]]     | Amrita, Coimbatore |
+  |      |                               | Biomedical Engineering |      |          |                    |
+  |------+-------------------------------+------------------------+------+----------+--------------------|
+  |   4. | Mine Automation               | Mechanical Engineering | [[http://iitkgp.vlab.co.in/?sub=40&brch=137][Link]] | [[https://github.com/vlead/open-edx-mine-automation][Link]]     | IIT, Kharagpur     |
+  |      | and Virtual Reality           |                        |      |          |                    |
+  |------+-------------------------------+------------------------+------+----------+--------------------|
+  |   5. | Chemical Engineering          | Chemical Engineering   | [[http://ce-iitb.vlabs.ac.in/][Link]] | [[https://github.com/vlead/open-edx-chemical-engineering][Link]]     | IIT, Bombay        |
+  |------+-------------------------------+------------------------+------+----------+--------------------|
+  |   6. | Sensors Modeling & Simulation | Electrical Engineering | [[http://sl-coep.vlabs.ac.in/][Link]] | [[https://github.com/vlead/open-edx-sensors-modeling-simulation][Link]]     | COE, Pune          |
+  |------+-------------------------------+------------------------+------+----------+--------------------|
+  |   7. | Industrial Electric           | Electrical             | [[http://ied-nitk.vlabs.ac.in/][Link]] | [[https://github.com/vlead/open-edx-industrial-electric-drives-lab][Link]]     | NIT, Surathkal     |
+  |      | Drives and Application        | Engineering            |      |          |                    |
+  |      | of PLC                        |                        |      |          |                    |
+  |------+-------------------------------+------------------------+------+----------+--------------------|
+  |   8. | Industrial Automation         | Electrical Engineering | [[http://ial-coep.vlabs.ac.in/Introduction.html][Link]] | [[https://github.com/vlead/open-edx-industrial-automation-lab][Link]]     | COE, Pune          |
+  |      | Laboratory                    |                        |      |          |                    |
+  |------+-------------------------------+------------------------+------+----------+--------------------|
+  |   9. | Hybrid Electronics            | Electronics &          | [[http://he-coep.vlabs.ac.in/][Link]] | [[https://github.com/vlead/open-edx-hybrid-electronics-lab][Link]]     | COE, Pune          |
+  |      |                               | Communications         |      |          |                    |
+  |------+-------------------------------+------------------------+------+----------+--------------------|
+  |  10. | Data Structures               | Computer Science       | [[http://cse01-iiith.vlabs.ac.in/][Link]] | [[https://github.com/vlead/open-edx-data-structures][Link]]     | IIIT, Hyderabad    |
+  |      |                               |                        |      |          |                    |
+  |------+-------------------------------+------------------------+------+----------+--------------------|
+
+** Port a Lab
+   1. Creation of skeletal structure for a specification :: [[./automation.org][This document]]
+        illustrates the creation of skeletal structure of a lab.
+   2. Tar and zip the directory and import the zipped file into the studio.
+     #+BEGIN_EXAMPLE
+     tar cvf testlab.tar </home/user/testlab/
+     gzip testlab.tar
+     #+END_EXAMPLE
+   3. Import this tar file to the Open edX studio from =Tools= dropdown menu on
+      the top.
+   4. Add content to the lab.  Follow this [[http://edx.readthedocs.org/projects/edx-partner-course-staff/en/latest/index.html][link]] for more information on
+      creation of a course and configuring it. 
+   5. Changing course date to Anytime
+      - Click on Course name which you own.
+      - Go to settings drop down, and click Advanced settings.
+      - Change field "Course ADvertised Start Date" from =null= to "Anytime"
+      - Save your changes
+   6. Changing the default course preview and upload course image
+      - Click on Course name which you own.
+      - Go to schedule and details in settings drop down
+      - Let all the fileld in course schedule be empty
+      - In "Introducing your Course" section edit the "Course Overview" as per
+        your requirement.
+      - Add a course image by clicking on Upload image button
+      - Save your changes
+
+** Creation of a repository on GitHub
+
+   1. Export the lab =Tools= dropdown menu on the top of the Studio.  A zipped
+      file is downloaded.  Unzip and untar the exported file to produce a
+      directory.
+      #+BEGIN_EXAMPLE
+      tar zxvf testlab.tar.gz      
+      #+END_EXAMPLE
+
+   2. Create a repository on the github.
+   3. Clone the new created repository.
+   4. Copy entire contents of the directory created in step 1 to the directory
+      created in step 3.
+   5. Add, commit and push all the changes to the git repository. 
+
+
+** Configure a course for Production
+
+   1. Log in to edX studio
+   2. Click on New Course button to create the course
+   3. Fill the course name
+      #+BEGIN_EXAMPLE
+      Computer Programming
+      #+END_EXAMPLE
+   4. Fill the Organisation
+      #+BEGIN_EXAMPLE
+      IIIT-Hyderabad
+      #+END_EXAMPLE
+   5. Fill the Course Number
+      #+BEGIN_EXAMPLE
+      CSE02
+      #+END_EXAMPLE
+   6. Fill the Course RunAnytime
+   7. Clone the repository and tar and zip it.
+   8. Import the zipped file into the studio.
