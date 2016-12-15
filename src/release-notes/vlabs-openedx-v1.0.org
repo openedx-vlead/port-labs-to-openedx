@@ -1,7 +1,7 @@
 #+TITLE: VLABS Open edX v1.0
 #+AUTHOR: VLEAD
 #+DATE: [2016-12-15]
-x
+
 * Introduction
   This document describes the release notes of =VLABS Open edX Platform Server=
   version =v1.0=.
