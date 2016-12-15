@@ -1,6 +1,6 @@
 #+TITLE: Virtual Labs on Open edX Platform
 #+Author: VLEAD
-#+Date: [2016-01-27 Wed]
+#+Date: [2016-12-15]
 #+PROPERTY: results output
 #+PROPERTY: exports code
 #+SETUPFILE: ./org-templates/level-0.org
@@ -8,8 +8,9 @@
 * Introduction
   This document deals with how to: 
   + Install and configure Open edX platform
-  + Change the theme of Open edX platform
-  + Port a virtual lab to Open edX platform
+  + Theming of VLABS Open edX
+  + Porting of Virtual Labs to Open edX platform
+  
 
 * Benefits
   
@@ -31,24 +32,39 @@
   2. A user upon re-logging to virtual labs is returned to the same state that
      the user was in before logging out of virtual labs.
   3. User action data is captured that enables building various analytics.
-  4. The home page of virtual labs on Open edX platform facilitate searching of
-     labs, like the courses on edx.org
-  5. Style and theme of virtual labs on Open edX platform conveys a uniqueness
+  4. Style and theme of virtual labs on Open edX platform conveys a uniqueness
      relevant to Indian context.
-  6. Feedback to be incorporated for virtual labs on Open edX.
-  7. Ability to manage the platform - perform backups, restore from a backup,
+  5. Feedback to be incorporated for virtual labs on Open edX.
+  6. Ability to manage the platform - perform backups, restore from a backup,
      update to a newer version of Open edX.
-  8. Virtual Labs on Open edX should adhere to [[https://open.edx.org/trademark-guidelines][trademark guidelines]] stipulated
+  7. Virtual Labs on Open edX should adhere to [[https://open.edx.org/trademark-guidelines][trademark guidelines]] stipulated
      by Open edX platform. 
      
 * Open edX platform for Virtual Labs
+
   - [[./platform-install-configure/index.org][Setup and Configure Open edX platform]]
-  - [[./analytics-setup/index.org][Setup Analytics]]
   - [[./theming-customization/index.org][Change the way Open edX platform looks]]
   - [[./porting-labs/index.org][Port a lab to Open edX platform]]
   - [[./communication-channels/index.org][Communication Channels for collaboration]]
+  - Setting up Analytics 
+    
 
-* Planning
+* Open Questions
+
+  1. How does a database used by a lab get integrated into Open edX platform?
+  2. Enabling keyword based search in VLABS Open edX
+
+* COMMENT Demo
+  - analytics
+  - central login
+  - performance concerns
+  - security concerns
+  - hosting/deployment process
+  - authoring process,
+  - backend connection to running simulation for labs
+  - backup, restore and logging for incident response and troubleshooting
+
+* COMMENT * Planning
 ** Phases
   |-----------+--------------------------------------------------+------------|
   | Phases    | Description                                      | Start Date |
@@ -64,41 +80,27 @@
 ** Phase I
    Porting of 10 labs to Open edX platform by VLEAD.
 
-   |---------------------------+------------------+------------------+------------------+--------|
-   | Deliverable               | Effort &         | Start Date       | End Date         |        |
-   |                           | Resources        |                  |                  | Status |
-   |---------------------------+------------------+------------------+------------------+--------|
-   | Open edX platfrom         | 2+ person days   | [2016-02-02 Tue] | [2016-02-03 Wed] | Done   |
-   | on AWS                    | Shiva & Thirumal |                  |                  |        |
-   |---------------------------+------------------+------------------+------------------+--------|
-   | Identification            | 1 person day     | [2016-02-02 Tue] | [2016-02-02 Tue] | Done   |
-   | of 10 labs                | Thirumal         |                  |                  |        |
-   |---------------------------+------------------+------------------+------------------+--------|
-   | Porting of 10 labs        | 1 person day/lab | [2016-02-03 Wed] | [2016-02-10 Wed] | Done   |
-   | to Open edX               | Dinesh           |                  |                  |        |
-   | platfrom                  | Shiva            |                  |                  |        |
-   |---------------------------+------------------+------------------+------------------+--------|
-   | Configuring Analytics     | 2 person days    | [2016-02-05 Fri] | [2016-02-08 Mon] |        |
-   | of Open edX for           | Thirumal         |                  |                  |        |
-   | virtual labs usage        |                  |                  |                  |        |
-   |---------------------------+------------------+------------------+------------------+--------|
-   | Automation, porting a lab | 5 person days    | [2016-02-09 Tue] | [2016-02-15 Mon] |        |
-   | from github               | Thirumal         |                  |                  |        |
-   |---------------------------+------------------+------------------+------------------+--------|
-   | Documentation of this     |                  | [2016-02-02 Tue] | [2016-02-15 Mon] |        |
-   | process                   |                  |                  |                  |        |
-   |---------------------------+------------------+------------------+------------------+--------|
-
-* Open Questions
-  1. How does a database used by a lab get integrated into Open edX platform?
-
-* COMMENT Demo
-  - analytics
-  - central login
-  - performance concerns
-  - security concerns
-  - hosting/deployment process
-  - authoring process,
-  - backend connection to running simulation for labs
-  - backup, restore and logging for incident response and troubleshooting
-
+   |---------------------------+------------------+------------------+------------------|
+   | Deliverable               | Effort &         | Start Date       | End Date         |
+   |                           | Resources        |                  |                  |
+   |---------------------------+------------------+------------------+------------------|
+   | Open edX platfrom         | 2+ person days   | [2016-02-02 Tue] | [2016-02-03 Wed] |
+   | on AWS                    | Shiva & Thirumal |                  |                  |
+   |---------------------------+------------------+------------------+------------------|
+   | Identification            | 1 person day     | [2016-02-02 Tue] | [2016-02-02 Tue] |
+   | of 10 labs                | Thirumal         |                  |                  |
+   |---------------------------+------------------+------------------+------------------|
+   | Porting of 10 labs        | 1 person day/lab | [2016-02-03 Wed] | [2016-02-10 Wed] |
+   | to Open edX               | Dinesh           |                  |                  |
+   | platfrom                  | Shiva            |                  |                  |
+   |---------------------------+------------------+------------------+------------------|
+   | Configuring Analytics     | 2 person days    | [2016-02-05 Fri] | [2016-02-08 Mon] |
+   | of Open edX for           | Thirumal         |                  |                  |
+   | virtual labs usage        |                  |                  |                  |
+   |---------------------------+------------------+------------------+------------------|
+   | Automation, porting a lab | 5 person days    | [2016-02-09 Tue] | [2016-02-15 Mon] |
+   | from github               | Thirumal         |                  |                  |
+   |---------------------------+------------------+------------------+------------------|
+   | Documentation of this     |                  | [2016-02-02 Tue] | [2016-02-15 Mon] |
+   | process                   |                  |                  |                  |
+   |---------------------------+------------------+------------------+------------------|
