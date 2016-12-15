@@ -1,0 +1,38 @@
+#+TITLE: VLABS Open edX v1.0
+#+AUTHOR: VLEAD
+#+DATE: [2016-12-15]
+x
+* Introduction
+  This document describes the release notes of =VLABS Open edX Platform Server=
+  version =v1.0=.
+
+
+* Features 
+  The features of Open edX platform that can be harnessed by Virtual Labs are:
+
+  1. Provides a Single Sing on - allows creation of a profile
+  2. Persistence - allows the user to get to a state in virtual labs from
+     where the user has left.
+  3. Authoring - provides a studio to create content
+  4. Analytics - provides usage of virtual labs
+  5. Quizz/Discussion boards - allows the author to create quizzes 
+  6. Versioning - provides a mechanism to version the authored content.
+  7. Automated Lab content deployment - No special process to deploy the
+     content.
+ 
+
+* [[../index.org][Documentation Link]]
+  
+
+* Github Open Issues 
+  https://github.com/openedx-vlead/port-labs-to-openedx/issues
+
+
+* Known issues 
+  + Mobile responsiveness of VLABS Open edX theme is not observed.
+  + Keyword based search in VLABS Open edX is not functional.
+
+* Enhancements
+  + Mobile responsiveness of VLABS Open edX theme 
+  + Keyword based search in VLABS Open edX.
+
