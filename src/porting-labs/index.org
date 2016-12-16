@@ -79,3 +79,65 @@
    6. Fill the Course RunAnytime
    7. Clone the repository and tar and zip it.
    8. Import the zipped file into the studio.
+* Integration of feedback and analytics 
+** Integration of feedback 
+    + Create a section called Feedback at lab level (Use the steps as
+      given above in the document to create a section)
+    + Add the following code in the HTML editor exposed by Open edX.
+      #+BEGIN_SRC javascript
+      <p>
+      <script src="http://open-edx.vlabs.ac.in:5959/feedback_utils.js"></script>
+      <script>// <![CDATA[
+
+      var user_id = "%%USER_ID%%"
+      var lab_id = "HTV-AU"
+      var lab_name = "Heat and Thermodynamics Virtual Lab"
+      var exp_id = "E99983"
+      var exp_name = "The Study of Phase Change"
+      // ]]></script>
+
+      </p>
+      <p><a onclick="submit_feedback(lab_id, lab_name, exp_id, exp_name, user_id)" style="cursor: pointer;">Click here </a> to give feedback</p>
+      #+END_SRC
+    + In the above sample code edit the following variables lab_id,
+      lab_name, exp_id, exp_name using the lab specifications given
+      here https://github.com/vlead/lab-specifications
+
+** Integration of analytics 
+    + Analytics is to be fetched from every experiment section or
+      simulation section of a lab in Open edX.
+    + In a ported lab on Open edX, edit the Simulator/Experiment
+      section and add the following code
+      #+BEGIN_SRC javascript
+      <p><button onclick="popup()">Full Screen</button></p>
+      <p><iframe src="GIVE EXPERIMENT URL HERE" height="602" width="802"> </iframe></p>
+      <script>// <![CDATA[ 
+      function popup(){
+      window.open('GIVE EXPERIMENT URL HERE', '_blank', 'toolbar=0,location=0,menubar=0');
+      }
+      // ]]></script>
+      <p></p>
+      <script>// <![CDATA[
+      // ****** ALSO MODIFY THE URLS GIVEN ABOVE **************
+      // ********MODIFY THIS SECTION **************************
+
+      var lab_id = "HTV-AU"; 
+      var exp_name = "The Study of Phase Change"
+      var lab_name = "Heat and Thermodynamics Virtual Lab"
+      var user_id = "%%USER_ID%%"; //get the User ID as a string  
+      var exp_id = "E098934"
+ 
+      var server_url = "http://analytics-api.vlabs.ac.in/"
+
+      var xhttp = new XMLHttpRequest();
+      var urlstr = server_url + user_id + "," + lab_id + "," + lab_name + "," + exp_id + "," + exp_name
+      xhttp.open("GET", urlstr, true);
+      xhttp.send();
+ 
+      // *******DO NOT MODIFY THIS SECTION AGAIN ************
+      // ]]></script>
+      #+END_SRC
+    + In the above sample javascript, edit the section given in
+      CAPITAL LETTERS and also give the appropriate values to
+      javascript variables - lab_id, lab_name, exp_name, exp_id
+    
