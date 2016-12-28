@@ -1,4 +1,4 @@
-#+TITLE: VLABS Open edX v1.0
+#+TITLE: VLABS Open edX v1.0.0
 #+AUTHOR: VLEAD
 #+DATE: [2016-12-15]
 
