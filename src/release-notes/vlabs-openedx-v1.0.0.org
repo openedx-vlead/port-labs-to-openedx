@@ -4,7 +4,7 @@
 
 * Introduction
   This document describes the release notes of =VLABS Open edX Platform Server=
-  version =v1.0=.
+  version =v1.0.0=.
 
 
 * Features 
