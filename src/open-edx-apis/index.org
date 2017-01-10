@@ -10,7 +10,7 @@
   + fetch information from open edx system using APIs
  
 * Courses API Version 1.0
-  + [[http://edx.readthedocs.io/projects/edx-platform-api/en/latest/courses/index.html#courses-api-version-1-0][Open-edX Documentation]]
+  + [[http://edx.readthedocs.io/projects/edx-platform-api/en/latest/courses/index.html#courses-api-version-1-0][Documentation]]
 ** GET a list of courses
    |--------+--------------------------|
    | Method | Endpoint                 |
@@ -18,7 +18,7 @@
    | GET    | /api/courses/v1/courses/ |
    |--------+--------------------------|
    
-   Tries on vlabs.ac.in
+   Tried on vlabs.ac.in
    #+BEGIN_SRC command
    curl -XGET http://vlabs.ac.in/api/courses/v1/courses/
    #+END_SRC
@@ -325,4 +325,52 @@
 	}]
 }
    #+END_SRC
+
+** GET details of a specific course
+
+|--------+-------------------------------------|
+| Method | Endpoint                            |
+|--------+-------------------------------------|
+| GET    | /api/courses/v1/courses/{course-id} |
+|--------+-------------------------------------|
+
+   Tried on vlabs.ac.in
+   #+BEGIN_SRC command
+   curl -XGET http://vlabs.ac.in/api/courses/v1/courses/course-v1:Amrita-University+AACV-AU+Anytime
+   #+END_SRC
+   
+   Returns the following -
+   #+BEGIN_SRC output
+   {
+	"blocks_url": "http://vlabs.ac.in/api/courses/v1/blocks/?course_id=course-v1%3AAmrita-University%2BAACV-AU%2BAnytime",
+	"effort": null,
+	"end": null,
+	"enrollment_start": null,
+	"enrollment_end": null,
+	"id": "course-v1:Amrita-University+AACV-AU+Anytime",
+	"media": {
+		"course_image": {
+			"uri": "/asset-v1:Amrita-University+AACV-AU+Anytime+type@asset+block@analytical_chemistry.jpg"
+		},
+		"course_video": {
+			"uri": null
+		},
+		"image": {
+			"raw": "http://vlabs.ac.in/asset-v1:Amrita-University+AACV-AU+Anytime+type@asset+block@analytical_chemistry.jpg",
+			"small": "http://vlabs.ac.in/asset-v1:Amrita-University+AACV-AU+Anytime+type@asset+block@analytical_chemistry.jpg",
+			"large": "http://vlabs.ac.in/asset-v1:Amrita-University+AACV-AU+Anytime+type@asset+block@analytical_chemistry.jpg"
+		}
+	},
+	"name": " Advanced Analytical Chemistry Virtual Lab ",
+	"number": "AACV-AU",
+	"org": "Amrita-University",
+	"short_description": "",
+	"start": "2016-12-05T00:00:00Z",
+	"start_display": "Anytime",
+	"start_type": "string",
+	"pacing": "instructor",
+	"course_id": "course-v1:Amrita-University+AACV-AU+Anytime",
+	"overview": "<section class=\"about\">\n  <h2>About This Lab</h2>\n  <p>Analytical chemistry is the branch of chemistry concerned with studying the properties of materials and development of tools used to analyze materials. It is the science of sampling, defining, isolating , concentrating and preserving samples.</p>\n</section>"
+}
+   #+END_SRC   
 
