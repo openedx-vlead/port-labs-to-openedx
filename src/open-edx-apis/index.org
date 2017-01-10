@@ -374,4 +374,65 @@
 }
    #+END_SRC   
 
-k
+
+** GET the lit of courses user is enrolled with 
+   |--------+--------------------------------------------------|
+   | Method | Endpoint                                         |
+   |--------+--------------------------------------------------|
+   | GET    | /api/courses/v1/courses/?username=<name-of-user> |
+   |--------+--------------------------------------------------|
+   
+   Tried on vlabs.ac.in
+   #+BEGIN_SRC command
+   http://vlabs.ac.in/api/courses/v1/courses/?username=abdul
+   #+END_SRC
+   
+   Returns the follwing 
+   #+BEGIN_SRC output
+   HTTP 200 OK
+Content-Type: application/json
+Vary: Accept
+Allow: GET, HEAD, OPTIONS
+
+{
+    "pagination": {
+        "count": 80,
+        "previous": null,
+        "num_pages": 8,
+        "next": "http://vlabs.ac.in/api/courses/v1/courses/?page=2&username=abdul"
+    },
+    "results": [
+        {
+            "blocks_url": "http://vlabs.ac.in/api/courses/v1/blocks/?course_id=course-v1%3AAmrita-University%2BAACV-AU%2BAnytime",
+            "effort": null,
+            "end": null,
+            "enrollment_start": null,
+            "enrollment_end": null,
+            "id": "course-v1:Amrita-University+AACV-AU+Anytime",
+            "media": {
+                "course_image": {
+                    "uri": "/asset-v1:Amrita-University+AACV-AU+Anytime+type@asset+block@analytical_chemistry.jpg"
+                },
+                "course_video": {
+                    "uri": null
+                },
+                "image": {
+                    "raw": "http://vlabs.ac.in/asset-v1:Amrita-University+AACV-AU+Anytime+type@asset+block@analytical_chemistry.jpg",
+                    "small": "http://vlabs.ac.in/asset-v1:Amrita-University+AACV-AU+Anytime+type@asset+block@analytical_chemistry.jpg",
+                    "large": "http://vlabs.ac.in/asset-v1:Amrita-University+AACV-AU+Anytime+type@asset+block@analytical_chemistry.jpg"
+                }
+            },
+            "name": " Advanced Analytical Chemistry Virtual Lab ",
+            "number": "AACV-AU",
+            "org": "Amrita-University",
+            "short_description": "",
+            "start": "2016-12-05T00:00:00Z",
+            "start_display": "Anytime",
+            "start_type": "string",
+            "pacing": "instructor",
+            "course_id": "course-v1:Amrita-University+AACV-AU+Anytime"
+        },
+
+    -----Edited snippet-------
+   #+END_SRC
+   
