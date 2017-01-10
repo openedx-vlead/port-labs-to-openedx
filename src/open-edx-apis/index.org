@@ -1,0 +1,328 @@
+#+TITLE: Open edX APIs tries on Virtual labs 
+#+Author: VLEAD
+#+Date: [2016-12-15]
+#+PROPERTY: results output
+#+PROPERTY: exports code
+#+SETUPFILE: ./org-templates/level-0.org
+
+* Introduction
+  This document deals with how to: 
+  + fetch information from open edx system using APIs
+ 
+* Courses API Version 1.0
+  + [[http://edx.readthedocs.io/projects/edx-platform-api/en/latest/courses/index.html#courses-api-version-1-0][Open-edX Documentation]]
+** GET a list of courses
+   |--------+--------------------------|
+   | Method | Endpoint                 |
+   |--------+--------------------------|
+   | GET    | /api/courses/v1/courses/ |
+   |--------+--------------------------|
+   
+   Tries on vlabs.ac.in
+   #+BEGIN_SRC command
+   curl -XGET http://vlabs.ac.in/api/courses/v1/courses/
+   #+END_SRC
+   
+   Returns the following -
+   #+BEGIN_SRC command
+   {
+	"pagination": {
+		"count": 80,
+		"previous": null,
+		"num_pages": 8,
+		"next": "http://vlabs.ac.in/api/courses/v1/courses/?page=2"
+	},
+	"results": [{
+		"blocks_url": "http://vlabs.ac.in/api/courses/v1/blocks/?course_id=course-v1%3AAmrita-University%2BAACV-AU%2BAnytime",
+		"effort": null,
+		"end": null,
+		"enrollment_start": null,
+		"enrollment_end": null,
+		"id": "course-v1:Amrita-University+AACV-AU+Anytime",
+		"media": {
+			"course_image": {
+				"uri": "/asset-v1:Amrita-University+AACV-AU+Anytime+type@asset+block@analytical_chemistry.jpg"
+			},
+			"course_video": {
+				"uri": null
+			},
+			"image": {
+				"raw": "http://vlabs.ac.in/asset-v1:Amrita-University+AACV-AU+Anytime+type@asset+block@analytical_chemistry.jpg",
+				"small": "http://vlabs.ac.in/asset-v1:Amrita-University+AACV-AU+Anytime+type@asset+block@analytical_chemistry.jpg",
+				"large": "http://vlabs.ac.in/asset-v1:Amrita-University+AACV-AU+Anytime+type@asset+block@analytical_chemistry.jpg"
+			}
+		},
+		"name": " Advanced Analytical Chemistry Virtual Lab ",
+		"number": "AACV-AU",
+		"org": "Amrita-University",
+		"short_description": "",
+		"start": "2016-12-05T00:00:00Z",
+		"start_display": "Anytime",
+		"start_type": "string",
+		"pacing": "instructor",
+		"course_id": "course-v1:Amrita-University+AACV-AU+Anytime"
+	}, {
+		"blocks_url": "http://vlabs.ac.in/api/courses/v1/blocks/?course_id=course-v1%3ACOE-Pune%2BBIO16%2BAnytime",
+		"effort": null,
+		"end": null,
+		"enrollment_start": null,
+		"enrollment_end": null,
+		"id": "course-v1:COE-Pune+BIO16+Anytime",
+		"media": {
+			"course_image": {
+				"uri": "/asset-v1:COE-Pune+BIO16+Anytime+type@asset+block@COEP-Biomedical_and_Signal_Processing_Laboratory.JPG"
+			},
+			"course_video": {
+				"uri": null
+			},
+			"image": {
+				"raw": "http://vlabs.ac.in/asset-v1:COE-Pune+BIO16+Anytime+type@asset+block@COEP-Biomedical_and_Signal_Processing_Laboratory.JPG",
+				"small": "http://vlabs.ac.in/asset-v1:COE-Pune+BIO16+Anytime+type@asset+block@COEP-Biomedical_and_Signal_Processing_Laboratory.JPG",
+				"large": "http://vlabs.ac.in/asset-v1:COE-Pune+BIO16+Anytime+type@asset+block@COEP-Biomedical_and_Signal_Processing_Laboratory.JPG"
+			}
+		},
+		"name": "Biomedical and Signal Processing Laboratory",
+		"number": "BIO16",
+		"org": "COE-Pune",
+		"short_description": "",
+		"start": "2016-10-02T00:00:00Z",
+		"start_display": "Anytime",
+		"start_type": "string",
+		"pacing": "instructor",
+		"course_id": "course-v1:COE-Pune+BIO16+Anytime"
+	}, {
+		"blocks_url": "http://vlabs.ac.in/api/courses/v1/blocks/?course_id=course-v1%3AAmrita-University%2BBIOTECH01%2BAnytime",
+		"effort": null,
+		"end": null,
+		"enrollment_start": null,
+		"enrollment_end": null,
+		"id": "course-v1:Amrita-University+BIOTECH01+Anytime",
+		"media": {
+			"course_image": {
+				"uri": "/asset-v1:Amrita-University+BIOTECH01+Anytime+type@asset+block@biochemistry_lab.png"
+			},
+			"course_video": {
+				"uri": null
+			},
+			"image": {
+				"raw": "http://vlabs.ac.in/asset-v1:Amrita-University+BIOTECH01+Anytime+type@asset+block@biochemistry_lab.png",
+				"small": "http://vlabs.ac.in/asset-v1:Amrita-University+BIOTECH01+Anytime+type@asset+block@biochemistry_lab.png",
+				"large": "http://vlabs.ac.in/asset-v1:Amrita-University+BIOTECH01+Anytime+type@asset+block@biochemistry_lab.png"
+			}
+		},
+		"name": "Biochemistry Virtual Lab I",
+		"number": "BIOTECH01",
+		"org": "Amrita-University",
+		"short_description": "",
+		"start": "2016-12-05T00:00:00Z",
+		"start_display": "Anytime",
+		"start_type": "string",
+		"pacing": "instructor",
+		"course_id": "course-v1:Amrita-University+BIOTECH01+Anytime"
+	}, {
+		"blocks_url": "http://vlabs.ac.in/api/courses/v1/blocks/?course_id=course-v1%3AAmrita-University%2BBIOTECH17%2BAnytime",
+		"effort": null,
+		"end": null,
+		"enrollment_start": null,
+		"enrollment_end": null,
+		"id": "course-v1:Amrita-University+BIOTECH17+Anytime",
+		"media": {
+			"course_image": {
+				"uri": "/asset-v1:Amrita-University+BIOTECH17+Anytime+type@asset+block@icons_Population_Ecology.png"
+			},
+			"course_video": {
+				"uri": null
+			},
+			"image": {
+				"raw": "http://vlabs.ac.in/asset-v1:Amrita-University+BIOTECH17+Anytime+type@asset+block@icons_Population_Ecology.png",
+				"small": "http://vlabs.ac.in/asset-v1:Amrita-University+BIOTECH17+Anytime+type@asset+block@icons_Population_Ecology.png",
+				"large": "http://vlabs.ac.in/asset-v1:Amrita-University+BIOTECH17+Anytime+type@asset+block@icons_Population_Ecology.png"
+			}
+		},
+		"name": "Population ecology Virtual Lab II",
+		"number": "BIOTECH17",
+		"org": "Amrita-University",
+		"short_description": "In this Lab with the List of experiments narrated we will come to understand the concepts of Optimal Foraging, Optimal Foraging Pollinators Etc.",
+		"start": "2014-01-01T00:00:00Z",
+		"start_display": "Anytime",
+		"start_type": "string",
+		"pacing": "instructor",
+		"course_id": "course-v1:Amrita-University+BIOTECH17+Anytime"
+	}, {
+		"blocks_url": "http://vlabs.ac.in/api/courses/v1/blocks/?course_id=course-v1%3AAmrita-University%2BBIOTECH18%2BAnytime",
+		"effort": null,
+		"end": null,
+		"enrollment_start": null,
+		"enrollment_end": null,
+		"id": "course-v1:Amrita-University+BIOTECH18+Anytime",
+		"media": {
+			"course_image": {
+				"uri": "/asset-v1:Amrita-University+BIOTECH18+Anytime+type@asset+block@population-ecology-II.JPG"
+			},
+			"course_video": {
+				"uri": null
+			},
+			"image": {
+				"raw": "http://vlabs.ac.in/asset-v1:Amrita-University+BIOTECH18+Anytime+type@asset+block@population-ecology-II.JPG",
+				"small": "http://vlabs.ac.in/asset-v1:Amrita-University+BIOTECH18+Anytime+type@asset+block@population-ecology-II.JPG",
+				"large": "http://vlabs.ac.in/asset-v1:Amrita-University+BIOTECH18+Anytime+type@asset+block@population-ecology-II.JPG"
+			}
+		},
+		"name": "Population ecology Virtual Lab I",
+		"number": "BIOTECH18",
+		"org": "Amrita-University",
+		"short_description": "In this Lab with the List of experiments narrated we will come to understand the concepts of Optimal Foraging, Optimal Foraging Pollinators Etc.",
+		"start": "2016-10-02T00:00:00Z",
+		"start_display": "Anytime",
+		"start_type": "string",
+		"pacing": "instructor",
+		"course_id": "course-v1:Amrita-University+BIOTECH18+Anytime"
+	}, {
+		"blocks_url": "http://vlabs.ac.in/api/courses/v1/blocks/?course_id=course-v1%3AIIT-Bombay%2BBIOTECH25%2BAnytime",
+		"effort": null,
+		"end": null,
+		"enrollment_start": null,
+		"enrollment_end": null,
+		"id": "course-v1:IIT-Bombay+BIOTECH25+Anytime",
+		"media": {
+			"course_image": {
+				"uri": "/asset-v1:IIT-Bombay+BIOTECH25+Anytime+type@asset+block@IITB-Virtual_Proteomics_Lab.jpg"
+			},
+			"course_video": {
+				"uri": null
+			},
+			"image": {
+				"raw": "http://vlabs.ac.in/asset-v1:IIT-Bombay+BIOTECH25+Anytime+type@asset+block@IITB-Virtual_Proteomics_Lab.jpg",
+				"small": "http://vlabs.ac.in/asset-v1:IIT-Bombay+BIOTECH25+Anytime+type@asset+block@IITB-Virtual_Proteomics_Lab.jpg",
+				"large": "http://vlabs.ac.in/asset-v1:IIT-Bombay+BIOTECH25+Anytime+type@asset+block@IITB-Virtual_Proteomics_Lab.jpg"
+			}
+		},
+		"name": "Virtual Proteomics Lab",
+		"number": "BIOTECH25",
+		"org": "IIT-Bombay",
+		"short_description": "",
+		"start": "2016-09-29T00:00:00Z",
+		"start_display": "Anytime",
+		"start_type": "string",
+		"pacing": "instructor",
+		"course_id": "course-v1:IIT-Bombay+BIOTECH25+Anytime"
+	}, {
+		"blocks_url": "http://vlabs.ac.in/api/courses/v1/blocks/?course_id=course-v1%3AIIT-Roorkee%2BBIOTECH26%2BAnytime",
+		"effort": null,
+		"end": null,
+		"enrollment_start": null,
+		"enrollment_end": null,
+		"id": "course-v1:IIT-Roorkee+BIOTECH26+Anytime",
+		"media": {
+			"course_image": {
+				"uri": "/asset-v1:IIT-Roorkee+BIOTECH26+Anytime+type@asset+block@IITRoorkee-Biomedical_Instrumentation_Lab.jpg"
+			},
+			"course_video": {
+				"uri": null
+			},
+			"image": {
+				"raw": "http://vlabs.ac.in/asset-v1:IIT-Roorkee+BIOTECH26+Anytime+type@asset+block@IITRoorkee-Biomedical_Instrumentation_Lab.jpg",
+				"small": "http://vlabs.ac.in/asset-v1:IIT-Roorkee+BIOTECH26+Anytime+type@asset+block@IITRoorkee-Biomedical_Instrumentation_Lab.jpg",
+				"large": "http://vlabs.ac.in/asset-v1:IIT-Roorkee+BIOTECH26+Anytime+type@asset+block@IITRoorkee-Biomedical_Instrumentation_Lab.jpg"
+			}
+		},
+		"name": "Biomedical Instrumentation Lab ",
+		"number": "BIOTECH26",
+		"org": "IIT-Roorkee",
+		"short_description": "",
+		"start": "2016-09-15T00:00:00Z",
+		"start_display": "Anytime",
+		"start_type": "string",
+		"pacing": "instructor",
+		"course_id": "course-v1:IIT-Roorkee+BIOTECH26+Anytime"
+	}, {
+		"blocks_url": "http://vlabs.ac.in/api/courses/v1/blocks/?course_id=course-v1%3AAmrita-University%2BCBI-AU%2BAnytime",
+		"effort": null,
+		"end": null,
+		"enrollment_start": null,
+		"enrollment_end": null,
+		"id": "course-v1:Amrita-University+CBI-AU+Anytime",
+		"media": {
+			"course_image": {
+				"uri": "/asset-v1:Amrita-University+CBI-AU+Anytime+type@asset+block@cell-biology-I.jpg"
+			},
+			"course_video": {
+				"uri": null
+			},
+			"image": {
+				"raw": "http://vlabs.ac.in/asset-v1:Amrita-University+CBI-AU+Anytime+type@asset+block@cell-biology-I.jpg",
+				"small": "http://vlabs.ac.in/asset-v1:Amrita-University+CBI-AU+Anytime+type@asset+block@cell-biology-I.jpg",
+				"large": "http://vlabs.ac.in/asset-v1:Amrita-University+CBI-AU+Anytime+type@asset+block@cell-biology-I.jpg"
+			}
+		},
+		"name": "Cell Biology Virtual Lab I",
+		"number": "CBI-AU",
+		"org": "Amrita-University",
+		"short_description": "",
+		"start": "2016-09-30T00:00:00Z",
+		"start_display": "Anytime",
+		"start_type": "string",
+		"pacing": "instructor",
+		"course_id": "course-v1:Amrita-University+CBI-AU+Anytime"
+	}, {
+		"blocks_url": "http://vlabs.ac.in/api/courses/v1/blocks/?course_id=course-v1%3AAmrita-University%2BCBII-AU%2BAnytime",
+		"effort": null,
+		"end": null,
+		"enrollment_start": null,
+		"enrollment_end": null,
+		"id": "course-v1:Amrita-University+CBII-AU+Anytime",
+		"media": {
+			"course_image": {
+				"uri": "/asset-v1:Amrita-University+CBII-AU+Anytime+type@asset+block@Amrita-Cell_biology_Virtual_Lab_II.JPG"
+			},
+			"course_video": {
+				"uri": null
+			},
+			"image": {
+				"raw": "http://vlabs.ac.in/asset-v1:Amrita-University+CBII-AU+Anytime+type@asset+block@Amrita-Cell_biology_Virtual_Lab_II.JPG",
+				"small": "http://vlabs.ac.in/asset-v1:Amrita-University+CBII-AU+Anytime+type@asset+block@Amrita-Cell_biology_Virtual_Lab_II.JPG",
+				"large": "http://vlabs.ac.in/asset-v1:Amrita-University+CBII-AU+Anytime+type@asset+block@Amrita-Cell_biology_Virtual_Lab_II.JPG"
+			}
+		},
+		"name": "Cell Biology Virtual Lab II",
+		"number": "CBII-AU",
+		"org": "Amrita-University",
+		"short_description": "",
+		"start": "2016-09-29T00:00:00Z",
+		"start_display": "Anytime",
+		"start_type": "string",
+		"pacing": "instructor",
+		"course_id": "course-v1:Amrita-University+CBII-AU+Anytime"
+	}, {
+		"blocks_url": "http://vlabs.ac.in/api/courses/v1/blocks/?course_id=course-v1%3AIIIT-Hyderabad%2BCCNSB01%2BAnytime",
+		"effort": null,
+		"end": null,
+		"enrollment_start": null,
+		"enrollment_end": null,
+		"id": "course-v1:IIIT-Hyderabad+CCNSB01+Anytime",
+		"media": {
+			"course_image": {
+				"uri": "/asset-v1:IIIT-Hyderabad+CCNSB01+Anytime+type@asset+block@molcular-flourescence-spectroscopy-iiith.jpg"
+			},
+			"course_video": {
+				"uri": null
+			},
+			"image": {
+				"raw": "http://vlabs.ac.in/asset-v1:IIIT-Hyderabad+CCNSB01+Anytime+type@asset+block@molcular-flourescence-spectroscopy-iiith.jpg",
+				"small": "http://vlabs.ac.in/asset-v1:IIIT-Hyderabad+CCNSB01+Anytime+type@asset+block@molcular-flourescence-spectroscopy-iiith.jpg",
+				"large": "http://vlabs.ac.in/asset-v1:IIIT-Hyderabad+CCNSB01+Anytime+type@asset+block@molcular-flourescence-spectroscopy-iiith.jpg"
+			}
+		},
+		"name": "Molecular Fluorescence Spectroscopy",
+		"number": "CCNSB01",
+		"org": "IIIT-Hyderabad",
+		"short_description": "",
+		"start": "2016-09-29T00:00:00Z",
+		"start_display": "Anytime",
+		"start_type": "string",
+		"pacing": "instructor",
+		"course_id": "course-v1:IIIT-Hyderabad+CCNSB01+Anytime"
+	}]
+}
+   #+END_SRC
+
