@@ -1,0 +1,50 @@
+#+TITLE: VLABS Open edX AMIs 
+#+Author: VLEAD
+#+Date: [2017-04-28]
+#+PROPERTY: results output
+#+PROPERTY: exports code
+#+SETUPFILE: ./org-templates/level-0.org
+
+* Objective
+  To take regular backups of the state of VLABS Open edX twice a
+  month. Since labs are already version controlled, the only backup
+  required is for Open edX platform.
+  
+* Problem 
+  VLABS Open edX is running outside the cluster due to the following
+  reasons -
+  + It is not autodeployable.
+  + Since we are using un-recommended Ubuntu 14.04, processes of
+    installing Open edX is not stable and hence cannot be automated.
+  + Making Open edX would take significant amount of efforts and a lot
+    of hit and trail explorations.
+  
+* Solution 
+  Above problem can be easily solved by making an AMI (Amazon Machine
+  Instance) out of existing VLABS Open edX. Following are the
+  advantages of having an AMI -
+  + AMI is a ready to launch image of a Amazon Virtual Machine. If you
+    running instance goes down or is corrupted, you can immediately
+    launch a VM out of AMI and get your instance up and running in
+    same state again.
+  + It is a full backup of complete VM instance and hence no need of
+    seperate backups.
+  + Its easy to restore, i.e. by just launching the VM out of AMI.
+
+* Steps to Create an AMI of VLABS Open edX
+  + Login to AWS web console.
+  + Change your region to California.
+  + Select the =vlabs.ac.in VLABS Open edX in production= .
+  + Right click and select =image= and then =create image=.
+  + A dialog box will appear requesting for the following information.
+    + Image name =VLABS Open edX AMI <DATE>=
+    + Image description =give some valid description to image=
+    + Check / Select =No Reboot= option. If you do not select this,
+      current instance will be rebooted.
+    + Click =Create instance= button.
+  + Visit AMIs section in =Images=
+  + Check if AMI is created and give a name to AMI if there is no name
+    in name field.
+ 
+
+  
