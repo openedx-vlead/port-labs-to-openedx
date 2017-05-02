@@ -1,0 +1,25 @@
+#+TITLE: Analytics Model for labs in Open edX
+#+Author: VLEAD
+#+Date: [2016-12-15]
+#+PROPERTY: results output
+#+PROPERTY: exports code
+#+SETUPFILE: ./org-templates/level-0.org
+
+* Introduction
+  This document describes the requirements, design, and implementation
+  of analytics service for labs on Open edX.
+
+* Requirements 
+** Stake holder requirements 
+   + Usage ::
+     Number of usages for each experiment in a lab.
+
+* Reasons for not using Open edX insigts analytics system 
+  + Open edX Insights was tried by Systems and development team was
+    found to be displaying inconsistent data in dashboard. Hence was
+    not repeatable.
+  + Efforts for the same are captured [[https://github.com/openedx-vlead/port-labs-to-openedx/tree/develop/src/analytics-setup][here]].
+
+
+  
+
