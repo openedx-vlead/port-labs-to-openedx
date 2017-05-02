@@ -19,7 +19,24 @@
     found to be displaying inconsistent data in dashboard. Hence was
     not repeatable.
   + Efforts for the same are captured [[https://github.com/openedx-vlead/port-labs-to-openedx/tree/develop/src/analytics-setup][here]].
+  + While the effort was made during the period of April 2016 to July
+    2016, insights might have matured to be working fine.
+  + One cannot customize the type of analytics required and hence out
+    of the box solution was required.
+  + Updates are tiresome and risky. Using Insights of Open edX could
+    have caused serious problems in updations.
+  + The data used as an input to Insights was only readable by
+    Insights application. In case we want to run out analytics on the
+    same set of data, it could have required a complex system to do
+    so.
 
+
+* Design Diagram 
+  Design diagram and documentation is available [[https://github.com/openedx-vlead/vlabs-analytics-api-server/blob/master/src/design/index.org][here]].
+
+* Repositories for components of analytics system 
+  + [[https://github.com/openedx-vlead/vlabs-analytics-api-server][Analytics API Server]]
+  + [[https://github.com/openedx-vlead/elk-stack-for-analytics][ELK stack for analytics]]
 
   
 
