@@ -31,7 +31,7 @@
      me.is_staff = True
      me.save()
      #+END_EXAMPLE
-    - Create a user to superuser ::
+   - Create a user to superuser ::
      #+BEGIN_EXAMPLE
      $ sudo su -s /bin/bash edxapp
      $ /edx/bin/python.edxapp /edx/bin/manage.edxapp lms manage_user <user> <user>@example.com --staff --superuser --settings=aws
